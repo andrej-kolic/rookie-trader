@@ -1,6 +1,6 @@
-# Turborepo React starter
+# Rookie
 
-Monorepo starter project for FE projects
+Simple exchange build on top of Kraken API
 
 ## What's inside?
 
