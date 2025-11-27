@@ -1,0 +1,14 @@
+{
+  "extends": "@repo/typescript-config/vite.json",
+  "compilerOptions": {
+    "paths": {
+      "~app-core/*": ["../../packages/app-core/src/*"],
+      "~ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+
+  "include": ["src", "../../@types"],
+  "exclude": ["node_modules", "dist", "dev"],
+
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

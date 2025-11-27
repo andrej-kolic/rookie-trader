@@ -1,0 +1,174 @@
+name: 'Build Project'
+description: 'Setup Node.js environment, install dependencies, and run build pipeline with optional checks using Turborepo parallel execution'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '24'
+
+  check-dependencies:
+    description: 'Run dependency check (pnpm check:dependencies)'
+    required: false
+    default: 'true'
+
+  check-format:
+    description: 'Run format check (pnpm check:format)'
+    required: false
+    default: 'true'
+
+  run-lint:
+    description: 'Run linting (pnpm lint)'
+    required: false
+    default: 'true'
+
+  run-tests:
+    description: 'Run tests (pnpm test)'
+    required: false
+    default: 'true'
+
+  build-filter:
+    description: 'Build filter for specific packages/apps (e.g., app-vite)'
+    required: false
+
+  build-environment:
+    description: 'Build environment (development, staging, production)'
+    required: true
+
+runs:
+  using: 'composite'
+
+  steps:
+    # Log input
+
+    - shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Log input"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Log input
+      shell: bash
+      run: |
+        echo " "
+        echo "Node.js version: ${{ inputs.node-version }}"
+        echo "Check dependencies: ${{ inputs.check-dependencies }}"
+        echo "Check format: ${{ inputs.check-format }}"
+        echo "Run lint: ${{ inputs.run-lint }}"
+        echo "Run tests: ${{ inputs.run-tests }}"
+        echo "Build filter: ${{ inputs.build-filter }}"
+        echo "Build environment: ${{ inputs.build-environment }}"
+        echo " "
+
+    # Setup pnpm
+
+    - shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Setup pnpm"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    # Setup Setup Node.js
+
+    - shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Setup Node.js"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Setup Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    # Install dependencies
+
+    - shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Install dependencies"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+
+    # Check dependencies
+
+    - if: inputs.check-dependencies == 'true'
+      shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Check dependencies"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Check dependencies
+      if: inputs.check-dependencies == 'true'
+      shell: bash
+      run: BUILD_ENVIRONMENT=${{ inputs.build-environment }} pnpm check:dependencies
+
+    # Check format
+
+    - if: inputs.check-format == 'true'
+      shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Check format"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Check format
+      if: inputs.check-format == 'true'
+      shell: bash
+      run: BUILD_ENVIRONMENT=${{ inputs.build-environment }} pnpm check:format
+
+    # Build and run quality checks
+
+    - shell: bash
+      run: |
+        echo " "
+        echo " "
+        echo "Build and run quality checks"
+        echo "──────────────────────────────────────"
+        echo " "
+    - name: Build and run quality checks
+      shell: bash
+      run: |
+        # Build tasks list based on inputs
+        TASKS=""
+
+        # Always include build for the specific filter
+        TASKS="build"
+
+        # Add conditional tasks
+        if [ "${{ inputs.run-lint }}" = "true" ]; then
+          TASKS="$TASKS lint"
+        fi
+
+        if [ "${{ inputs.run-tests }}" = "true" ]; then
+          TASKS="$TASKS test"
+        fi
+
+        echo "Running tasks in parallel: $TASKS"
+        echo " "
+
+        # Add conditional filter
+        FILTER=""
+        if [ -n "${{ inputs.build-filter }}" ]; then
+          FILTER="--filter ${{ inputs.build-filter }}..."
+        else
+          echo "No build filter provided, running tasks ($TASKS) across the entire monorepo."
+          echo " "
+        fi
+
+        # Run turbo with all tasks, filtered to the specific build target
+        BUILD_ENVIRONMENT=${{ inputs.build-environment }} pnpm turbo $TASKS $FILTER

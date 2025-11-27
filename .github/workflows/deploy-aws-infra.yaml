@@ -1,0 +1,44 @@
+name: 'Deploy: AWS: Infrastructure'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: development
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+concurrency:
+  # Unique group for each workflow + branch + environment + infra action
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.environment }}-infra
+  cancel-in-progress: true # Cancel any in-progress runs for this group
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Deploy infrastructure to ${{ github.event.inputs.environment }}
+        uses: ./infra/aws/.github/actions/deploy
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          action: infra
+          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}

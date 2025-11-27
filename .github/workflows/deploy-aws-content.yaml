@@ -1,0 +1,150 @@
+name: 'Deploy: AWS: Content'
+
+on:
+  # schedule:
+  #   - cron: '*/2 * * * *'
+  #   # - cron: '10 15 11 7 *'
+
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+    types: [opened]
+
+  workflow_dispatch:
+    inputs:
+      bundler:
+        type: choice
+        description: Bundler
+        required: true
+        default: default
+        options:
+          - default
+          - app-vite
+          - app-webpack
+          - app-esbuild
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: development
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+concurrency:
+  # Unique group for each workflow + branch + environment + content action
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.environment }}-content
+  cancel-in-progress: true # Cancel any in-progress runs for this group
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  HUSKY: 0
+  BUNDLER: >-
+    ${{
+      (github.event.inputs.bundler == 'default' && vars.DEFAULT_BUNDLER)
+      || github.event.inputs.bundler
+      || vars.DEFAULT_BUNDLER
+    }}
+
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  # Deploy to development environment
+  deploy-development:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'pull_request' && github.head_ref == 'develop') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
+    environment: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Build project
+        uses: ./.github/actions/build-project
+        with:
+          build-filter: ${{ env.BUNDLER }}
+          build-environment: development
+          check-dependencies: 'false'
+          check-format: 'false'
+          run-lint: 'false'
+          run-tests: 'false'
+
+      - name: Deploy to development
+        uses: ./infra/aws/.github/actions/deploy
+        with:
+          environment: development
+          action: content
+          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          comment-pr: ${{ github.event_name == 'pull_request' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Deploy to staging environment
+  deploy-staging:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push' && (github.ref == 'refs/heads/main')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Build project
+        uses: ./.github/actions/build-project
+        with:
+          build-filter: ${{ env.BUNDLER }}
+          build-environment: staging
+          check-dependencies: 'false'
+          check-format: 'false'
+          run-lint: 'false'
+          run-tests: 'false'
+
+      - name: Deploy to staging
+        uses: ./infra/aws/.github/actions/deploy
+        with:
+          environment: staging
+          action: content
+          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+  # Deploy to production environment
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Build project
+        uses: ./.github/actions/build-project
+        with:
+          build-filter: ${{ env.BUNDLER }}
+          build-environment: production
+          check-dependencies: 'false'
+          check-format: 'false'
+          run-lint: 'false'
+          run-tests: 'false'
+
+      - name: Deploy to production
+        uses: ./infra/aws/.github/actions/deploy
+        with:
+          environment: production
+          action: content
+          aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          create-release: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

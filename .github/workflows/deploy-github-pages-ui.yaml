@@ -1,0 +1,66 @@
+name: 'Deploy: GitHub Pages: UI'
+
+on:
+  workflow_dispatch:
+    inputs:
+      documentation:
+        type: boolean
+        description: Documentation only
+        required: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  HUSKY: 0
+  STORYBOOK_OPTIONS: ${{ inputs.documentation && '--docs' || '' }}
+
+jobs:
+  publish:
+    # name: Build and Publish Storybook
+
+    environment:
+      name: github-pages
+      url: ${{ steps.publish-storybook.outputs.page_url }}
+
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    # To use Remote Caching, uncomment the next lines and follow the steps below.
+    # env:
+    #  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    #  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check dependencies
+        run: pnpm check:dependencies
+
+      - id: publish-storybook
+        name: Publish Storybook
+        uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+        with:
+          # install_command: pnpm install
+          install_command: echo Skipping install, dependencies installed manually
+
+          build_command: STORYBOOK_OPTIONS=${{ env.STORYBOOK_OPTIONS }} pnpm build:ui
+
+          path: apps/ui-storybook/storybook-static
+          checkout: false

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local", "tsconfig.json"],
+
+  "globalEnv": ["BUNDLER", "BUILD_ENVIRONMENT", "NODE_ENV", "NODE_DEBUG"],
+  "globalPassThroughEnv": ["AWS_SECRET_KEY", "GITHUB_TOKEN"],
+
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "check:type": {
+      "dependsOn": ["^build", "^check:type"]
+    },
+    "test:watch": {
+      "cache": false
+    },
+    "clear:output": {
+      "cache": false
+    }
+  }
+}

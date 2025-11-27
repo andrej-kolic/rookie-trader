@@ -1,0 +1,26 @@
+# project
+# src/**/assets/**
+# public/**
+
+#tools
+.husky/
+
+# output
+dist/
+dev/
+build/
+
+# tools and frameworks
+storybook-static/
+turbo/
+
+# cache
+.eslintcache
+# .babelcache
+
+# usual suspects
+pnpm-lock.yaml
+*.code-workspace
+
+# netlify
+infra/netlify/deploy_output.json
