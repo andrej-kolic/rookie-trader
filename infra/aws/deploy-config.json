@@ -1,5 +1,5 @@
 {
-  "project_name": "trs",
+  "project_name": "rookie",
   "region": "us-east-1",
   "oidc": {
     "oidc_arn": "arn:aws:iam::629994690329:oidc-provider/token.actions.githubusercontent.com",
@@ -10,7 +10,7 @@
     "development": {
       "parameters": {
         "DomainName": "andrejkolic.com",
-        "SubDomain": "trs-dev",
+        "SubDomain": "rookie-dev",
         "HostedZoneId": "Z00295123IDZ7CVMX671W",
         "CreateApex": "no"
       }
@@ -18,7 +18,7 @@
     "staging": {
       "parameters": {
         "DomainName": "andrejkolic.com",
-        "SubDomain": "trs-staging",
+        "SubDomain": "rookie-staging",
         "HostedZoneId": "Z00295123IDZ7CVMX671W",
         "CreateApex": "no"
       }
@@ -26,7 +26,7 @@
     "production": {
       "parameters": {
         "DomainName": "andrejkolic.com",
-        "SubDomain": "trs",
+        "SubDomain": "rookie",
         "HostedZoneId": "Z00295123IDZ7CVMX671W",
         "CreateApex": "yes"
       }
