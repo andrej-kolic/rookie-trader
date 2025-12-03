@@ -7,6 +7,7 @@ import { ResourceCards } from './components/ResourceCards';
 import { Scroller } from './components/Scroller';
 import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
+import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -38,6 +39,8 @@ export function AppCore(props: {
       <TradingPairSelectorContainer />
 
       <TickerDisplayContainer />
+
+      <OrderBookDisplayContainer />
 
       <ResourceCards />
 

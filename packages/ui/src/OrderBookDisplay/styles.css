@@ -1,0 +1,212 @@
+.order-book-display {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  max-width: 400px;
+}
+
+.order-book-display--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.order-book-display__header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: rgba(249, 250, 251, 0.5); /* #f9fafb */
+}
+
+.order-book-display__title {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.order-book-display__column-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-book-display__column-header {
+  text-align: right;
+}
+
+.order-book-display__column-header:first-child {
+  text-align: left;
+}
+
+.order-book-display__book {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.order-book-display__asks,
+.order-book-display__bids {
+  position: relative;
+}
+
+.order-book-display__level {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.375rem 1rem;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.15s ease;
+  z-index: 1;
+}
+
+.order-book-display__level:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.order-book-display__price {
+  font-weight: 500;
+  text-align: left;
+}
+
+.order-book-display__price--bid {
+  color: #059669;
+}
+
+.order-book-display__price--ask {
+  color: #dc2626;
+}
+
+.order-book-display__quantity,
+.order-book-display__total {
+  text-align: right;
+  color: #374151;
+  font-size: 0.75rem;
+}
+
+.order-book-display__total {
+  color: #6b7280;
+}
+
+/* Depth bar visualization */
+.order-book-display__depth-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: var(--depth-percentage, 0%);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.order-book-display__depth-bar--bid {
+  background: linear-gradient(to left, #059669, transparent);
+  /* background-color: #059669; */
+}
+
+.order-book-display__depth-bar--ask {
+  background: linear-gradient(to left, #dc2626, transparent);
+  /* background-color: #dc2626; */
+}
+
+/* Spread */
+.order-book-display__spread {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: rgba(249, 250, 251, 0.5); /* #f9fafb */
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.order-book-display__spread-label {
+  color: #6b7280;
+}
+
+.order-book-display__spread-value {
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Empty states */
+.order-book-display__empty,
+.order-book-display__empty-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.order-book-display__error {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Loading skeleton */
+.order-book-display__skeleton-grid {
+  padding: 1rem;
+}
+
+.order-book-display__skeleton-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.order-book-display__skeleton {
+  height: 1rem;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 0.25rem;
+}
+
+.order-book-display__skeleton--short {
+  width: 60px;
+}
+
+.order-book-display__skeleton--medium {
+  flex: 1;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .order-book-display {
+    max-width: 100%;
+  }
+
+  .order-book-display__level {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .order-book-display__column-headers {
+    font-size: 0.6875rem;
+  }
+}
