@@ -39,8 +39,13 @@ export default defineConfig((configEnv) => {
       'import.meta.env.BUILD_ENVIRONMENT': JSON.stringify(
         process.env.BUILD_ENVIRONMENT,
       ),
-      // Polyfill process.env for ts-kraken which imports dotenv
-      // 'process.env': {},
+      // Polyfill global for Node.js compatibility
+      global: 'globalThis',
+      // Polyfill process.env for dependencies that check it
+      'process.env': '{}',
+      // Ensure process is available globally
+      'process.browser': 'true',
+      'process.version': '"v16.0.0"',
     },
 
     plugins: [react()],
@@ -53,6 +58,17 @@ export default defineConfig((configEnv) => {
         dotenv: path.resolve(__dirname, 'src/polyfills/empty.js'),
         // Replace Node.js 'ws' module with browser's native WebSocket
         ws: path.resolve(__dirname, 'src/polyfills/ws.js'),
+        // Polyfill crypto module for ts-kraken authentication
+        crypto: 'crypto-browserify',
+        stream: 'stream-browserify',
+        // Polyfill process for crypto dependencies
+        process: 'process/browser',
+        // Polyfill util for readable-stream
+        util: 'util',
+        // Polyfill events for readable-stream
+        events: 'events',
+        // Polyfill string_decoder for readable-stream
+        string_decoder: 'string_decoder',
       },
     },
 

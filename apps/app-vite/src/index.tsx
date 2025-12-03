@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AppCore } from '@repo/app-core';
+import { Buffer } from 'buffer';
 import './index.css';
+
+globalThis.Buffer = Buffer;
 
 // TODO: // remove
 export const Wrapper = () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { add } from '@repo/ui/utils';
 import type { CustomType } from '@repo/commons';
 import { Header } from './components/Header';
@@ -8,6 +8,7 @@ import { Scroller } from './components/Scroller';
 import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
+import { initializeAuthStore } from './state/auth-store';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -31,6 +32,11 @@ export function AppCore(props: {
   href: string;
 }): React.JSX.Element {
   debugLog();
+
+  // Initialize auth store on mount - loads credentials from localStorage
+  useEffect(() => {
+    initializeAuthStore();
+  }, []);
 
   return (
     <div className="AppCore">
