@@ -8,6 +8,7 @@ import { Scroller } from './components/Scroller';
 import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
+import { PriceChartContainer } from './containers/PriceChartContainer';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -40,7 +41,10 @@ export function AppCore(props: {
 
       <TickerDisplayContainer />
 
-      <OrderBookDisplayContainer />
+      <div className="market-data-layout">
+        <OrderBookDisplayContainer />
+        <PriceChartContainer />
+      </div>
 
       <ResourceCards />
 

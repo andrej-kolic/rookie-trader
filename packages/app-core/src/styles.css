@@ -11,3 +11,35 @@ body {
   flex-direction: column;
   gap: 30px;
 }
+
+/* Market data layout: OrderBook (40%) | PriceChart (60%) */
+.market-data-layout {
+  display: flex;
+  gap: 20px;
+  height: 600px; /* Changed from min-height to height */
+}
+
+.market-data-layout > :first-child {
+  flex: 0 0 40%;
+  min-width: 0;
+  height: 100%; /* Ensure children fill height */
+}
+
+.market-data-layout > :last-child {
+  flex: 1;
+  min-width: 0;
+  height: 100%; /* Ensure children fill height */
+}
+
+/* Responsive: stack vertically on mobile */
+@media (max-width: 1024px) {
+  .market-data-layout {
+    flex-direction: column;
+  }
+
+  .market-data-layout > :first-child,
+  .market-data-layout > :last-child {
+    flex: none;
+    width: 100%;
+  }
+}
