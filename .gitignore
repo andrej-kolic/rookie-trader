@@ -42,3 +42,5 @@ dist/
 
 # other
 _local/
+
+docs-internal/
