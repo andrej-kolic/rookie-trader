@@ -1,0 +1,146 @@
+.ticker-display {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  align-items: center;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.ticker-display--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  justify-content: center;
+}
+
+.ticker-display--loading {
+  gap: 2rem;
+}
+
+.ticker-display--updating {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.ticker-display__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.ticker-display__section--symbol {
+  min-width: 120px;
+}
+
+.ticker-display__section--price {
+  min-width: 180px;
+}
+
+.ticker-display__label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ticker-display__value {
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.ticker-display__value--symbol {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.ticker-display__value--price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ticker-display__qty {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.ticker-display__change {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.ticker-display__change--rising {
+  color: #059669;
+  background: #d1fae5;
+}
+
+.ticker-display__change--falling {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+.ticker-display__error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Loading skeleton */
+.ticker-display__skeleton {
+  height: 1.25rem;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 0.25rem;
+}
+
+.ticker-display__skeleton--wide {
+  width: 120px;
+}
+
+.ticker-display__skeleton--medium {
+  width: 80px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ticker-display {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .ticker-display__section {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 100px;
+  }
+
+  .ticker-display__section--symbol,
+  .ticker-display__section--price {
+    flex: 1 1 100%;
+  }
+}

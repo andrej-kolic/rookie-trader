@@ -248,11 +248,14 @@ importers:
       react-dom:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
+      rxjs:
+        specifier: 7.8.2
+        version: 7.8.2
       ts-kraken:
         specifier: 4.0.14
         version: 4.0.14
       zustand:
-        specifier: ^5.0.9
+        specifier: 5.0.9
         version: 5.0.9(@types/react@19.2.0)(react@19.2.0)
     devDependencies:
       '@repo/eslint-config':

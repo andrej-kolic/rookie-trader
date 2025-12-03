@@ -51,6 +51,8 @@ export default defineConfig((configEnv) => {
       alias: {
         // Polyfill Node.js modules that ts-kraken tries to import but doesn't actually need in browser
         dotenv: path.resolve(__dirname, 'src/polyfills/empty.js'),
+        // Replace Node.js 'ws' module with browser's native WebSocket
+        ws: path.resolve(__dirname, 'src/polyfills/ws.js'),
       },
     },
 

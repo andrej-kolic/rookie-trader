@@ -6,6 +6,7 @@ import { debugLog } from './utils/debug';
 import { ResourceCards } from './components/ResourceCards';
 import { Scroller } from './components/Scroller';
 import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
+import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -35,6 +36,8 @@ export function AppCore(props: {
       <Header title={`Rookie Trader (${props.title})`} />
 
       <TradingPairSelectorContainer />
+
+      <TickerDisplayContainer />
 
       <ResourceCards />
 
