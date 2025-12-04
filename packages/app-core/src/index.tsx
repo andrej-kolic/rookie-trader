@@ -1,10 +1,7 @@
 import React from 'react';
 import { add } from '@repo/ui/utils';
 import type { CustomType } from '@repo/commons';
-import { Header } from './components/Header';
 import { debugLog } from './utils/debug';
-import { ResourceCards } from './components/ResourceCards';
-import { Scroller } from './components/Scroller';
 import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
@@ -35,8 +32,6 @@ export function AppCore(props: {
 
   return (
     <div className="AppCore">
-      <Header title={`Rookie Trader (${props.title})`} />
-
       <TradingPairSelectorContainer />
 
       <TickerDisplayContainer />
@@ -45,10 +40,6 @@ export function AppCore(props: {
         <OrderBookDisplayContainer />
         <PriceChartContainer />
       </div>
-
-      <ResourceCards />
-
-      <Scroller />
     </div>
   );
 }

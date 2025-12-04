@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { OrderBookDisplay } from '@repo/ui';
 
 const meta = {
-  title: 'Example/OrderBookDisplay',
+  title: 'Components/OrderBookDisplay',
   component: OrderBookDisplay,
   tags: ['autodocs'],
   parameters: {
