@@ -1,10 +1,14 @@
 // Polyfill for dotenv module that ts-kraken imports but doesn't need in browser
-// Must use CommonJS exports to match what ts-kraken expects
+// Using ES module exports for Vite compatibility
 
-// eslint-disable-next-line no-undef
-module.exports = {
-  config: () => ({
+export function config() {
+  return {
     parsed: {},
     error: undefined,
-  }),
+  };
+}
+
+// Default export for CommonJS-style imports
+export default {
+  config,
 };
