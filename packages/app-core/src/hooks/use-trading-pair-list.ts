@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { useTradingPairs } from './use-trading-pairs';
-import type { TradingPair } from '../../domain/TradingPair';
+import type { TradingPair } from '../domain/TradingPair';
 
 export type TradingPairListState = {
   pairs: TradingPair[];

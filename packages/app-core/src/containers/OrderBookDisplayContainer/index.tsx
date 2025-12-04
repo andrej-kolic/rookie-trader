@@ -4,7 +4,7 @@ import {
   type OrderBookDisplayProps,
   type OrderBookLevelProps,
 } from '@repo/ui';
-import { useOrderBook } from './use-order-book';
+import { useOrderBook } from '../../hooks/use-order-book';
 import { useTradingStore } from '../../state/trading-store';
 import type { OrderBookLevel } from '../../domain/OrderBookLevel';
 

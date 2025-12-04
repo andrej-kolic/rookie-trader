@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback, useEffectEvent } from 'react';
 import type { PublicRestTypes } from 'ts-kraken';
-import {
-  fetchOHLC,
-  type OHLCInterval,
-} from '../../services/kraken-rest-service';
-import { mapOHLCResponse, mergeCandles } from '../../mappers/candle-mapper';
-import type { Candle } from '../../domain/Candle';
+import { fetchOHLC, type OHLCInterval } from '../services/kraken-rest-service';
+import { mapOHLCResponse, mergeCandles } from '../mappers/candle-mapper';
+import type { Candle } from '../domain/Candle';
 
 type UseOHLCOptions = {
   pair: string;

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { TickerDisplay, type TickerDisplayProps } from '@repo/ui';
-import { useTicker } from './use-ticker';
+import { useTicker } from '../../hooks/use-ticker';
 import { useTradingStore } from '../../state/trading-store';
 
 /**

@@ -4,7 +4,7 @@ import {
   type SelectorItem,
   type SelectorDetails,
 } from '@repo/ui';
-import { useTradingPairList } from './use-trading-pair-list';
+import { useTradingPairList } from '../../hooks/use-trading-pair-list';
 import { useTradingPairUrlSync } from './use-trading-pair-url-sync';
 import { useTradingStore } from '../../state/trading-store';
 
@@ -51,7 +51,6 @@ export function TradingPairSelectorContainer() {
         fields: [
           { label: 'Base', value: pair.base },
           { label: 'Quote', value: pair.quote },
-          { label: 'Min Order', value: pair.ordermin },
           { label: 'Status', value: pair.status },
         ],
       };
