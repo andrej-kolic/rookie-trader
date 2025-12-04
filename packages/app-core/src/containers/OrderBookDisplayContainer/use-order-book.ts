@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { subscribeToOrderBook } from '../services/kraken-ws-service';
+import { subscribeToOrderBook } from '../../services/kraken-ws-service';
 import {
   mapOrderBook,
   mergeOrderBookUpdate,
-} from '../mappers/order-book-mapper';
-import type { OrderBook } from '../domain/OrderBook';
+} from '../../mappers/order-book-mapper';
+import type { OrderBook } from '../../domain/OrderBook';
 import type { Subscription } from 'rxjs';
 
 const RETRY_DELAY_MS = 5000;

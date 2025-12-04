@@ -4,17 +4,23 @@ import {
   type SelectorItem,
   type SelectorDetails,
 } from '@repo/ui';
-import { useTradingPairList } from '../hooks/use-trading-pair-list';
-import { useTradingStore } from '../state/trading-store';
-// import type { TradingPair } from '../domain/TradingPair';
+import { useTradingPairList } from './use-trading-pair-list';
+import { useTradingPairUrlSync } from './use-trading-pair-url-sync';
+import { useTradingStore } from '../../state/trading-store';
 
 export function TradingPairSelectorContainer() {
   const { pairs, loading, error, getPairById } = useTradingPairList();
-  // Use Zustand selectors to only subscribe to needed state
   const selectedPairId = useTradingStore(
     (state) => state.selectedPair?.id ?? '',
   );
   const setSelectedPair = useTradingStore((state) => state.setSelectedPair);
+
+  // Sync trading pair selection with URL
+  useTradingPairUrlSync({
+    loading,
+    pairsCount: pairs.length,
+    getPairById,
+  });
 
   // Map domain models to UI component props
   const items: SelectorItem[] = useMemo(

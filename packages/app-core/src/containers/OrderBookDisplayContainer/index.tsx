@@ -4,9 +4,9 @@ import {
   type OrderBookDisplayProps,
   type OrderBookLevelProps,
 } from '@repo/ui';
-import { useOrderBook } from '../hooks/use-order-book';
-import { useTradingStore } from '../state/trading-store';
-import type { OrderBookLevel } from '../domain/OrderBookLevel';
+import { useOrderBook } from './use-order-book';
+import { useTradingStore } from '../../state/trading-store';
+import type { OrderBookLevel } from '../../domain/OrderBookLevel';
 
 /**
  * Container component for order book display

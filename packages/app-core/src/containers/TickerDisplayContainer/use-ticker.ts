@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { subscribeToTicker } from '../services/kraken-ws-service';
-import { mapTicker } from '../mappers/ticker-mapper';
-import type { Ticker } from '../domain/Ticker';
+import { subscribeToTicker } from '../../services/kraken-ws-service';
+import { mapTicker } from '../../mappers/ticker-mapper';
+import type { Ticker } from '../../domain/Ticker';
 import type { Subscription } from 'rxjs';
 
 const RETRY_DELAY_MS = 5000;

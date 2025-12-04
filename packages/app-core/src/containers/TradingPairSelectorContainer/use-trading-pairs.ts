@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { PublicRestTypes } from 'ts-kraken';
-import { fetchTradingPairs } from '../services/kraken-rest-service';
+import { fetchTradingPairs } from '../../services/kraken-rest-service';
 
 type AssetPairsResult = PublicRestTypes.PublicRestEndpoints.AssetPairs.Result;
 

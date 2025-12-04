@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTradingPairs } from '../../hooks/use-trading-pairs';
+import { useTradingPairs } from '../../containers/TradingPairSelectorContainer/use-trading-pairs';
 import './styles.css';
 
 export type TradingPairSelectorProps = {

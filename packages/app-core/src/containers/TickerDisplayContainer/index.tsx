@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { TickerDisplay, type TickerDisplayProps } from '@repo/ui';
-import { useTicker } from '../hooks/use-ticker';
-import { useTradingStore } from '../state/trading-store';
+import { useTicker } from './use-ticker';
+import { useTradingStore } from '../../state/trading-store';
 
 /**
  * Container component for ticker display

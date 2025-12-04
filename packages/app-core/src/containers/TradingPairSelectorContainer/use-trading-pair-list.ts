@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { useTradingPairs } from './use-trading-pairs';
-import { mapTradingPairs } from '../mappers/trading-pair-mapper';
-import type { TradingPair } from '../domain/TradingPair';
+import { mapTradingPairs } from '../../mappers/trading-pair-mapper';
+import type { TradingPair } from '../../domain/TradingPair';
 
 export type TradingPairListState = {
   pairs: TradingPair[];
