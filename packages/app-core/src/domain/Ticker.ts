@@ -79,10 +79,24 @@ export class Ticker {
   }
 
   /**
-   * Format volume with specified decimal places
+   * Format volume with smart adaptive decimal places and thousands separators
+   * Large volumes (>= 100): max 2 decimals
+   * Medium volumes (>= 1): max 4 decimals
+   * Small volumes (< 1): max decimals (up to specified limit)
    */
   formatVolume(decimals: number): string {
-    return this.volume24h.toFixed(decimals);
+    const value = this.volume24h;
+    let precision: number;
+
+    if (value >= 100) {
+      precision = Math.min(2, decimals);
+    } else if (value >= 1) {
+      precision = Math.min(4, decimals);
+    } else {
+      precision = decimals;
+    }
+
+    return this.formatNumberWithCommas(value, precision);
   }
 
   /**
@@ -108,17 +122,45 @@ export class Ticker {
   }
 
   /**
-   * Format bid quantity with decimals
+   * Format bid quantity with smart adaptive decimal places and thousands separators
+   * Large quantities (>= 100): max 2 decimals
+   * Medium quantities (>= 1): max 4 decimals
+   * Small quantities (< 1): max decimals (up to specified limit)
    */
   formatBidQty(decimals: number): string {
-    return this.bidQty.toFixed(decimals);
+    const value = this.bidQty;
+    let precision: number;
+
+    if (value >= 100) {
+      precision = Math.min(2, decimals);
+    } else if (value >= 1) {
+      precision = Math.min(4, decimals);
+    } else {
+      precision = decimals;
+    }
+
+    return this.formatNumberWithCommas(value, precision);
   }
 
   /**
-   * Format ask quantity with decimals
+   * Format ask quantity with smart adaptive decimal places and thousands separators
+   * Large quantities (>= 100): max 2 decimals
+   * Medium quantities (>= 1): max 4 decimals
+   * Small quantities (< 1): max decimals (up to specified limit)
    */
   formatAskQty(decimals: number): string {
-    return this.askQty.toFixed(decimals);
+    const value = this.askQty;
+    let precision: number;
+
+    if (value >= 100) {
+      precision = Math.min(2, decimals);
+    } else if (value >= 1) {
+      precision = Math.min(4, decimals);
+    } else {
+      precision = decimals;
+    }
+
+    return this.formatNumberWithCommas(value, precision);
   }
 
   /**
@@ -133,5 +175,29 @@ export class Ticker {
    */
   formatLow24h(decimals: number): string {
     return this.low24h.toFixed(decimals);
+  }
+
+  /**
+   * Private helper to format numbers with thousands separators and remove trailing zeros
+   */
+  private formatNumberWithCommas(value: number, decimals: number): string {
+    // Format with fixed decimals first
+    const fixed = value.toFixed(decimals);
+
+    // Split into integer and decimal parts
+    const parts = fixed.split('.');
+    const integerPart = parts[0] ?? '';
+    const decimalPart = parts[1];
+
+    // Add thousands separators to integer part
+    const withCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // Remove trailing zeros from decimal part
+    if (decimalPart) {
+      const trimmedDecimals = decimalPart.replace(/0+$/, '');
+      return trimmedDecimals ? `${withCommas}.${trimmedDecimals}` : withCommas;
+    }
+
+    return withCommas;
   }
 }

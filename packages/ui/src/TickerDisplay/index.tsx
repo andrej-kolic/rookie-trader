@@ -69,6 +69,32 @@ export function TickerDisplay(props: TickerDisplayProps) {
         <span className="ticker-display__value">{lastPrice ?? '—'}</span>
       </div>
 
+      {changePct && (
+        <div className="ticker-display__section">
+          <span className="ticker-display__label">24h Change</span>
+          <span
+            className={`ticker-display__value ticker-display__change ${changeClass}`}
+          >
+            {changePct}
+          </span>
+        </div>
+      )}
+
+      <div className="ticker-display__section">
+        <span className="ticker-display__label">24h Volume</span>
+        <span className="ticker-display__value">{volume24h ?? '—'}</span>
+      </div>
+
+      <div className="ticker-display__section">
+        <span className="ticker-display__label">24h High</span>
+        <span className="ticker-display__value">{high24h ?? '—'}</span>
+      </div>
+
+      <div className="ticker-display__section">
+        <span className="ticker-display__label">24h Low</span>
+        <span className="ticker-display__value">{low24h ?? '—'}</span>
+      </div>
+
       <div className="ticker-display__section">
         <span className="ticker-display__label">Bid</span>
         <span className="ticker-display__value">
@@ -84,32 +110,6 @@ export function TickerDisplay(props: TickerDisplayProps) {
           {askQty && <span className="ticker-display__qty"> ({askQty})</span>}
         </span>
       </div>
-
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h High</span>
-        <span className="ticker-display__value">{high24h ?? '—'}</span>
-      </div>
-
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Low</span>
-        <span className="ticker-display__value">{low24h ?? '—'}</span>
-      </div>
-
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Volume</span>
-        <span className="ticker-display__value">{volume24h ?? '—'}</span>
-      </div>
-
-      {changePct && (
-        <div className="ticker-display__section">
-          <span className="ticker-display__label">24h Change</span>
-          <span
-            className={`ticker-display__value ticker-display__change ${changeClass}`}
-          >
-            {changePct}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

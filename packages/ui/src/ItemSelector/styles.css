@@ -1,16 +1,21 @@
 .ItemSelector {
-  padding: 20px;
+  padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #ffffff;
   max-width: 600px;
-  margin: 20px auto;
+  flex-grow: 1;
+  /* margin: 20px auto; */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ItemSelector--loading,
 .ItemSelector--error {
   text-align: center;
-  padding: 40px 20px;
+  /* padding: 40px 20px; */
 }
 
 .ItemSelector--error {

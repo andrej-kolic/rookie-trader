@@ -171,10 +171,69 @@ describe('Ticker', () => {
   });
 
   describe('formatVolume', () => {
-    it('should format volume with specified decimals', () => {
-      const ticker = createTestTicker();
-      expect(ticker.formatVolume(2)).toBe('1234.56');
-      expect(ticker.formatVolume(4)).toBe('1234.5600');
+    it('should format large volume (>= 100) with max 2 decimals and commas', () => {
+      const ticker = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        1234.56,
+      ]);
+      expect(ticker.formatVolume(8)).toBe('1,234.56'); // Uses 2 decimals for large volumes
+      expect(ticker.formatVolume(4)).toBe('1,234.56'); // Uses 2 decimals
+      expect(ticker.formatVolume(2)).toBe('1,234.56'); // Uses 2 decimals
+    });
+
+    it('should format medium volume (>= 1, < 100) with max 4 decimals', () => {
+      const ticker = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        12.3456789,
+      ]);
+      expect(ticker.formatVolume(8)).toBe('12.3457'); // Uses 4 decimals for medium volumes
+      expect(ticker.formatVolume(4)).toBe('12.3457');
+      expect(ticker.formatVolume(2)).toBe('12.35'); // Respects lower limit
+    });
+
+    it('should format small volume (< 1) with full precision', () => {
+      const ticker = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        0.123456789,
+      ]);
+      expect(ticker.formatVolume(8)).toBe('0.12345679'); // Uses full 8 decimals
+      expect(ticker.formatVolume(4)).toBe('0.1235'); // Uses 4 decimals
+    });
+
+    it('should remove trailing zeros', () => {
+      const ticker = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        1234.5,
+      ]);
+      expect(ticker.formatVolume(4)).toBe('1,234.5'); // Removes trailing zeros
     });
   });
 
@@ -232,12 +291,34 @@ describe('Ticker', () => {
       expect(ticker.formatAsk(1)).toBe('45005.0');
     });
 
-    it('should format bid quantity', () => {
-      expect(ticker.formatBidQty(2)).toBe('1.50');
+    it('should format bid quantity with smart decimals (medium qty)', () => {
+      expect(ticker.formatBidQty(2)).toBe('1.5'); // 1.5 uses max 4 decimals, removes trailing zeros
+      expect(ticker.formatBidQty(8)).toBe('1.5'); // Uses max 4 decimals for medium qty
     });
 
-    it('should format ask quantity', () => {
-      expect(ticker.formatAskQty(2)).toBe('2.30');
+    it('should format ask quantity with smart decimals (medium qty)', () => {
+      expect(ticker.formatAskQty(2)).toBe('2.3'); // 2.3 uses max 4 decimals, removes trailing zeros
+      expect(ticker.formatAskQty(8)).toBe('2.3'); // Uses max 4 decimals for medium qty
+    });
+
+    it('should format large bid quantity with max 2 decimals and commas', () => {
+      const tickerLargeQty = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        150.123456,
+      ]);
+      expect(tickerLargeQty.formatBidQty(8)).toBe('150.12'); // Uses max 2 decimals for large qty
+    });
+
+    it('should format small bid quantity with full precision', () => {
+      const tickerSmallQty = createTestTicker([
+        undefined,
+        undefined,
+        undefined,
+        0.00012345,
+      ]);
+      expect(tickerSmallQty.formatBidQty(8)).toBe('0.00012345'); // Uses full 8 decimals for small qty
     });
 
     it('should format 24h high', () => {
