@@ -53,6 +53,8 @@ export default defineConfig((configEnv) => {
         dotenv: path.resolve(__dirname, 'src/polyfills/empty.js'),
         // Replace Node.js 'ws' module with browser's native WebSocket
         ws: path.resolve(__dirname, 'src/polyfills/ws.js'),
+        // Polyfill crypto module (used by ts-kraken for private API, not needed in browser)
+        crypto: path.resolve(__dirname, 'src/polyfills/crypto.js'),
       },
     },
 
