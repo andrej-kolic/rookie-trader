@@ -28,7 +28,7 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
     return (
       <div className="order-book-display order-book-display--error">
         <div className="order-book-display__header">
-          <h3 className="order-book-display__title">Order Book</h3>
+          {/* <h3 className="order-book-display__title">Order Book</h3> */}
         </div>
         <div className="order-book-display__error">⚠️ {error}</div>
       </div>
@@ -39,7 +39,12 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
     return (
       <div className="order-book-display order-book-display--loading">
         <div className="order-book-display__header">
-          <h3 className="order-book-display__title">Order Book</h3>
+          {/* <h3 className="order-book-display__title">Order Book</h3> */}
+          <div className="order-book-display__column-headers">
+            <span className="order-book-display__column-header">Price</span>
+            <span className="order-book-display__column-header">Quantity</span>
+            <span className="order-book-display__column-header">Total</span>
+          </div>
         </div>
         <div className="order-book-display__skeleton-grid">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -58,7 +63,7 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
   return (
     <div className="order-book-display">
       <div className="order-book-display__header">
-        <h3 className="order-book-display__title">Order Book - {symbol}</h3>
+        {/* <h3 className="order-book-display__title">Order Book - {symbol}</h3> */}
         <div className="order-book-display__column-headers">
           <span className="order-book-display__column-header">Price</span>
           <span className="order-book-display__column-header">Quantity</span>

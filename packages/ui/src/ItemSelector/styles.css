@@ -1,8 +1,8 @@
 .ItemSelector {
   padding: 10px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #2d2d2d;
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: #1a1a1a;
   max-width: 600px;
   flex-grow: 1;
   /* margin: 20px auto; */
@@ -19,9 +19,9 @@
 }
 
 .ItemSelector--error {
-  border-color: #ff4444;
-  background-color: #fff5f5;
-  color: #cc0000;
+  border-color: #dc2626;
+  background-color: #2d1a1a;
+  color: #ef4444;
 }
 
 .ItemSelector__label {
@@ -29,48 +29,49 @@
   margin-bottom: 8px;
   font-weight: 600;
   font-size: 14px;
-  color: #333;
+  color: #f9fafb;
 }
 
 .ItemSelector__select {
   width: 100%;
   padding: 10px 12px;
   font-size: 16px;
-  border: 2px solid #ccc;
+  border: 2px solid #2d2d2d;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: #252525;
+  color: #f9fafb;
   cursor: pointer;
   transition: border-color 0.2s;
 }
 
 .ItemSelector__select:hover {
-  border-color: #888;
+  border-color: #3d3d3d;
 }
 
 .ItemSelector__select:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .ItemSelector__info {
   margin-top: 16px;
   padding: 16px;
-  background-color: #f5f5f5;
+  background-color: #252525;
   border-radius: 4px;
-  border-left: 4px solid #4a90e2;
+  border-left: 4px solid #3b82f6;
 }
 
 .ItemSelector__info-title {
   margin: 0 0 12px 0;
   font-size: 15px;
-  color: #333;
+  color: #f9fafb;
 }
 
 .ItemSelector__info-field {
   margin: 8px 0;
   font-size: 14px;
-  color: #555;
+  color: #d1d5db;
 }
 
 .ItemSelector__info-field:last-child {
@@ -78,6 +79,6 @@
 }
 
 .ItemSelector__info strong {
-  color: #333;
+  color: #f9fafb;
   font-weight: 600;
 }

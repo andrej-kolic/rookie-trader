@@ -2,8 +2,8 @@
   display: flex;
   gap: 1.5rem;
   padding: 1rem 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: #1a1a1a;
+  border: 1px solid #2d2d2d;
   border-radius: 0.5rem;
   align-items: center;
   font-family:
@@ -17,7 +17,7 @@
   scroll-behavior: smooth;
   /* Hide scrollbar but keep functionality */
   scrollbar-width: thin;
-  scrollbar-color: #e5e7eb transparent;
+  scrollbar-color: #3d3d3d transparent;
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
@@ -33,17 +33,17 @@
 }
 
 .ticker-display::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
+  background: #3d3d3d;
   border-radius: 3px;
 }
 
 .ticker-display::-webkit-scrollbar-thumb:hover {
-  background: #d1d5db;
+  background: #4d4d4d;
 }
 
 .ticker-display--error {
-  background: #fef2f2;
-  border-color: #fecaca;
+  background: #2d1a1a;
+  border-color: #dc2626;
   justify-content: center;
 }
 
@@ -67,7 +67,7 @@
 
 .ticker-display__label {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: #9ca3af;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -75,14 +75,14 @@
 
 .ticker-display__value {
   font-size: 0.875rem;
-  color: #111827;
+  color: #f9fafb;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
 .ticker-display__qty {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #6b7280;
   font-weight: 400;
 }
 
@@ -95,17 +95,17 @@
 }
 
 .ticker-display__change--rising {
-  color: #059669;
-  background: #d1fae5;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
 }
 
 .ticker-display__change--falling {
-  color: #dc2626;
-  background: #fee2e2;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .ticker-display__error {
-  color: #dc2626;
+  color: #ef4444;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -113,7 +113,7 @@
 /* Loading skeleton */
 .ticker-display__skeleton {
   height: 1.25rem;
-  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
   border-radius: 0.25rem;
