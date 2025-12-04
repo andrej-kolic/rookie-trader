@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useEffectEvent } from 'react';
 import type { PublicRestTypes } from 'ts-kraken';
 import {
   fetchOHLC,
@@ -37,19 +37,13 @@ export function useOHLC({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [lastTimestamp, setLastTimestamp] = useState<number>(0);
-  const candlesRef = useRef<Candle[]>([]);
-
-  // Keep ref in sync with state
-  useEffect(() => {
-    candlesRef.current = candles;
-  }, [candles]);
 
   /**
-   * Fetch OHLC data
-   * @param incremental - If true, use 'since' parameter for incremental update
+   * Event handler that always has access to the latest state values
+   * without causing effect re-runs when those values change
    */
-  const fetchData = useCallback(
-    async (incremental = false) => {
+  const onFetchData = useEffectEvent(
+    async (incremental: boolean): Promise<void> => {
       if (!pair) return;
 
       try {
@@ -73,7 +67,7 @@ export function useOHLC({
           throw new Error(`No candle data found for pair: ${pair}`);
         }
 
-        if (incremental && candlesRef.current.length > 0) {
+        if (incremental && candles.length > 0) {
           // Merge new data with existing candles
           setCandles((prev) => mergeCandles(prev, newCandles));
         } else {
@@ -90,7 +84,6 @@ export function useOHLC({
         setLoading(false);
       }
     },
-    [pair, interval, lastTimestamp],
   );
 
   // Initial fetch and full refetch on pair/interval change
@@ -98,8 +91,8 @@ export function useOHLC({
     // Don't clear candles immediately - keep previous data visible during load
     setLastTimestamp(0);
     setLoading(true);
-    void fetchData(false);
-  }, [pair, interval, fetchData]);
+    void onFetchData(false);
+  }, [pair, interval]);
 
   // Auto-refresh with incremental updates
   useEffect(() => {
@@ -107,17 +100,26 @@ export function useOHLC({
 
     const refreshInterval = getRefreshInterval(interval);
     const timer = setInterval(() => {
-      void fetchData(true); // Incremental update
+      void onFetchData(true); // Incremental update
     }, refreshInterval);
 
     return () => {
       clearInterval(timer);
     };
-  }, [autoRefresh, interval, pair, fetchData]);
+  }, [autoRefresh, interval, pair]);
+
+  const [shouldRefetch, setShouldRefetch] = useState(0);
+
+  // Handle manual refetch trigger
+  useEffect(() => {
+    if (shouldRefetch > 0) {
+      void onFetchData(false);
+    }
+  }, [shouldRefetch]);
 
   const refetch = useCallback(() => {
-    void fetchData(false);
-  }, [fetchData]);
+    setShouldRefetch((prev) => prev + 1);
+  }, []);
 
   return {
     candles,
