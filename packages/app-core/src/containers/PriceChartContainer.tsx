@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { PriceChart } from '@repo/ui';
 import { useOHLC } from '../hooks/use-ohlc';
 import { useTradingStore } from '../state/trading-store';
@@ -15,35 +15,28 @@ export function PriceChartContainer() {
   });
 
   // Handle interval change
-  const handleIntervalChange = (newInterval: OHLCInterval) => {
+  const handleIntervalChange = useCallback((newInterval: OHLCInterval) => {
     setInterval(newInterval);
-  };
-
-  if (!selectedPair) {
-    return (
-      <PriceChart
-        candles={[]}
-        loading={false}
-        error={null}
-        symbol=""
-        interval={interval}
-        onIntervalChange={handleIntervalChange}
-        onRefresh={refetch}
-      />
-    );
-  }
+  }, []);
 
   // Convert domain models to chart data format
-  const chartCandles = candles.map((candle) => candle.toChartData());
-  const volumeData = candles.map((candle) => candle.toVolumeData());
+  const chartCandles = useMemo(
+    () => candles.map((candle) => candle.toChartData()),
+    [candles],
+  );
+  const volumeData = useMemo(
+    () => candles.map((candle) => candle.toVolumeData()),
+    [candles],
+  );
 
+  // Always render the same component to prevent unmount/remount flickering
   return (
     <PriceChart
       candles={chartCandles}
       volumeData={volumeData}
-      loading={loading}
+      loading={loading && candles.length === 0}
       error={error?.message ?? null}
-      symbol={selectedPair.getDisplayName()}
+      symbol={selectedPair?.getDisplayName() ?? ''}
       interval={interval}
       onIntervalChange={handleIntervalChange}
       onRefresh={refetch}

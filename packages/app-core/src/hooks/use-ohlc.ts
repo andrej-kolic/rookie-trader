@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PublicRestTypes } from 'ts-kraken';
 import { fetchOHLC, type OHLCInterval } from '../services/kraken-rest-service';
 import { mapOHLCResponse, mergeCandles } from '../mappers/candle-mapper';
@@ -34,6 +34,12 @@ export function useOHLC({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [lastTimestamp, setLastTimestamp] = useState<number>(0);
+  const candlesRef = useRef<Candle[]>([]);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    candlesRef.current = candles;
+  }, [candles]);
 
   /**
    * Fetch OHLC data
@@ -64,7 +70,7 @@ export function useOHLC({
           throw new Error(`No candle data found for pair: ${pair}`);
         }
 
-        if (incremental && candles.length > 0) {
+        if (incremental && candlesRef.current.length > 0) {
           // Merge new data with existing candles
           setCandles((prev) => mergeCandles(prev, newCandles));
         } else {
@@ -81,13 +87,14 @@ export function useOHLC({
         setLoading(false);
       }
     },
-    [pair, interval, lastTimestamp, candles.length],
+    [pair, interval, lastTimestamp],
   );
 
   // Initial fetch and full refetch on pair/interval change
   useEffect(() => {
-    setCandles([]);
+    // Don't clear candles immediately - keep previous data visible during load
     setLastTimestamp(0);
+    setLoading(true);
     void fetchData(false);
   }, [pair, interval, fetchData]);
 
@@ -105,12 +112,14 @@ export function useOHLC({
     };
   }, [autoRefresh, interval, pair, fetchData]);
 
+  const refetch = useCallback(() => {
+    void fetchData(false);
+  }, [fetchData]);
+
   return {
     candles,
     loading,
     error,
-    refetch: () => {
-      void fetchData(false);
-    },
+    refetch,
   };
 }

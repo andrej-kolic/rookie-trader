@@ -14,7 +14,7 @@ import type { OrderBookLevel } from '../domain/OrderBookLevel';
  * Maps domain model to UI props
  */
 export function OrderBookDisplayContainer() {
-  const { selectedPair } = useTradingStore();
+  const selectedPair = useTradingStore((state) => state.selectedPair);
   const { orderBook, loading, error } = useOrderBook(
     selectedPair?.wsname ?? null,
     10,

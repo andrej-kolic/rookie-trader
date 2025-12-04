@@ -112,6 +112,7 @@
   flex: 1;
   position: relative;
   min-height: 0;
+  background-color: #1a1a1a; /* Ensure consistent background */
 }
 
 /* Empty state */
@@ -176,16 +177,23 @@
 }
 
 /* Loading skeleton */
-.chart-skeleton {
-  position: absolute;
-  inset: 0;
+.chart-loading-placeholder {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+}
+
+.chart-skeleton-inline {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
   gap: 8px;
-  padding: 24px;
-  background-color: #1a1a1a;
+  align-items: center;
 }
 
 .skeleton-bar {

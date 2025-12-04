@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useTradingPairs } from './use-trading-pairs';
 import { mapTradingPairs } from '../mappers/trading-pair-mapper';
 import type { TradingPair } from '../domain/TradingPair';
@@ -27,9 +27,12 @@ export function useTradingPairList(): TradingPairListState {
       .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName()));
   }, [pairsDTO]);
 
-  const getPairById = (pairId: string): TradingPair | null => {
-    return pairs.find((pair) => pair.id === pairId) ?? null;
-  };
+  const getPairById = useCallback(
+    (pairId: string): TradingPair | null => {
+      return pairs.find((pair) => pair.id === pairId) ?? null;
+    },
+    [pairs],
+  );
 
   return {
     pairs,

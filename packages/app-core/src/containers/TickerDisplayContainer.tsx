@@ -9,7 +9,7 @@ import { useTradingStore } from '../state/trading-store';
  * Maps domain model to UI props
  */
 export function TickerDisplayContainer() {
-  const { selectedPair } = useTradingStore();
+  const selectedPair = useTradingStore((state) => state.selectedPair);
   const { ticker, loading, error } = useTicker(selectedPair?.wsname ?? null);
 
   const displayProps: TickerDisplayProps = useMemo(() => {

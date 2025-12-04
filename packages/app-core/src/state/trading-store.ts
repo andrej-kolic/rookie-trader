@@ -6,9 +6,13 @@ type TradingState = {
   setSelectedPair: (pair: TradingPair | null) => void;
 };
 
-export const useTradingStore = create<TradingState>()((set) => ({
+export const useTradingStore = create<TradingState>()((set, get) => ({
   selectedPair: null,
   setSelectedPair: (pair) => {
-    set({ selectedPair: pair });
+    // Only update if the pair ID actually changed to prevent unnecessary rerenders
+    const currentPair = get().selectedPair;
+    if (currentPair?.id !== pair?.id) {
+      set({ selectedPair: pair });
+    }
   },
 }));

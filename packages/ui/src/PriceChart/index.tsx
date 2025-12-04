@@ -44,8 +44,11 @@ export function PriceChart({
   onIntervalChange,
   onRefresh,
 }: PriceChartProps) {
+  // Only initialize chart when we have data
+  const shouldRenderChart = candles.length > 0;
+
   const { chartContainerRef } = usePriceChart({
-    symbol,
+    symbol: shouldRenderChart ? symbol : '',
     candles,
     volumeData,
   });
@@ -106,12 +109,15 @@ export function PriceChart({
           )}
         </div>
       </div>
-      <div ref={chartContainerRef} className="chart-container" />
-      {loading && candles.length === 0 && (
-        <div className="chart-skeleton">
-          <div className="skeleton-bar"></div>
-          <div className="skeleton-bar"></div>
-          <div className="skeleton-bar"></div>
+      {shouldRenderChart ? (
+        <div ref={chartContainerRef} className="chart-container" />
+      ) : (
+        <div className="chart-loading-placeholder">
+          <div className="chart-skeleton-inline">
+            <div className="skeleton-bar"></div>
+            <div className="skeleton-bar"></div>
+            <div className="skeleton-bar"></div>
+          </div>
         </div>
       )}
     </div>
