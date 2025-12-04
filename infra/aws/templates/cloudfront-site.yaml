@@ -160,7 +160,7 @@ Resources:
             Override: true
             Preload: true
           ContentSecurityPolicy:
-            ContentSecurityPolicy: "default-src 'none'; img-src 'self' data:; script-src 'self'; style-src 'self'; object-src 'none'"
+            ContentSecurityPolicy: "default-src 'none'; img-src 'self' data:; script-src 'self'; style-src 'self'; object-src 'none'; connect-src 'self' https://api.kraken.com wss://ws.kraken.com wss://ws-auth.kraken.com"
             Override: true
           ContentTypeOptions:
             Override: true
