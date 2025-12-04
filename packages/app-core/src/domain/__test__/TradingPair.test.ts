@@ -160,7 +160,8 @@ describe('TradingPair', () => {
     });
 
     it('should return null when no margin requirement', () => {
-      const pair = createTestPair([
+      // Create pair without marginInitial (undefined)
+      const pair = new TradingPair(
         'ETH/USD',
         'ETH',
         'USD',
@@ -172,8 +173,9 @@ describe('TradingPair', () => {
         8,
         2,
         5,
-        false,
-      ]);
+        false, // marginable
+        undefined, // marginInitial - no value
+      );
       expect(pair.getMarginRequirement()).toBe(null);
     });
   });
