@@ -17,7 +17,12 @@ export function AppCore(_props: {
 
   return (
     <div className="AppCore">
-      <header className="AppCore__header">
+      <header className="AppCore__brand-header">
+        {/* Placeholder for logo and brand */}
+        <div className="AppCore__brand-placeholder">Logo & Brand</div>
+      </header>
+
+      <header className="AppCore__trading-header">
         <TradingHeader />
       </header>
 

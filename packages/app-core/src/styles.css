@@ -21,15 +21,32 @@ body {
 /* Main application container - full viewport grid layout */
 .AppCore {
   display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 1rem; /* Gap between header and main content */
+  grid-template-rows: auto auto 1fr; /* brand header, trading header, main content */
+  gap: 1rem; /* Gap between sections */
   height: 100vh;
   overflow: hidden;
   padding: 1rem;
 }
 
-/* Header section */
-.AppCore__header {
+/* Brand header section (logo and brand) */
+.AppCore__brand-header {
+  overflow: visible;
+  min-width: 0;
+}
+
+.AppCore__brand-placeholder {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* Trading header section (pair selector and ticker) */
+.AppCore__trading-header {
   overflow: visible;
   min-width: 0;
 }
@@ -85,7 +102,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 0 0.75rem 0.75rem 0.75rem;
+    /* padding: 0 0.75rem 0.75rem 0.75rem; */
     overflow: visible;
     flex: 1;
   }
