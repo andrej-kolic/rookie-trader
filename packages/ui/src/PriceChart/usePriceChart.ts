@@ -42,7 +42,9 @@ export function usePriceChart({
       return;
     }
 
-    const chart = createChart(chartContainerRef.current, {
+    const container = chartContainerRef.current;
+
+    const chart = createChart(container, {
       layout: {
         background: { type: ColorType.Solid, color: '#1a1a1a' },
         textColor: '#d1d5db',
@@ -51,8 +53,8 @@ export function usePriceChart({
         vertLines: { color: '#2d2d2d' },
         horzLines: { color: '#2d2d2d' },
       },
-      width: chartContainerRef.current.clientWidth,
-      height: chartContainerRef.current.clientHeight,
+      width: container.clientWidth,
+      height: container.clientHeight,
       timeScale: {
         timeVisible: true,
         secondsVisible: false,
@@ -67,6 +69,7 @@ export function usePriceChart({
           bottom: 0.25, // 25% reserved for volume at bottom
         },
       },
+      autoSize: true, // Enable auto-sizing
     });
 
     const candlestickSeries = chart.addCandlestickSeries({
@@ -99,20 +102,7 @@ export function usePriceChart({
     volumeSeriesRef.current = volumeSeries;
     initializedRef.current = true;
 
-    // Handle resize
-    const handleResize = () => {
-      if (chartContainerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-          height: chartContainerRef.current.clientHeight,
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
       chart.remove();
       initializedRef.current = false;
     };

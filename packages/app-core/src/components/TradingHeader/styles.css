@@ -1,0 +1,38 @@
+.TradingHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.TradingHeader__selector {
+  flex-shrink: 0;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.TradingHeader__ticker {
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  overflow: hidden; /* Contain the horizontal scroll */
+}
+
+/* Mobile: maintain side-by-side but allow wrapping if absolutely necessary */
+@media (max-width: 768px) {
+  .TradingHeader {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .TradingHeader__selector {
+    min-width: 150px;
+    max-width: 200px;
+  }
+}

@@ -64,23 +64,9 @@ export function TickerDisplay(props: TickerDisplayProps) {
     <div
       className={`ticker-display ${loading ? 'ticker-display--updating' : ''}`}
     >
-      <div className="ticker-display__section ticker-display__section--symbol">
-        <span className="ticker-display__label">Symbol</span>
-        <span className="ticker-display__value ticker-display__value--symbol">
-          {symbol}
-        </span>
-      </div>
-
-      <div className="ticker-display__section ticker-display__section--price">
+      <div className="ticker-display__section">
         <span className="ticker-display__label">Last</span>
-        <span className="ticker-display__value ticker-display__value--price">
-          {lastPrice ?? '—'}
-        </span>
-        {changePct && (
-          <span className={`ticker-display__change ${changeClass}`}>
-            {changePct}
-          </span>
-        )}
+        <span className="ticker-display__value">{lastPrice ?? '—'}</span>
       </div>
 
       <div className="ticker-display__section">
@@ -113,6 +99,17 @@ export function TickerDisplay(props: TickerDisplayProps) {
         <span className="ticker-display__label">24h Volume</span>
         <span className="ticker-display__value">{volume24h ?? '—'}</span>
       </div>
+
+      {changePct && (
+        <div className="ticker-display__section">
+          <span className="ticker-display__label">24h Change</span>
+          <span
+            className={`ticker-display__value ticker-display__change ${changeClass}`}
+          >
+            {changePct}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

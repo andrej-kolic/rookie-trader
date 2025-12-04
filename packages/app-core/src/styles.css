@@ -1,45 +1,98 @@
+/* Universal box-sizing */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 body {
   /* image should be in src/assets folder, but this is to test css url transform */
   background-image: url('./assets/bg-pattern.webp');
   background-size: cover;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent body scroll on desktop */
 }
 
+/* Main application container - full viewport grid layout */
 .AppCore {
-  border: 2px dashed rgba(255, 255, 255, 0.5);
-  padding: 20px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem; /* Gap between header and main content */
+  height: 100vh;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+/* Header section */
+.AppCore__header {
+  overflow: visible;
+  min-width: 0;
+}
+
+/* Main content area - contains orderbook and chart */
+.AppCore__main {
+  display: grid;
+  grid-template-columns: minmax(0, 35%) minmax(0, 65%); /* OrderBook 35%, Chart 65% */
+  gap: 1rem;
+  overflow: hidden;
+  min-height: 0; /* Important for grid items to respect overflow */
+}
+
+/* OrderBook container */
+.AppCore__orderbook {
+  grid-column: 1;
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
-/* Market data layout: OrderBook (40%) | PriceChart (60%) */
-.market-data-layout {
+/* Chart container */
+.AppCore__chart {
+  grid-column: 2;
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
   display: flex;
-  gap: 20px;
-  height: 600px; /* Changed from min-height to height */
+  flex-direction: column;
 }
 
-.market-data-layout > :first-child {
-  flex: 0 0 40%;
-  min-width: 0;
-  height: 100%; /* Ensure children fill height */
-}
-
-.market-data-layout > :last-child {
-  flex: 1;
-  min-width: 0;
-  height: 100%; /* Ensure children fill height */
-}
-
-/* Responsive: stack vertically on mobile */
-@media (max-width: 1024px) {
-  .market-data-layout {
-    flex-direction: column;
+/* Mobile layout: vertical stack with scroll */
+@media (max-width: 768px) {
+  body {
+    overflow: auto; /* Allow scroll on mobile */
   }
 
-  .market-data-layout > :first-child,
-  .market-data-layout > :last-child {
-    flex: none;
-    width: 100%;
+  .AppCore {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .AppCore__header {
+    padding: 0.75rem;
+  }
+
+  .AppCore__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 0.75rem 0.75rem 0.75rem;
+    overflow: visible;
+    flex: 1;
+  }
+
+  .AppCore__orderbook,
+  .AppCore__chart {
+    overflow: visible;
+    min-height: 400px; /* Ensure reasonable height on mobile */
   }
 }

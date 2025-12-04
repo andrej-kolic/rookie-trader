@@ -41,22 +41,22 @@ export function TradingPairSelectorContainer() {
     [getPairById, setSelectedPair],
   );
 
-  const renderDetails = useCallback(
-    (pairId: string): SelectorDetails | null => {
-      const pair = getPairById(pairId);
-      if (!pair) return null;
+  // const renderDetails = useCallback(
+  //   (pairId: string): SelectorDetails | null => {
+  //     const pair = getPairById(pairId);
+  //     if (!pair) return null;
 
-      return {
-        title: pair.getDisplayName(),
-        fields: [
-          { label: 'Base', value: pair.base },
-          { label: 'Quote', value: pair.quote },
-          { label: 'Status', value: pair.status },
-        ],
-      };
-    },
-    [getPairById],
-  );
+  //     return {
+  //       title: pair.getDisplayName(),
+  //       fields: [
+  //         { label: 'Base', value: pair.base },
+  //         { label: 'Quote', value: pair.quote },
+  //         { label: 'Status', value: pair.status },
+  //       ],
+  //     };
+  //   },
+  //   [getPairById],
+  // );
 
   return (
     <ItemSelector
@@ -66,8 +66,8 @@ export function TradingPairSelectorContainer() {
       loading={loading}
       error={error?.message}
       placeholder="Select a trading pair..."
-      label="Trading Pair"
-      renderDetails={renderDetails}
+      // label="Trading Pair"
+      // renderDetails={renderDetails}
     />
   );
 }

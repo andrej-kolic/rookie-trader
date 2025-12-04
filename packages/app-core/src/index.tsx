@@ -1,7 +1,6 @@
 import React from 'react';
 import { debugLog } from './utils/debug';
-import { TradingPairSelectorContainer } from './containers/TradingPairSelectorContainer';
-import { TickerDisplayContainer } from './containers/TickerDisplayContainer';
+import { TradingHeader } from './components/TradingHeader';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
 import { PriceChartContainer } from './containers/PriceChartContainer';
 
@@ -18,14 +17,18 @@ export function AppCore(_props: {
 
   return (
     <div className="AppCore">
-      <TradingPairSelectorContainer />
+      <header className="AppCore__header">
+        <TradingHeader />
+      </header>
 
-      <TickerDisplayContainer />
-
-      <div className="market-data-layout">
-        <OrderBookDisplayContainer />
-        <PriceChartContainer />
-      </div>
+      <main className="AppCore__main">
+        <div className="AppCore__orderbook">
+          <OrderBookDisplayContainer />
+        </div>
+        <div className="AppCore__chart">
+          <PriceChartContainer />
+        </div>
+      </main>
     </div>
   );
 }

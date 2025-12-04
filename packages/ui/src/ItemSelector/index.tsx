@@ -18,7 +18,7 @@ export type ItemSelectorProps = {
   loading?: boolean;
   error?: string | null;
   placeholder?: string;
-  label?: string;
+  label?: string; // TODO: remove label
   renderDetails?: (itemId: string) => SelectorDetails | null;
 };
 
@@ -29,21 +29,17 @@ export function ItemSelector({
   loading = false,
   error = null,
   placeholder = 'Select an item...',
-  label = 'Item',
+  label,
   renderDetails,
 }: ItemSelectorProps) {
   if (loading) {
-    return (
-      <div className="ItemSelector ItemSelector--loading">
-        Loading {label.toLowerCase()}s...
-      </div>
-    );
+    return <div className="ItemSelector ItemSelector--loading">Loading...</div>;
   }
 
   if (error) {
     return (
       <div className="ItemSelector ItemSelector--error">
-        <strong>Error loading {label.toLowerCase()}s:</strong> {error}
+        <strong>Error:</strong> {error}
       </div>
     );
   }
@@ -57,9 +53,11 @@ export function ItemSelector({
 
   return (
     <div className="ItemSelector">
-      <label htmlFor="item-select" className="ItemSelector__label">
-        {label}:
-      </label>
+      {label && (
+        <label htmlFor="item-select" className="ItemSelector__label">
+          {label}:
+        </label>
+      )}
       <select
         id="item-select"
         className="ItemSelector__select"
@@ -70,7 +68,7 @@ export function ItemSelector({
         {items.map((item) => (
           <option key={item.id} value={item.id}>
             {item.label}
-            {item.sublabel ? ` (${item.sublabel})` : ''}
+            {/* {item.sublabel ? ` (${item.sublabel})` : ''} */}
           </option>
         ))}
       </select>
