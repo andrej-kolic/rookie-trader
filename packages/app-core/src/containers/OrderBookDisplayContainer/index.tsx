@@ -16,7 +16,7 @@ import type { OrderBookLevel } from '../../domain/OrderBookLevel';
 export function OrderBookDisplayContainer() {
   const selectedPair = useTradingStore((state) => state.selectedPair);
   const { orderBook, loading, error } = useOrderBook(
-    selectedPair?.wsname ?? null,
+    selectedPair?.symbol ?? null,
     10,
   );
 
@@ -74,8 +74,8 @@ export function OrderBookDisplayContainer() {
           mapLevelToProps(
             bid,
             maxBidTotal,
-            selectedPair.pairDecimals,
-            selectedPair.lotDecimals,
+            selectedPair.pricePrecision,
+            selectedPair.qtyPrecision,
           ),
         ),
       asks: orderBook
@@ -84,11 +84,11 @@ export function OrderBookDisplayContainer() {
           mapLevelToProps(
             ask,
             maxAskTotal,
-            selectedPair.pairDecimals,
-            selectedPair.lotDecimals,
+            selectedPair.pricePrecision,
+            selectedPair.qtyPrecision,
           ),
         ),
-      spread: orderBook.formatSpread(selectedPair.pairDecimals),
+      spread: orderBook.formatSpread(selectedPair.pricePrecision),
       spreadPct: orderBook.formatSpreadPercentage(),
       loading: false,
     };

@@ -21,12 +21,12 @@ export type OrderBookState = {
  * Handles snapshot (initial) and incremental update messages
  * Auto-retries on error
  *
- * @param wsname Trading pair WebSocket name (e.g., "XBT/USD") or null
+ * @param symbol Trading pair symbol (e.g., "BTC/USD") or null
  * @param depth Number of price levels to subscribe to (10, 25, 100, 500, 1000)
  * @returns Order book state with loading and error handling
  */
 export function useOrderBook(
-  wsname: string | null,
+  symbol: string | null,
   depth: 10 | 25 | 100 | 500 | 1000 = 10,
 ): OrderBookState {
   const [orderBook, setOrderBook] = useState<OrderBook | null>(null);
@@ -34,7 +34,7 @@ export function useOrderBook(
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!wsname) {
+    if (!symbol) {
       return;
     }
 
@@ -48,7 +48,7 @@ export function useOrderBook(
     let subscription: Subscription | null = null;
 
     const subscribe = () => {
-      subscription = subscribeToOrderBook([wsname], depth).subscribe({
+      subscription = subscribeToOrderBook([symbol], depth).subscribe({
         next: (update) => {
           const bookData = update.data[0];
 
@@ -93,7 +93,7 @@ export function useOrderBook(
         clearTimeout(retryTimeout);
       }
     };
-  }, [wsname, depth]);
+  }, [symbol, depth]);
 
   return { orderBook, loading, error };
 }

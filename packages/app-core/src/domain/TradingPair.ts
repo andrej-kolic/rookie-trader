@@ -1,39 +1,41 @@
 /**
  * Trading Pair Domain Model
- * Represents a tradable asset pair with all Kraken-specific information and business logic
+ * Represents a tradable asset pair from Kraken WebSocket instrument channel
  */
 export class TradingPair {
   constructor(
-    public readonly id: string,
-    public readonly altname: string,
-    public readonly wsname: string,
-    public readonly aclassBase: string,
-    public readonly base: string,
-    public readonly aclassQuote: string,
-    public readonly quote: string,
-    public readonly pairDecimals: number,
-    public readonly costDecimals: number,
-    public readonly lotDecimals: number,
-    public readonly lotMultiplier: number,
-    public readonly leverageBuy: number[],
-    public readonly leverageSell: number[],
-    public readonly fees: [number, number][],
-    public readonly feesMaker: [number, number][],
-    public readonly feeVolumeCurrency: string,
-    public readonly marginCall: number,
-    public readonly marginStop: number,
-    public readonly ordermin: string,
-    public readonly costmin: string,
-    public readonly tickSize: string,
+    public readonly symbol: string, // WebSocket v2 symbol (e.g., "BTC/USD")
+    public readonly base: string, // Base currency (e.g., "BTC")
+    public readonly quote: string, // Quote currency (e.g., "USD")
     public readonly status:
       | 'online'
       | 'cancel_only'
       | 'post_only'
       | 'limit_only'
-      | 'reduce_only',
-    public readonly longPositionLimit: number,
-    public readonly shortPositionLimit: number,
+      | 'reduce_only'
+      | 'delisted'
+      | 'maintenance'
+      | 'work_in_progress',
+    public readonly qtyMin: number, // Minimum order quantity
+    public readonly costMin: number, // Minimum order cost
+    public readonly qtyIncrement: number, // Quantity increment
+    public readonly priceIncrement: number, // Price increment (tick size)
+    public readonly qtyPrecision: number, // Quantity precision decimals
+    public readonly pricePrecision: number, // Price precision decimals
+    public readonly costPrecision: number, // Cost precision decimals
+    public readonly marginable: boolean, // Can trade on margin
+    public readonly marginInitial?: number, // Initial margin requirement (%)
+    public readonly longPositionLimit?: number, // Long position limit
+    public readonly shortPositionLimit?: number, // Short position limit
+    public readonly hasIndex?: boolean, // Has index for stop-loss triggers
   ) {}
+
+  /**
+   * Get unique identifier for the pair (same as symbol)
+   */
+  get id(): string {
+    return this.symbol;
+  }
 
   /**
    * Check if the pair is available for trading
@@ -67,17 +69,10 @@ export class TradingPair {
    * Validate order size against minimum requirements
    */
   validateOrderSize(volume: number): { valid: boolean; error?: string } {
-    const minOrder = parseFloat(this.ordermin);
-    if (isNaN(minOrder)) {
+    if (volume < this.qtyMin) {
       return {
         valid: false,
-        error: 'Invalid minimum order size configuration',
-      };
-    }
-    if (volume < minOrder) {
-      return {
-        valid: false,
-        error: `Minimum order size is ${this.ordermin} ${this.base}`,
+        error: `Minimum order size is ${this.qtyMin} ${this.base}`,
       };
     }
     return { valid: true };
@@ -87,106 +82,61 @@ export class TradingPair {
    * Validate order cost against minimum requirements
    */
   validateOrderCost(cost: number): { valid: boolean; error?: string } {
-    const minCost = parseFloat(this.costmin);
-    if (isNaN(minCost)) {
-      return { valid: false, error: 'Invalid minimum cost configuration' };
-    }
-    if (cost < minCost) {
+    if (cost < this.costMin) {
       return {
         valid: false,
-        error: `Minimum order cost is ${this.costmin} ${this.quote}`,
+        error: `Minimum order cost is ${this.costMin} ${this.quote}`,
       };
     }
     return { valid: true };
   }
 
   /**
-   * Format price according to pair decimals
+   * Format price according to pair precision
    */
   formatPrice(price: number): string {
-    return price.toFixed(this.pairDecimals);
+    return price.toFixed(this.pricePrecision);
   }
 
   /**
-   * Format volume according to lot decimals
+   * Format volume according to quantity precision
    */
   formatVolume(volume: number): string {
-    return volume.toFixed(this.lotDecimals);
+    return volume.toFixed(this.qtyPrecision);
   }
 
   /**
-   * Calculate trading fee for a given volume
-   * @param volume Trading volume in base currency
-   * @param isMaker Whether this is a maker order (true) or taker order (false)
-   * @returns Fee percentage as decimal (e.g., 0.0026 for 0.26%)
+   * Format cost according to cost precision
    */
-  calculateFeeRate(volume: number, isMaker = false): number {
-    const feeSchedule = isMaker ? this.feesMaker : this.fees;
-
-    // Find the appropriate fee tier based on volume
-    // Fee schedule is ordered by volume thresholds
-    for (let i = feeSchedule.length - 1; i >= 0; i--) {
-      const tier = feeSchedule[i];
-      if (tier) {
-        const [threshold, feeRate] = tier;
-        if (volume >= threshold) {
-          return feeRate / 100; // Convert percentage to decimal
-        }
-      }
-    }
-
-    // If volume is below all thresholds, use the first tier
-    return feeSchedule[0]?.[1] ? feeSchedule[0][1] / 100 : 0;
+  formatCost(cost: number): string {
+    return cost.toFixed(this.costPrecision);
   }
 
   /**
-   * Calculate actual fee amount for a trade
-   */
-  calculateFeeAmount(volume: number, price: number, isMaker = false): number {
-    const feeRate = this.calculateFeeRate(volume, isMaker);
-    const tradeValue = volume * price;
-    return tradeValue * feeRate;
-  }
-
-  /**
-   * Get display name for the pair (uses wsname as primary)
+   * Get display name for the pair
    */
   getDisplayName(): string {
-    return this.wsname || this.altname;
+    return this.symbol;
   }
 
   /**
-   * Get pair symbol in standard format (BASE/QUOTE)
+   * Get pair symbol (alias for display)
    */
   getSymbol(): string {
-    return `${this.base}/${this.quote}`;
+    return this.symbol;
   }
 
   /**
-   * Check if leverage is available for buying
+   * Check if margin trading is available
    */
-  hasLeverageBuy(): boolean {
-    return this.leverageBuy.length > 0;
+  hasMargin(): boolean {
+    return this.marginable;
   }
 
   /**
-   * Check if leverage is available for selling
+   * Get initial margin requirement as percentage
    */
-  hasLeverageSell(): boolean {
-    return this.leverageSell.length > 0;
-  }
-
-  /**
-   * Get maximum leverage for buying
-   */
-  getMaxLeverageBuy(): number {
-    return this.leverageBuy.length > 0 ? Math.max(...this.leverageBuy) : 1;
-  }
-
-  /**
-   * Get maximum leverage for selling
-   */
-  getMaxLeverageSell(): number {
-    return this.leverageSell.length > 0 ? Math.max(...this.leverageSell) : 1;
+  getMarginRequirement(): number | null {
+    return this.marginInitial ?? null;
   }
 }

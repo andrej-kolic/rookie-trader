@@ -10,7 +10,7 @@ import { useTradingStore } from '../../state/trading-store';
  */
 export function TickerDisplayContainer() {
   const selectedPair = useTradingStore((state) => state.selectedPair);
-  const { ticker, loading, error } = useTicker(selectedPair?.wsname ?? null);
+  const { ticker, loading, error } = useTicker(selectedPair?.symbol ?? null);
 
   const displayProps: TickerDisplayProps = useMemo(() => {
     // No pair selected
@@ -45,17 +45,17 @@ export function TickerDisplayContainer() {
       };
     }
 
-    // Map domain model to UI props using TradingPair decimals for formatting
+    // Map domain model to UI props using TradingPair precision for formatting
     return {
       symbol: ticker.symbol,
-      lastPrice: ticker.formatPrice(selectedPair.pairDecimals),
-      bid: ticker.formatBid(selectedPair.pairDecimals),
-      bidQty: ticker.formatBidQty(selectedPair.lotDecimals),
-      ask: ticker.formatAsk(selectedPair.pairDecimals),
-      askQty: ticker.formatAskQty(selectedPair.lotDecimals),
-      high24h: ticker.formatHigh24h(selectedPair.pairDecimals),
-      low24h: ticker.formatLow24h(selectedPair.pairDecimals),
-      volume24h: ticker.formatVolume(selectedPair.lotDecimals),
+      lastPrice: ticker.formatPrice(selectedPair.pricePrecision),
+      bid: ticker.formatBid(selectedPair.pricePrecision),
+      bidQty: ticker.formatBidQty(selectedPair.qtyPrecision),
+      ask: ticker.formatAsk(selectedPair.pricePrecision),
+      askQty: ticker.formatAskQty(selectedPair.qtyPrecision),
+      high24h: ticker.formatHigh24h(selectedPair.pricePrecision),
+      low24h: ticker.formatLow24h(selectedPair.pricePrecision),
+      volume24h: ticker.formatVolume(selectedPair.qtyPrecision),
       changePct: ticker.formatChangePct(),
       isPriceRising: ticker.isPriceRising(),
       loading: loading,

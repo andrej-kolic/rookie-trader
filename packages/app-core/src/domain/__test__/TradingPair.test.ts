@@ -5,38 +5,22 @@ describe('TradingPair', () => {
     overrides?: Partial<ConstructorParameters<typeof TradingPair>>,
   ) => {
     const defaults: ConstructorParameters<typeof TradingPair> = [
-      'XXBTZUSD',
-      'XBTUSD',
-      'XBT/USD',
-      'currency',
-      'XXBT',
-      'currency',
-      'ZUSD',
-      1,
-      5,
-      8,
-      1,
-      [2, 3, 4, 5],
-      [2, 3, 4, 5],
-      [
-        [0, 0.26],
-        [50000, 0.24],
-        [100000, 0.22],
-      ],
-      [
-        [0, 0.16],
-        [50000, 0.14],
-        [100000, 0.12],
-      ],
-      'ZUSD',
-      80,
-      40,
-      '0.0001',
-      '0.5',
-      '0.1',
-      'online',
-      250,
-      200,
+      'BTC/USD', // symbol
+      'BTC', // base
+      'USD', // quote
+      'online', // status
+      0.00005, // qtyMin
+      0.5, // costMin
+      0.00000001, // qtyIncrement
+      0.1, // priceIncrement
+      8, // qtyPrecision
+      1, // pricePrecision
+      5, // costPrecision
+      true, // marginable
+      0.02, // marginInitial
+      300, // longPositionLimit
+      240, // shortPositionLimit
+      true, // hasIndex
     ];
 
     if (overrides) {
@@ -57,30 +41,7 @@ describe('TradingPair', () => {
     });
 
     it('should return false for cancel_only status', () => {
-      const pair = createTestPair([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        'cancel_only',
-      ]);
+      const pair = createTestPair(['BTC/USD', 'BTC', 'USD', 'cancel_only']);
       expect(pair.isTradeable()).toBe(false);
     });
   });
@@ -92,30 +53,7 @@ describe('TradingPair', () => {
     });
 
     it('should return false for limit_only status', () => {
-      const pair = createTestPair([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        'limit_only',
-      ]);
+      const pair = createTestPair(['BTC/USD', 'BTC', 'USD', 'limit_only']);
       expect(pair.isMarketOrderAllowed()).toBe(false);
     });
   });
@@ -127,155 +65,116 @@ describe('TradingPair', () => {
     });
 
     it('should return false for reduce_only status', () => {
-      const pair = createTestPair([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        'reduce_only',
-      ]);
+      const pair = createTestPair(['BTC/USD', 'BTC', 'USD', 'reduce_only']);
       expect(pair.canOpenPosition()).toBe(false);
     });
   });
 
-  describe('validateOrderSize', () => {
-    it('should validate volume against minimum order size', () => {
+  describe('isCancelOnly', () => {
+    it('should return false for online status', () => {
       const pair = createTestPair();
+      expect(pair.isCancelOnly()).toBe(false);
+    });
 
-      expect(pair.validateOrderSize(0.001)).toEqual({
-        valid: true,
-      });
+    it('should return true for cancel_only status', () => {
+      const pair = createTestPair(['BTC/USD', 'BTC', 'USD', 'cancel_only']);
+      expect(pair.isCancelOnly()).toBe(true);
+    });
+  });
 
-      expect(pair.validateOrderSize(0.00005)).toEqual({
-        valid: false,
-        error: 'Minimum order size is 0.0001 XXBT',
-      });
+  describe('validateOrderSize', () => {
+    it('should pass validation for valid volume', () => {
+      const pair = createTestPair();
+      const result = pair.validateOrderSize(0.001);
+      expect(result.valid).toBe(true);
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should fail validation for volume below minimum', () => {
+      const pair = createTestPair();
+      const result = pair.validateOrderSize(0.00001);
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('Minimum order size');
     });
   });
 
   describe('validateOrderCost', () => {
-    it('should validate cost against minimum order cost', () => {
+    it('should pass validation for valid cost', () => {
       const pair = createTestPair();
+      const result = pair.validateOrderCost(10);
+      expect(result.valid).toBe(true);
+      expect(result.error).toBeUndefined();
+    });
 
-      expect(pair.validateOrderCost(1)).toEqual({
-        valid: true,
-      });
-
-      expect(pair.validateOrderCost(0.1)).toEqual({
-        valid: false,
-        error: 'Minimum order cost is 0.5 ZUSD',
-      });
+    it('should fail validation for cost below minimum', () => {
+      const pair = createTestPair();
+      const result = pair.validateOrderCost(0.1);
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('Minimum order cost');
     });
   });
 
-  describe('formatPrice', () => {
-    it('should format price according to pair decimals', () => {
+  describe('formatting methods', () => {
+    it('should format price with correct precision', () => {
       const pair = createTestPair();
-      expect(pair.formatPrice(45123.456789)).toBe('45123.5');
+      expect(pair.formatPrice(12345.6789)).toBe('12345.7');
+    });
+
+    it('should format volume with correct precision', () => {
+      const pair = createTestPair();
+      expect(pair.formatVolume(1.23456789)).toBe('1.23456789');
+    });
+
+    it('should format cost with correct precision', () => {
+      const pair = createTestPair();
+      expect(pair.formatCost(123.456789)).toBe('123.45679');
     });
   });
 
-  describe('formatVolume', () => {
-    it('should format volume according to lot decimals', () => {
+  describe('display methods', () => {
+    it('should return symbol as display name', () => {
       const pair = createTestPair();
-      expect(pair.formatVolume(1.123456789)).toBe('1.12345679');
+      expect(pair.getDisplayName()).toBe('BTC/USD');
+    });
+
+    it('should return symbol from getSymbol', () => {
+      const pair = createTestPair();
+      expect(pair.getSymbol()).toBe('BTC/USD');
+    });
+
+    it('should return symbol as id', () => {
+      const pair = createTestPair();
+      expect(pair.id).toBe('BTC/USD');
     });
   });
 
-  describe('calculateFeeRate', () => {
-    it('should return correct fee rate for taker orders', () => {
+  describe('margin methods', () => {
+    it('should check if margin is available', () => {
       const pair = createTestPair();
-
-      expect(pair.calculateFeeRate(1000, false)).toBe(0.0026); // 0.26%
-      expect(pair.calculateFeeRate(60000, false)).toBe(0.0024); // 0.24%
-      expect(pair.calculateFeeRate(150000, false)).toBe(0.0022); // 0.22%
+      expect(pair.hasMargin()).toBe(true);
     });
 
-    it('should return correct fee rate for maker orders', () => {
+    it('should return margin requirement', () => {
       const pair = createTestPair();
-
-      expect(pair.calculateFeeRate(1000, true)).toBeCloseTo(0.0016, 4); // 0.16%
-      expect(pair.calculateFeeRate(60000, true)).toBeCloseTo(0.0014, 4); // 0.14%
-      expect(pair.calculateFeeRate(150000, true)).toBeCloseTo(0.0012, 4); // 0.12%
-    });
-  });
-
-  describe('calculateFeeAmount', () => {
-    it('should calculate fee amount correctly', () => {
-      const pair = createTestPair();
-
-      const volume = 1; // 1 BTC
-      const price = 45000; // $45,000
-      const feeAmount = pair.calculateFeeAmount(volume, price, false);
-
-      expect(feeAmount).toBe(117); // 45000 * 0.0026 = 117
-    });
-  });
-
-  describe('getDisplayName', () => {
-    it('should return wsname as primary display name', () => {
-      const pair = createTestPair();
-      expect(pair.getDisplayName()).toBe('XBT/USD');
-    });
-  });
-
-  describe('getSymbol', () => {
-    it('should return formatted symbol', () => {
-      const pair = createTestPair();
-      expect(pair.getSymbol()).toBe('XXBT/ZUSD');
-    });
-  });
-
-  describe('leverage', () => {
-    it('should check leverage availability', () => {
-      const pair = createTestPair();
-      expect(pair.hasLeverageBuy()).toBe(true);
-      expect(pair.hasLeverageSell()).toBe(true);
+      expect(pair.getMarginRequirement()).toBe(0.02);
     });
 
-    it('should return max leverage', () => {
-      const pair = createTestPair();
-      expect(pair.getMaxLeverageBuy()).toBe(5);
-      expect(pair.getMaxLeverageSell()).toBe(5);
-    });
-
-    it('should handle no leverage', () => {
+    it('should return null when no margin requirement', () => {
       const pair = createTestPair([
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        [],
-        [],
+        'ETH/USD',
+        'ETH',
+        'USD',
+        'online',
+        0.001,
+        1,
+        0.001,
+        0.01,
+        8,
+        2,
+        5,
+        false,
       ]);
-      expect(pair.hasLeverageBuy()).toBe(false);
-      expect(pair.hasLeverageSell()).toBe(false);
-      expect(pair.getMaxLeverageBuy()).toBe(1);
-      expect(pair.getMaxLeverageSell()).toBe(1);
+      expect(pair.getMarginRequirement()).toBe(null);
     });
   });
 });

@@ -17,16 +17,16 @@ export type TickerState = {
  * Automatically manages WebSocket subscription lifecycle
  * Auto-retries on error, keeps last ticker while loading new pair
  *
- * @param wsname Trading pair WebSocket name (e.g., "XBT/USD") or null
+ * @param symbol Trading pair symbol (e.g., "BTC/USD") or null
  * @returns Ticker state with loading and error handling
  */
-export function useTicker(wsname: string | null): TickerState {
+export function useTicker(symbol: string | null): TickerState {
   const [ticker, setTicker] = useState<Ticker | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!wsname) {
+    if (!symbol) {
       return;
     }
 
@@ -40,7 +40,7 @@ export function useTicker(wsname: string | null): TickerState {
     let subscription: Subscription | null = null;
 
     const subscribe = () => {
-      subscription = subscribeToTicker([wsname]).subscribe({
+      subscription = subscribeToTicker([symbol]).subscribe({
         next: (update) => {
           const tickerData = update.data[0];
 
@@ -76,7 +76,7 @@ export function useTicker(wsname: string | null): TickerState {
         clearTimeout(retryTimeout);
       }
     };
-  }, [wsname]);
+  }, [symbol]);
 
   return { ticker, loading, error };
 }
