@@ -112,7 +112,7 @@
 .chart-container {
   flex: 1;
   position: relative;
-  min-height: 0;
+  min-height: 300px; /* Ensure minimum height for mobile/initial render */
   width: 100%;
   max-width: 100%;
   overflow: hidden;

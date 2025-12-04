@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import {
   OrderBookDisplay,
   type OrderBookDisplayProps,
@@ -19,6 +19,34 @@ export function OrderBookDisplayContainer() {
     selectedPair?.symbol ?? null,
     10,
   );
+
+  // Memoize the mapper function to prevent recreating it on every render
+  const mapLevel = useCallback(
+    (level: OrderBookLevel, maxTotal: number): OrderBookLevelProps => ({
+      price: level.formatPrice(selectedPair?.pricePrecision ?? 2),
+      quantity: level.formatQuantity(selectedPair?.qtyPrecision ?? 8),
+      total: level.formatTotal(selectedPair?.qtyPrecision ?? 8),
+      depthPercentage: maxTotal > 0 ? (level.total / maxTotal) * 100 : 0,
+    }),
+    [selectedPair?.pricePrecision, selectedPair?.qtyPrecision],
+  );
+
+  // Memoize bids array separately
+  const bids = useMemo(() => {
+    if (!orderBook || !selectedPair) return [];
+    const maxBidTotal = orderBook.bids[orderBook.bids.length - 1]?.total ?? 1;
+    return orderBook.getBidDepth(10).map((bid) => mapLevel(bid, maxBidTotal));
+  }, [orderBook, selectedPair, mapLevel]);
+
+  // Memoize asks array separately (reversed for display)
+  const asks = useMemo(() => {
+    if (!orderBook || !selectedPair) return [];
+    const maxAskTotal = orderBook.asks[orderBook.asks.length - 1]?.total ?? 1;
+    return orderBook
+      .getAskDepth(10)
+      .map((ask) => mapLevel(ask, maxAskTotal))
+      .reverse();
+  }, [orderBook, selectedPair, mapLevel]);
 
   const displayProps: OrderBookDisplayProps = useMemo(() => {
     // No pair selected
@@ -61,55 +89,16 @@ export function OrderBookDisplayContainer() {
       };
     }
 
-    // Calculate max total for depth percentage
-    const maxBidTotal = orderBook.bids[orderBook.bids.length - 1]?.total ?? 1;
-    const maxAskTotal = orderBook.asks[orderBook.asks.length - 1]?.total ?? 1;
-
-    // Map domain model to UI props
+    // Use memoized arrays
     return {
       symbol: orderBook.symbol,
-      bids: orderBook
-        .getBidDepth(10)
-        .map((bid) =>
-          mapLevelToProps(
-            bid,
-            maxBidTotal,
-            selectedPair.pricePrecision,
-            selectedPair.qtyPrecision,
-          ),
-        ),
-      asks: orderBook
-        .getAskDepth(10)
-        .map((ask) =>
-          mapLevelToProps(
-            ask,
-            maxAskTotal,
-            selectedPair.pricePrecision,
-            selectedPair.qtyPrecision,
-          ),
-        ),
+      bids,
+      asks,
       spread: orderBook.formatSpread(selectedPair.pricePrecision),
       spreadPct: orderBook.formatSpreadPercentage(),
       loading: false,
     };
-  }, [orderBook, selectedPair, loading, error]);
+  }, [orderBook, selectedPair, loading, error, bids, asks]);
 
   return <OrderBookDisplay {...displayProps} />;
-}
-
-/**
- * Maps OrderBookLevel domain model to OrderBookLevelProps for UI
- */
-function mapLevelToProps(
-  level: OrderBookLevel,
-  maxTotal: number,
-  priceDecimals: number,
-  qtyDecimals: number,
-): OrderBookLevelProps {
-  return {
-    price: level.formatPrice(priceDecimals),
-    quantity: level.formatQuantity(qtyDecimals),
-    total: level.formatTotal(qtyDecimals),
-    depthPercentage: maxTotal > 0 ? (level.total / maxTotal) * 100 : 0,
-  };
 }

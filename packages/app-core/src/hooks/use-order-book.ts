@@ -39,18 +39,27 @@ export function useOrderBook(
       return;
     }
 
+    let isMounted = true;
+    let retryTimeout: NodeJS.Timeout | null = null;
+    let subscription: Subscription | null = null;
+
     // WebSocket subscription legitimately requires setting loading state
     // This syncs React state with external WebSocket system
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
 
-    let retryTimeout: NodeJS.Timeout | null = null;
-    let subscription: Subscription | null = null;
-
     const subscribe = () => {
+      // Clean up previous subscription before creating new one
+      if (subscription) {
+        subscription.unsubscribe();
+        subscription = null;
+      }
+
       subscription = subscribeToOrderBook([symbol], depth).subscribe({
         next: (update) => {
+          if (!isMounted) return;
+
           const bookData = update.data[0];
 
           if (update.type === 'snapshot') {
@@ -71,11 +80,15 @@ export function useOrderBook(
           }
         },
         error: (err) => {
+          if (!isMounted) return;
+
           setLoading(false);
           setError(toError(err));
 
           // Auto-retry after delay
           retryTimeout = setTimeout(() => {
+            if (!isMounted) return;
+
             setLoading(true);
             setError(null);
             subscribe();
@@ -87,11 +100,14 @@ export function useOrderBook(
     subscribe();
 
     return () => {
+      isMounted = false;
       if (subscription) {
         subscription.unsubscribe();
+        subscription = null;
       }
       if (retryTimeout) {
         clearTimeout(retryTimeout);
+        retryTimeout = null;
       }
     };
   }, [symbol, depth]);

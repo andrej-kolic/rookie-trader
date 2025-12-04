@@ -39,9 +39,15 @@ export function usePriceChart({
   // Initialize chart when symbol becomes available
   useEffect(() => {
     if (!chartContainerRef.current || initializedRef.current || !symbol) {
+      console.log('[PriceChart] Skipping init:', {
+        hasContainer: !!chartContainerRef.current,
+        initialized: initializedRef.current,
+        hasSymbol: !!symbol,
+      });
       return;
     }
 
+    console.log('[PriceChart] Initializing chart for symbol:', symbol);
     const container = chartContainerRef.current;
 
     const chart = createChart(container, {
@@ -102,7 +108,10 @@ export function usePriceChart({
     volumeSeriesRef.current = volumeSeries;
     initializedRef.current = true;
 
+    console.log('[PriceChart] Chart initialized successfully');
+
     return () => {
+      console.log('[PriceChart] Removing chart');
       chart.remove();
       initializedRef.current = false;
     };
@@ -110,9 +119,17 @@ export function usePriceChart({
 
   // Update chart data when candles change
   useEffect(() => {
-    if (!candlestickSeriesRef.current || !volumeSeriesRef.current) return;
+    if (!candlestickSeriesRef.current || !volumeSeriesRef.current) {
+      console.log('[PriceChart] Skipping data update, series not ready');
+      return;
+    }
 
     if (candles.length > 0) {
+      console.log(
+        '[PriceChart] Updating chart with',
+        candles.length,
+        'candles',
+      );
       const chartData: CandlestickData[] = candles.map((c) => ({
         time: c.time as Time,
         open: c.open,

@@ -31,18 +31,27 @@ export function useTicker(symbol: string | null): TickerState {
       return;
     }
 
+    let isMounted = true;
+    let retryTimeout: NodeJS.Timeout | null = null;
+    let subscription: Subscription | null = null;
+
     // WebSocket subscription legitimately requires setting loading state
     // This syncs React state with external WebSocket system
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
 
-    let retryTimeout: NodeJS.Timeout | null = null;
-    let subscription: Subscription | null = null;
-
     const subscribe = () => {
+      // Clean up previous subscription before creating new one
+      if (subscription) {
+        subscription.unsubscribe();
+        subscription = null;
+      }
+
       subscription = subscribeToTicker([symbol]).subscribe({
         next: (update) => {
+          if (!isMounted) return;
+
           const tickerData = update.data[0];
 
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -54,11 +63,15 @@ export function useTicker(symbol: string | null): TickerState {
           setError(null);
         },
         error: (err) => {
+          if (!isMounted) return;
+
           setLoading(false);
           setError(toError(err));
 
           // Auto-retry after 5 seconds
           retryTimeout = setTimeout(() => {
+            if (!isMounted) return;
+
             setLoading(true);
             setError(null);
             subscribe();
@@ -70,11 +83,14 @@ export function useTicker(symbol: string | null): TickerState {
     subscribe();
 
     return () => {
+      isMounted = false;
       if (subscription) {
         subscription.unsubscribe();
+        subscription = null;
       }
       if (retryTimeout) {
         clearTimeout(retryTimeout);
+        retryTimeout = null;
       }
     };
   }, [symbol]);

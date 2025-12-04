@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { usePriceChart } from './usePriceChart';
 import './styles.css';
 
@@ -34,7 +35,7 @@ const INTERVALS = [
   { value: 10080, label: '1w' },
 ] as const;
 
-export function PriceChart({
+const _priceChart = function PriceChart({
   candles,
   volumeData,
   loading,
@@ -44,11 +45,8 @@ export function PriceChart({
   onIntervalChange,
   onRefresh,
 }: PriceChartProps) {
-  // Only initialize chart when we have data
-  const shouldRenderChart = candles.length > 0;
-
   const { chartContainerRef } = usePriceChart({
-    symbol: shouldRenderChart ? symbol : '',
+    symbol,
     candles,
     volumeData,
   });
@@ -109,17 +107,26 @@ export function PriceChart({
           )}
         </div>
       </div>
-      {shouldRenderChart ? (
-        <div ref={chartContainerRef} className="chart-container" />
-      ) : (
-        <div className="chart-loading-placeholder">
-          <div className="chart-skeleton-inline">
-            <div className="skeleton-bar"></div>
-            <div className="skeleton-bar"></div>
-            <div className="skeleton-bar"></div>
-          </div>
-        </div>
-      )}
+      <div ref={chartContainerRef} className="chart-container" />
     </div>
   );
-}
+};
+
+export const PriceChart = memo(_priceChart, (prevProps, nextProps) => {
+  // Custom comparison - return true to SKIP re-render, false to re-render
+  // Always re-render if candles reference changed (data update)
+  if (prevProps.candles !== nextProps.candles) {
+    return false;
+  }
+  // Re-render if other key props changed
+  if (
+    prevProps.symbol !== nextProps.symbol ||
+    prevProps.interval !== nextProps.interval ||
+    prevProps.loading !== nextProps.loading ||
+    prevProps.error !== nextProps.error ||
+    prevProps.volumeData !== nextProps.volumeData
+  ) {
+    return false;
+  }
+  return true; // Props same, skip re-render
+});

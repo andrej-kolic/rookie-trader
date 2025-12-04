@@ -50,8 +50,8 @@ export function DynamicList(props: DynamicListProps) {
       });
     }, options);
 
-    const items = container.querySelectorAll('.DynamicList__item');
-    items.forEach((item) => {
+    const itemElements = container.querySelectorAll('.DynamicList__item');
+    itemElements.forEach((item) => {
       observer.observe(item);
     });
 
@@ -64,7 +64,7 @@ export function DynamicList(props: DynamicListProps) {
       observer.disconnect();
       abortFetch();
     };
-  }, [listStatus, abortFetch]);
+  }, [items, listStatus, doFetch, abortFetch]);
 
   return (
     <>

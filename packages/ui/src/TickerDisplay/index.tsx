@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import './styles.css';
 
 export type TickerDisplayProps = {
@@ -16,11 +17,7 @@ export type TickerDisplayProps = {
   error?: string;
 };
 
-/**
- * Generic ticker display component
- * Shows real-time market data in a horizontal bar layout
- */
-export function TickerDisplay(props: TickerDisplayProps) {
+const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   const {
     symbol,
     lastPrice,
@@ -112,4 +109,27 @@ export function TickerDisplay(props: TickerDisplayProps) {
       </div>
     </div>
   );
-}
+};
+
+/**
+ * Generic ticker display component
+ * Shows real-time market data in a horizontal bar layout
+ */
+export const TickerDisplay = memo(_tickerDisplay, (prevProps, nextProps) => {
+  // Only re-render if values actually change
+  return (
+    prevProps.symbol === nextProps.symbol &&
+    prevProps.lastPrice === nextProps.lastPrice &&
+    prevProps.bid === nextProps.bid &&
+    prevProps.bidQty === nextProps.bidQty &&
+    prevProps.ask === nextProps.ask &&
+    prevProps.askQty === nextProps.askQty &&
+    prevProps.high24h === nextProps.high24h &&
+    prevProps.low24h === nextProps.low24h &&
+    prevProps.volume24h === nextProps.volume24h &&
+    prevProps.changePct === nextProps.changePct &&
+    prevProps.isPriceRising === nextProps.isPriceRising &&
+    prevProps.loading === nextProps.loading &&
+    prevProps.error === nextProps.error
+  );
+});

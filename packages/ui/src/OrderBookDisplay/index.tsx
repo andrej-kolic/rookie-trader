@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import './styles.css';
 
 export type OrderBookLevelProps = {
@@ -17,11 +18,9 @@ export type OrderBookDisplayProps = {
   error?: string;
 };
 
-/**
- * Generic order book display component
- * Shows real-time bid/ask levels in a stacked vertical layout
- */
-export function OrderBookDisplay(props: OrderBookDisplayProps) {
+const _orderBookDisplay = function OrderBookDisplay(
+  props: OrderBookDisplayProps,
+) {
   const { symbol, bids, asks, spread, spreadPct, loading, error } = props;
 
   if (error) {
@@ -75,9 +74,9 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
         {/* Asks (sell orders) - lowest price at bottom */}
         <div className="order-book-display__asks">
           {asks.length > 0 ? (
-            [...asks].reverse().map((ask, index) => (
+            asks.map((ask, index) => (
               <div
-                key={`ask-${ask.price}-${index}`}
+                key={index}
                 className="order-book-display__level order-book-display__level--ask"
                 style={
                   {
@@ -120,7 +119,7 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
           {bids.length > 0 ? (
             bids.map((bid, index) => (
               <div
-                key={`bid-${bid.price}-${index}`}
+                key={index}
                 className="order-book-display__level order-book-display__level--bid"
                 style={
                   {
@@ -156,4 +155,24 @@ export function OrderBookDisplay(props: OrderBookDisplayProps) {
       </div>
     </div>
   );
-}
+};
+
+/**
+ * Generic order book display component
+ * Shows real-time bid/ask levels in a stacked vertical layout
+ */
+export const OrderBookDisplay = memo(
+  _orderBookDisplay,
+  (prevProps, nextProps) => {
+    // Only re-render if these values change
+    return (
+      prevProps.symbol === nextProps.symbol &&
+      prevProps.loading === nextProps.loading &&
+      prevProps.error === nextProps.error &&
+      prevProps.spread === nextProps.spread &&
+      prevProps.spreadPct === nextProps.spreadPct &&
+      prevProps.bids === nextProps.bids && // Reference equality
+      prevProps.asks === nextProps.asks // Reference equality
+    );
+  },
+);
