@@ -4,6 +4,7 @@ import {
   mapOrderBook,
   mergeOrderBookUpdate,
 } from '../mappers/order-book-mapper';
+import { toError } from '../utils/error-utils';
 import type { OrderBook } from '../domain/OrderBook';
 import type { Subscription } from 'rxjs';
 
@@ -71,7 +72,7 @@ export function useOrderBook(
         },
         error: (err) => {
           setLoading(false);
-          setError(err instanceof Error ? err : new Error(String(err)));
+          setError(toError(err));
 
           // Auto-retry after delay
           retryTimeout = setTimeout(() => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Subscription } from 'rxjs';
 import { subscribeToInstrument } from '../services/kraken-ws-service';
 import { mapInstrumentPairs } from '../mappers/instrument-mapper';
+import { toError } from '../utils/error-utils';
 import type { TradingPair } from '../domain/TradingPair';
 
 export type TradingPairsState = {
@@ -53,7 +54,7 @@ export function useTradingPairs(): TradingPairsState {
         },
         error: (err: unknown) => {
           if (!isMounted) return;
-          setError(err instanceof Error ? err : new Error(String(err)));
+          setError(toError(err));
           setLoading(false);
         },
       });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { subscribeToTicker } from '../services/kraken-ws-service';
 import { mapTicker } from '../mappers/ticker-mapper';
+import { toError } from '../utils/error-utils';
 import type { Ticker } from '../domain/Ticker';
 import type { Subscription } from 'rxjs';
 
@@ -54,7 +55,7 @@ export function useTicker(symbol: string | null): TickerState {
         },
         error: (err) => {
           setLoading(false);
-          setError(err instanceof Error ? err : new Error(String(err)));
+          setError(toError(err));
 
           // Auto-retry after 5 seconds
           retryTimeout = setTimeout(() => {
