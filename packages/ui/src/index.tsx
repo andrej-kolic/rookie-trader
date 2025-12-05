@@ -1,6 +1,5 @@
 // component exports
 export { DynamicList } from './DynamicList';
-export { ItemSelector } from './ItemSelector';
 export { MarketSelector, type MarketItem } from './MarketSelector';
 export { TickerDisplay } from './TickerDisplay';
 export { OrderBookDisplay } from './OrderBookDisplay';
@@ -8,11 +7,6 @@ export { PriceChart } from './PriceChart';
 
 // type exports
 export type { ListItem } from './DynamicList';
-export type {
-  ItemSelectorProps,
-  SelectorItem,
-  SelectorDetails,
-} from './ItemSelector';
 export type { TickerDisplayProps } from './TickerDisplay';
 export type {
   OrderBookDisplayProps,
