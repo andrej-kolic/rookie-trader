@@ -6,6 +6,7 @@ import { PriceChartContainer } from './containers/PriceChartContainer';
 
 import '@repo/ui/theme.css';
 import './styles.css';
+import { Header } from './components/Header';
 
 export function AppCore(_props: {
   className?: string;
@@ -17,10 +18,7 @@ export function AppCore(_props: {
 
   return (
     <div className="AppCore">
-      <header className="AppCore__brand-header">
-        {/* Placeholder for logo and brand */}
-        <div className="AppCore__brand-placeholder">Logo & Brand</div>
-      </header>
+      <Header title="Rookie" />
 
       <header className="AppCore__trading-header">
         <TradingHeader />

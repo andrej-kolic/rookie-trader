@@ -28,23 +28,6 @@ body {
   padding: 1rem;
 }
 
-/* Brand header section (logo and brand) */
-.AppCore__brand-header {
-  overflow: visible;
-  min-width: 0;
-}
-
-.AppCore__brand-placeholder {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  text-align: center;
-}
-
 /* Trading header section (pair selector and ticker) */
 .AppCore__trading-header {
   overflow: visible;
