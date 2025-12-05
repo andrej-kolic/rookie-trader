@@ -5,17 +5,15 @@ import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import './styles.css';
 
 export function Header({ title }: { title: string }): React.ReactNode {
-  const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (event) => {
-    console.log('* Header click:', event);
+  const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (_event) => {
+    window.location.href = '/';
   };
 
   return (
     <div className="Header">
-      <div className="Header__logo-container">
+      <div className="Header__logo-container" onClick={handleClick}>
         <img className="Header__logo" alt="Logo" src={LogoIcon} />
-        <div className="Header__title" onClick={handleClick}>
-          {title}
-        </div>
+        <div className="Header__title">{title}</div>
       </div>
 
       <SystemStatusContainer />
