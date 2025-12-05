@@ -7,24 +7,27 @@
 
 .Header__logo-container {
   display: flex;
-  gap: 10px;
+  gap: 7px;
   align-items: center;
   justify-content: center;
 }
 
 .Header__logo {
-  width: 50px;
+  width: 42px;
   position: relative;
-  /* top: 5px; */
   left: -5px;
 }
 
 .Header__title {
-  font-size: 36px;
-  /* color: white; */
+  font-size: 28px;
   opacity: 0.65;
-  /* color: #333; */
   text-shadow:
     0 0 6px rgba(255, 255, 255, 0.95),
     0 0 42px rgba(255, 255, 255, 0.6);
+}
+
+.Header__github {
+  width: 32px;
+  opacity: 0.9;
+  position: relative;
 }

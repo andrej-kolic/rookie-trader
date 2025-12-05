@@ -1,5 +1,6 @@
 import React from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
+import GithubIcon from './assets/github-mark.svg'; // TODO: report for bad path
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import './styles.css';
 
@@ -16,8 +17,17 @@ export function Header({ title }: { title: string }): React.ReactNode {
           {title}
         </div>
       </div>
+
       <SystemStatusContainer />
-      <div>Github</div>
+
+      <a
+        href="https://github.com/andrej-kolic/rookie-trader"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="https://github.com/andrej-kolic/rookie-trader"
+      >
+        <img className="Header__github" alt="Github" src={GithubIcon} />
+      </a>
     </div>
   );
 }
