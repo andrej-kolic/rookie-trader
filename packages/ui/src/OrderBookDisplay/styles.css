@@ -177,7 +177,7 @@
 .order-book-display__skeleton-row {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 .order-book-display__skeleton {

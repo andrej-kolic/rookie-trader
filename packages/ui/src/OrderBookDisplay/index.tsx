@@ -53,6 +53,19 @@ const _orderBookDisplay = function OrderBookDisplay(
             </div>
           ))}
         </div>
+        {
+          <div className="order-book-display__spread">
+            <span className="order-book-display__spread-label">&nbsp;</span>
+          </div>
+        }
+        <div className="order-book-display__skeleton-grid">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="order-book-display__skeleton-row">
+              <div className="order-book-display__skeleton order-book-display__skeleton--short"></div>
+              <div className="order-book-display__skeleton order-book-display__skeleton--medium"></div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
