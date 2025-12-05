@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import './styles.css';
 
 export type MarketItem = {
@@ -201,75 +202,78 @@ export function MarketSelector({
             {filteredItems.length === 0 ? (
               <div className="MarketSelector__empty">No markets found</div>
             ) : (
-              filteredItems.map((item) => {
-                const isFav = favorites.includes(item.id);
-                return (
-                  <div
-                    key={item.id}
-                    className={`MarketSelector__item ${
-                      item.id === selectedId
-                        ? 'MarketSelector__item--selected'
-                        : ''
-                    }`}
-                    onClick={() => {
-                      handleSelect(item.id);
-                    }}
-                  >
-                    <div className="MarketSelector__col-fav">
-                      <button
-                        className={`MarketSelector__fav-btn ${
-                          isFav ? 'MarketSelector__fav-btn--active' : ''
-                        }`}
-                        onClick={(e) => {
-                          toggleFavorite(e, item.id);
-                        }}
-                      >
-                        {isFav ? (
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                          </svg>
-                        ) : (
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    <div className="MarketSelector__col-market">
-                      <span className="MarketSelector__symbol">
-                        {item.symbol}
-                      </span>
-                      <div className="MarketSelector__badges">
-                        {item.leverage && (
-                          <span className="MarketSelector__badge">
-                            {item.leverage}
-                          </span>
-                        )}
+              <Virtuoso
+                style={{ height: '350px' }}
+                data={filteredItems}
+                itemContent={(_index, item) => {
+                  const isFav = favorites.includes(item.id);
+                  return (
+                    <div
+                      className={`MarketSelector__item ${
+                        item.id === selectedId
+                          ? 'MarketSelector__item--selected'
+                          : ''
+                      }`}
+                      onClick={() => {
+                        handleSelect(item.id);
+                      }}
+                    >
+                      <div className="MarketSelector__col-fav">
+                        <button
+                          className={`MarketSelector__fav-btn ${
+                            isFav ? 'MarketSelector__fav-btn--active' : ''
+                          }`}
+                          onClick={(e) => {
+                            toggleFavorite(e, item.id);
+                          }}
+                        >
+                          {isFav ? (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                          ) : (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                      <div className="MarketSelector__col-market">
+                        <span className="MarketSelector__symbol">
+                          {item.symbol}
+                        </span>
+                        <div className="MarketSelector__badges">
+                          {item.leverage && (
+                            <span className="MarketSelector__badge">
+                              {item.leverage}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="MarketSelector__col-price">
+                        {/* Placeholder for price since we don't have it yet */}
+                        <span style={{ color: '#848e9c' }}>--</span>
                       </div>
                     </div>
-                    <div className="MarketSelector__col-price">
-                      {/* Placeholder for price since we don't have it yet */}
-                      <span style={{ color: '#848e9c' }}>--</span>
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                }}
+              />
             )}
           </div>
         </div>
