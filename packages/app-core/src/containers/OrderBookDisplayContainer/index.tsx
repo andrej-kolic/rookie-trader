@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import {
   OrderBookDisplay,
   type OrderBookDisplayProps,
@@ -6,7 +6,7 @@ import {
 } from '@repo/ui';
 import { useOrderBook } from '../../hooks/use-order-book';
 import { useTradingStore } from '../../state/trading-store';
-import type { OrderBookLevel } from '../../domain/OrderBookLevel';
+import { getMaxCumulativeTotal } from '../../utils/order-book-utils';
 
 /**
  * Container component for order book display
@@ -20,33 +20,46 @@ export function OrderBookDisplayContainer() {
     10,
   );
 
-  // Memoize the mapper function to prevent recreating it on every render
-  const mapLevel = useCallback(
-    (level: OrderBookLevel, maxTotal: number): OrderBookLevelProps => ({
-      price: level.formatPrice(selectedPair?.pricePrecision ?? 2),
-      quantity: level.formatQuantity(selectedPair?.qtyPrecision ?? 8),
-      total: level.formatTotal(selectedPair?.qtyPrecision ?? 8),
-      depthPercentage: maxTotal > 0 ? (level.total / maxTotal) * 100 : 0,
-    }),
-    [selectedPair?.pricePrecision, selectedPair?.qtyPrecision],
+  // Track maximum depth to prevent bars from shrinking over time
+  const [maxDepth, setMaxDepth] = useState<{
+    bid: number;
+    ask: number;
+    symbol: string;
+  }>({
+    bid: 1,
+    ask: 1,
+    symbol: '',
+  });
+
+  // Get current max from all levels (outside useMemo to update state)
+  const currentMaxBidTotal = useMemo(
+    () => (orderBook ? getMaxCumulativeTotal(orderBook.bids) : 0),
+    [orderBook],
+  );
+  const currentMaxAskTotal = useMemo(
+    () => (orderBook ? getMaxCumulativeTotal(orderBook.asks) : 0),
+    [orderBook],
   );
 
-  // Memoize bids array separately
-  const bids = useMemo(() => {
-    if (!orderBook || !selectedPair) return [];
-    const maxBidTotal = orderBook.bids[orderBook.bids.length - 1]?.total ?? 1;
-    return orderBook.getBidDepth(10).map((bid) => mapLevel(bid, maxBidTotal));
-  }, [orderBook, selectedPair, mapLevel]);
-
-  // Memoize asks array separately (reversed for display)
-  const asks = useMemo(() => {
-    if (!orderBook || !selectedPair) return [];
-    const maxAskTotal = orderBook.asks[orderBook.asks.length - 1]?.total ?? 1;
-    return orderBook
-      .getAskDepth(10)
-      .map((ask) => mapLevel(ask, maxAskTotal))
-      .reverse();
-  }, [orderBook, selectedPair, mapLevel]);
+  // Update rolling max when symbol changes or depth increases
+  if (
+    orderBook &&
+    (maxDepth.symbol !== orderBook.symbol ||
+      currentMaxBidTotal > maxDepth.bid ||
+      currentMaxAskTotal > maxDepth.ask)
+  ) {
+    setMaxDepth({
+      bid:
+        maxDepth.symbol === orderBook.symbol
+          ? Math.max(maxDepth.bid, currentMaxBidTotal)
+          : currentMaxBidTotal,
+      ask:
+        maxDepth.symbol === orderBook.symbol
+          ? Math.max(maxDepth.ask, currentMaxAskTotal)
+          : currentMaxAskTotal,
+      symbol: orderBook.symbol,
+    });
+  }
 
   const displayProps: OrderBookDisplayProps = useMemo(() => {
     // No pair selected
@@ -89,7 +102,29 @@ export function OrderBookDisplayContainer() {
       };
     }
 
-    // Use memoized arrays
+    const bids = orderBook.getBidDepth(10).map(
+      (bid): OrderBookLevelProps => ({
+        price: bid.formatPrice(selectedPair.pricePrecision),
+        quantity: bid.formatQuantity(selectedPair.qtyPrecision),
+        total: bid.formatTotal(selectedPair.qtyPrecision),
+        depthPercentage:
+          maxDepth.bid > 0 ? (bid.total / maxDepth.bid) * 100 : 0,
+      }),
+    );
+
+    const asks = orderBook
+      .getAskDepth(10)
+      .map(
+        (ask): OrderBookLevelProps => ({
+          price: ask.formatPrice(selectedPair.pricePrecision),
+          quantity: ask.formatQuantity(selectedPair.qtyPrecision),
+          total: ask.formatTotal(selectedPair.qtyPrecision),
+          depthPercentage:
+            maxDepth.ask > 0 ? (ask.total / maxDepth.ask) * 100 : 0,
+        }),
+      )
+      .reverse(); // Reverse for display (lowest ask at bottom)
+
     return {
       symbol: orderBook.symbol,
       bids,
@@ -98,7 +133,7 @@ export function OrderBookDisplayContainer() {
       spreadPct: orderBook.formatSpreadPercentage(),
       loading: false,
     };
-  }, [orderBook, selectedPair, loading, error, bids, asks]);
+  }, [orderBook, selectedPair, loading, error, maxDepth]);
 
   return <OrderBookDisplay {...displayProps} />;
 }

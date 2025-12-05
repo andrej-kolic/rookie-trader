@@ -1,4 +1,5 @@
 import { OrderBookLevel } from './OrderBookLevel';
+import { calculateCumulativeTotals } from '../utils/order-book-utils';
 
 /**
  * Domain model for order book (Level 2 market depth)
@@ -129,8 +130,8 @@ export class OrderBook {
    * Create new OrderBook with cumulative totals calculated
    */
   withCumulativeTotals(): OrderBook {
-    const bidsWithTotals = this.calculateCumulativeTotals(this.bids);
-    const asksWithTotals = this.calculateCumulativeTotals(this.asks);
+    const bidsWithTotals = calculateCumulativeTotals(this.bids);
+    const asksWithTotals = calculateCumulativeTotals(this.asks);
 
     return new OrderBook(
       this.symbol,
@@ -139,18 +140,5 @@ export class OrderBook {
       this.timestamp,
       this.checksum,
     );
-  }
-
-  /**
-   * Calculate cumulative totals for price levels
-   */
-  private calculateCumulativeTotals(
-    levels: readonly OrderBookLevel[],
-  ): OrderBookLevel[] {
-    let cumulative = 0;
-    return levels.map((level) => {
-      cumulative += level.quantity;
-      return level.withTotal(cumulative);
-    });
   }
 }

@@ -75,7 +75,7 @@ export function useOrderBook(
                 // Safety: if we get update before snapshot, ignore it
                 return null;
               }
-              return mergeOrderBookUpdate(current, bookData);
+              return mergeOrderBookUpdate(current, bookData, depth);
             });
           }
         },
