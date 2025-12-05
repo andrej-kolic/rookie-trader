@@ -1,10 +1,16 @@
-import { publicWsSubscription, type PublicWsTypes } from 'ts-kraken';
+import {
+  publicWsSubscription,
+  publicWsStatus$,
+  type PublicWsTypes,
+} from 'ts-kraken';
+import type { Status } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
 
 export type TickerUpdate = PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
 export type BookUpdate = PublicWsTypes.PublicSubscriptionUpdate<'book'>;
 export type InstrumentUpdate =
   PublicWsTypes.PublicSubscriptionUpdate<'instrument'>;
+export type StatusUpdate = Status.Update;
 
 /**
  * Subscribe to instrument updates (trading pairs and assets reference data)
@@ -52,4 +58,15 @@ export function subscribeToOrderBook(
     channel: 'book',
     params: { symbol: symbols, depth },
   });
+}
+
+/**
+ * Subscribe to system status updates
+ * Returns RxJS Observable that emits on connection and when trading engine status changes
+ * No subscription needed - automatically sent by Kraken on WebSocket connection
+ *
+ * @returns Observable stream of system status updates
+ */
+export function subscribeToStatus(): Observable<StatusUpdate> {
+  return publicWsStatus$;
 }

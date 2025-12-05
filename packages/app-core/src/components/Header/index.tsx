@@ -1,5 +1,6 @@
 import React from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
+import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import './styles.css';
 
 export function Header({ title }: { title: string }): React.ReactNode {
@@ -15,7 +16,7 @@ export function Header({ title }: { title: string }): React.ReactNode {
           {title}
         </div>
       </div>
-      <div>online</div>
+      <SystemStatusContainer />
       <div>Github</div>
     </div>
   );
