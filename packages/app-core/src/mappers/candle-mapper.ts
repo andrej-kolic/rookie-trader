@@ -65,8 +65,15 @@ export function mapOHLCResponse(
 }
 
 /**
+ * Maximum number of candles to keep in memory
+ * Prevents unbounded memory growth during auto-refresh
+ */
+const MAX_CANDLES = 1000;
+
+/**
  * Merge existing candles with new candle updates
  * Used for incremental updates with 'since' parameter
+ * Implements sliding window to prevent memory leaks
  */
 export function mergeCandles(
   existing: Candle[],
@@ -78,7 +85,15 @@ export function mergeCandles(
   newCandles.forEach((c) => candleMap.set(c.timestamp, c));
 
   // Return sorted by timestamp ascending
-  return Array.from(candleMap.values()).sort(
+  const sorted = Array.from(candleMap.values()).sort(
     (a, b) => a.timestamp - b.timestamp,
   );
+
+  // Keep only the most recent MAX_CANDLES to prevent unbounded memory growth
+  // This implements a sliding window that removes old candles
+  if (sorted.length > MAX_CANDLES) {
+    return sorted.slice(-MAX_CANDLES);
+  }
+
+  return sorted;
 }
