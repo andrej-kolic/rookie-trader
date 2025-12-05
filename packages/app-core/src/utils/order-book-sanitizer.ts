@@ -52,20 +52,20 @@ export function removeCrossedOrders(
   const sanitizedAsks = asks.filter((ask) => ask.price > bestBid.price);
   const removedAsks = asks.length - sanitizedAsks.length;
 
-  // eslint-disable-next-line no-console
-  console.warn('⚠️ Crossed orders detected and removed', {
-    originalBestBid: bestBid.price,
-    originalBestAsk: bestAsk.price,
-    crossAmount: bestBid.price - bestAsk.price,
-    removedBids,
-    removedAsks,
-    newBestBid: sanitizedBids[0]?.price ?? null,
-    newBestAsk: sanitizedAsks[0]?.price ?? null,
-    newSpread:
-      sanitizedBids[0] && sanitizedAsks[0]
-        ? sanitizedAsks[0].price - sanitizedBids[0].price
-        : null,
-  });
+  // // eslint-disable-next-line no-console
+  // console.warn('⚠️ Crossed orders detected and removed', {
+  //   originalBestBid: bestBid.price,
+  //   originalBestAsk: bestAsk.price,
+  //   crossAmount: bestBid.price - bestAsk.price,
+  //   removedBids,
+  //   removedAsks,
+  //   newBestBid: sanitizedBids[0]?.price ?? null,
+  //   newBestAsk: sanitizedAsks[0]?.price ?? null,
+  //   newSpread:
+  //     sanitizedBids[0] && sanitizedAsks[0]
+  //       ? sanitizedAsks[0].price - sanitizedBids[0].price
+  //       : null,
+  // });
 
   return {
     sanitizedBids,

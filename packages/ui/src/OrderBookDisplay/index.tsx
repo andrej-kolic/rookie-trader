@@ -21,7 +21,7 @@ export type OrderBookDisplayProps = {
 const _orderBookDisplay = function OrderBookDisplay(
   props: OrderBookDisplayProps,
 ) {
-  const { symbol, bids, asks, spread, spreadPct, loading, error } = props;
+  const { bids, asks, spread, spreadPct, loading, error } = props;
 
   if (error) {
     return (

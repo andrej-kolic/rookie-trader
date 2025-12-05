@@ -1,5 +1,5 @@
 import type { PublicRestTypes } from 'ts-kraken';
-import { TradingPair } from '../domain/TradingPair';
+import { TradingPair, type TradingPairStatus } from '../domain/TradingPair';
 
 type AssetPairDTO =
   PublicRestTypes.PublicRestEndpoints.AssetPairs.Result[string];
@@ -11,31 +11,31 @@ type AssetPairDTO =
  * @returns TradingPair domain model instance
  */
 export function mapTradingPair(id: string, dto: AssetPairDTO): TradingPair {
+  // Determine margin capability
+  const maxLeverage = Math.max(...dto.leverage_buy, ...dto.leverage_sell, 0);
+  const marginable = maxLeverage > 1;
+  const marginInitial = marginable ? 1 / maxLeverage : undefined;
+
+  // Calculate quantity increment from lot decimals
+  const qtyIncrement = Math.pow(10, -dto.lot_decimals);
+
   return new TradingPair(
-    id,
-    dto.altname,
-    dto.wsname,
-    dto.aclass_base,
-    dto.base,
-    dto.aclass_quote,
-    dto.quote,
-    dto.pair_decimals,
-    dto.cost_decimals,
-    dto.lot_decimals,
-    dto.lot_multiplier,
-    dto.leverage_buy,
-    dto.leverage_sell,
-    dto.fees,
-    dto.fees_maker,
-    dto.fee_volume_currency,
-    dto.margin_call,
-    dto.margin_stop,
-    dto.ordermin,
-    dto.costmin,
-    dto.tick_size,
-    dto.status,
-    dto.long_position_limit,
-    dto.short_position_limit,
+    dto.wsname || dto.altname || id, // symbol
+    dto.base, // base
+    dto.quote, // quote
+    dto.status as TradingPairStatus, // status (cast to union type)
+    parseFloat(dto.ordermin || '0'), // qtyMin
+    parseFloat(dto.costmin || '0'), // costMin
+    qtyIncrement, // qtyIncrement
+    parseFloat(dto.tick_size || '0'), // priceIncrement
+    dto.lot_decimals, // qtyPrecision
+    dto.pair_decimals, // pricePrecision
+    dto.cost_decimals, // costPrecision
+    marginable, // marginable
+    marginInitial, // marginInitial
+    dto.long_position_limit, // longPositionLimit
+    dto.short_position_limit, // shortPositionLimit
+    false, // hasIndex (not available in this DTO usually)
   );
 }
 

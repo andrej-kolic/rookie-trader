@@ -1,3 +1,13 @@
+export type TradingPairStatus =
+  | 'online'
+  | 'cancel_only'
+  | 'post_only'
+  | 'limit_only'
+  | 'reduce_only'
+  | 'delisted'
+  | 'maintenance'
+  | 'work_in_progress';
+
 /**
  * Trading Pair Domain Model
  * Represents a tradable asset pair from Kraken WebSocket instrument channel
@@ -7,15 +17,7 @@ export class TradingPair {
     public readonly symbol: string, // WebSocket v2 symbol (e.g., "BTC/USD")
     public readonly base: string, // Base currency (e.g., "BTC")
     public readonly quote: string, // Quote currency (e.g., "USD")
-    public readonly status:
-      | 'online'
-      | 'cancel_only'
-      | 'post_only'
-      | 'limit_only'
-      | 'reduce_only'
-      | 'delisted'
-      | 'maintenance'
-      | 'work_in_progress',
+    public readonly status: TradingPairStatus,
     public readonly qtyMin: number, // Minimum order quantity
     public readonly costMin: number, // Minimum order cost
     public readonly qtyIncrement: number, // Quantity increment

@@ -19,7 +19,6 @@ export type TickerDisplayProps = {
 
 const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   const {
-    symbol,
     lastPrice,
     bid,
     bidQty,

@@ -1,9 +1,5 @@
-import { useMemo, useCallback } from 'react';
-import {
-  ItemSelector,
-  type SelectorItem,
-  type SelectorDetails,
-} from '@repo/ui';
+import { useMemo, useCallback, useState, useEffect } from 'react';
+import { MarketSelector, type MarketItem } from '@repo/ui';
 import { useTradingPairList } from '../../hooks/use-trading-pair-list';
 import { useTradingPairUrlSync } from './use-trading-pair-url-sync';
 import { useTradingStore } from '../../state/trading-store';
@@ -15,6 +11,27 @@ export function TradingPairSelectorContainer() {
   );
   const setSelectedPair = useTradingStore((state) => state.setSelectedPair);
 
+  // Favorites state (persisted to localStorage)
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('rookie-trader-favorites');
+      const parsed = saved ? (JSON.parse(saved) as unknown) : [];
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('rookie-trader-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
+    );
+  }, []);
+
   // Sync trading pair selection with URL
   useTradingPairUrlSync({
     loading,
@@ -23,13 +40,27 @@ export function TradingPairSelectorContainer() {
   });
 
   // Map domain models to UI component props
-  const items: SelectorItem[] = useMemo(
+  const items: MarketItem[] = useMemo(
     () =>
-      pairs.map((pair) => ({
-        id: pair.id,
-        label: pair.getDisplayName(),
-        sublabel: pair.getSymbol(),
-      })),
+      pairs.map((pair) => {
+        // Calculate leverage (e.g. 0.2 margin = 5x)
+        let leverage: string | undefined;
+        if (pair.marginable && pair.marginInitial) {
+          const lev = Math.round(1 / pair.marginInitial);
+          if (lev > 1) {
+            leverage = `${lev}x`;
+          }
+        }
+
+        return {
+          id: pair.id,
+          symbol: pair.getDisplayName(), // Use display name (e.g. BTC/USD)
+          base: pair.base,
+          quote: pair.quote,
+          isMarginable: pair.marginable,
+          leverage,
+        };
+      }),
     [pairs],
   );
 
@@ -41,13 +72,16 @@ export function TradingPairSelectorContainer() {
     [getPairById, setSelectedPair],
   );
 
+  if (loading) return <div>Loading markets...</div>;
+  if (error) return <div>Error loading markets</div>;
+
   return (
-    <ItemSelector
+    <MarketSelector
       items={items}
       selectedId={selectedPairId}
       onSelect={handleSelect}
-      loading={loading}
-      error={error?.message}
+      favorites={favorites}
+      onToggleFavorite={toggleFavorite}
       placeholder="Select a trading pair..."
     />
   );

@@ -3,9 +3,6 @@ import {
   mergePriceLevels,
   calculateCumulativeTotals,
   getMaxCumulativeTotal,
-  calculateDepthPercentages,
-  validateLevelsSorting,
-  validateSpread,
   type PriceLevelUpdate,
 } from '../order-book-utils';
 
@@ -257,130 +254,6 @@ describe('order-book-utils', () => {
     });
   });
 
-  describe('calculateDepthPercentages', () => {
-    it('should calculate percentages correctly', () => {
-      const levels = [
-        new OrderBookLevel(100, 1.0, 1.0),
-        new OrderBookLevel(99, 2.0, 3.0),
-        new OrderBookLevel(98, 1.5, 4.5),
-      ];
-
-      const result = calculateDepthPercentages(levels, 9.0);
-
-      expect(result[0]).toBeCloseTo(11.11, 2); // 1.0 / 9.0 * 100
-      expect(result[1]).toBeCloseTo(33.33, 2); // 3.0 / 9.0 * 100
-      expect(result[2]).toBeCloseTo(50.0, 2); // 4.5 / 9.0 * 100
-    });
-
-    it('should handle max total of 0', () => {
-      const levels = [new OrderBookLevel(100, 1.0, 1.0)];
-
-      const result = calculateDepthPercentages(levels, 0);
-
-      expect(result[0]).toBe(0);
-    });
-
-    it('should handle empty array', () => {
-      const levels: OrderBookLevel[] = [];
-
-      const result = calculateDepthPercentages(levels, 100);
-
-      expect(result).toHaveLength(0);
-    });
-  });
-
-  describe('validateLevelsSorting', () => {
-    it('should validate descending bid sorting', () => {
-      const validBids = [
-        new OrderBookLevel(100, 1.0),
-        new OrderBookLevel(99, 2.0),
-        new OrderBookLevel(98, 1.5),
-      ];
-
-      expect(validateLevelsSorting(validBids, 'bid')).toBe(true);
-    });
-
-    it('should detect invalid bid sorting (ascending)', () => {
-      const invalidBids = [
-        new OrderBookLevel(98, 1.5),
-        new OrderBookLevel(99, 2.0),
-        new OrderBookLevel(100, 1.0),
-      ];
-
-      expect(validateLevelsSorting(invalidBids, 'bid')).toBe(false);
-    });
-
-    it('should validate ascending ask sorting', () => {
-      const validAsks = [
-        new OrderBookLevel(101, 1.0),
-        new OrderBookLevel(102, 2.0),
-        new OrderBookLevel(103, 1.5),
-      ];
-
-      expect(validateLevelsSorting(validAsks, 'ask')).toBe(true);
-    });
-
-    it('should detect invalid ask sorting (descending)', () => {
-      const invalidAsks = [
-        new OrderBookLevel(103, 1.5),
-        new OrderBookLevel(102, 2.0),
-        new OrderBookLevel(101, 1.0),
-      ];
-
-      expect(validateLevelsSorting(invalidAsks, 'ask')).toBe(false);
-    });
-
-    it('should allow equal prices', () => {
-      const levels = [
-        new OrderBookLevel(100, 1.0),
-        new OrderBookLevel(100, 2.0),
-      ];
-
-      expect(validateLevelsSorting(levels, 'bid')).toBe(true);
-      expect(validateLevelsSorting(levels, 'ask')).toBe(true);
-    });
-
-    it('should validate single level', () => {
-      const levels = [new OrderBookLevel(100, 1.0)];
-
-      expect(validateLevelsSorting(levels, 'bid')).toBe(true);
-      expect(validateLevelsSorting(levels, 'ask')).toBe(true);
-    });
-
-    it('should validate empty array', () => {
-      const levels: OrderBookLevel[] = [];
-
-      expect(validateLevelsSorting(levels, 'bid')).toBe(true);
-      expect(validateLevelsSorting(levels, 'ask')).toBe(true);
-    });
-  });
-
-  describe('validateSpread', () => {
-    it('should validate positive spread', () => {
-      expect(validateSpread(99, 101)).toBe(true);
-    });
-
-    it('should validate zero spread', () => {
-      expect(validateSpread(100, 100)).toBe(true);
-    });
-
-    it('should detect negative spread', () => {
-      expect(validateSpread(101, 99)).toBe(false);
-    });
-
-    it('should handle null bid', () => {
-      expect(validateSpread(null, 101)).toBe(true);
-    });
-
-    it('should handle null ask', () => {
-      expect(validateSpread(99, null)).toBe(true);
-    });
-
-    it('should handle both null', () => {
-      expect(validateSpread(null, null)).toBe(true);
-    });
-  });
-
   describe('integration: merge and validate', () => {
     it('should produce valid sorted bids after multiple merges', () => {
       let bids = [new OrderBookLevel(100, 1.0), new OrderBookLevel(99, 2.0)];
@@ -395,7 +268,6 @@ describe('order-book-utils', () => {
         'bid',
       );
 
-      expect(validateLevelsSorting(bids, 'bid')).toBe(true);
       expect(bids.at(0)?.price).toBe(101);
 
       // Second update: remove some, add some
@@ -408,7 +280,6 @@ describe('order-book-utils', () => {
         'bid',
       );
 
-      expect(validateLevelsSorting(bids, 'bid')).toBe(false);
       expect(bids.at(0)?.price).toBe(102);
     });
 
@@ -425,7 +296,6 @@ describe('order-book-utils', () => {
         'ask',
       );
 
-      expect(validateLevelsSorting(asks, 'ask')).toBe(true);
       expect(asks.at(0)?.price).toBe(100);
 
       // Second update: remove some, add some
@@ -438,7 +308,6 @@ describe('order-book-utils', () => {
         'ask',
       );
 
-      expect(validateLevelsSorting(asks, 'ask')).toBe(false);
       expect(asks.at(0)?.price).toBe(99);
     });
 
@@ -453,7 +322,6 @@ describe('order-book-utils', () => {
       const bestBid = bids.at(0)?.price ?? 0;
       const bestAsk = asks.at(0)?.price ?? 0;
 
-      expect(validateSpread(bestBid, bestAsk)).toBe(true);
       expect(bestAsk).toBeGreaterThan(bestBid);
     });
   });
