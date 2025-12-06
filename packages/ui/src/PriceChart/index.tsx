@@ -35,6 +35,22 @@ const INTERVALS = [
   { value: 10080, label: '1w' },
 ] as const;
 
+type ChartCanvasProps = {
+  symbol: string;
+  candles: PriceChartProps['candles'];
+  volumeData: PriceChartProps['volumeData'];
+};
+
+const ChartCanvas = ({ symbol, candles, volumeData }: ChartCanvasProps) => {
+  const { chartContainerRef } = usePriceChart({
+    symbol,
+    candles,
+    volumeData,
+  });
+
+  return <div ref={chartContainerRef} className="chart-container" />;
+};
+
 const _priceChart = function PriceChart({
   candles,
   volumeData,
@@ -45,12 +61,6 @@ const _priceChart = function PriceChart({
   onIntervalChange,
   onRefresh,
 }: PriceChartProps) {
-  const { chartContainerRef } = usePriceChart({
-    symbol,
-    candles,
-    volumeData,
-  });
-
   // Empty state
   if (!symbol) {
     return (
@@ -107,7 +117,7 @@ const _priceChart = function PriceChart({
           )}
         </div>
       </div>
-      <div ref={chartContainerRef} className="chart-container" />
+      <ChartCanvas symbol={symbol} candles={candles} volumeData={volumeData} />
     </div>
   );
 };
