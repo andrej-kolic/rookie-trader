@@ -20,6 +20,7 @@ const meta = {
         'cancel_only',
         'limit_only',
         'post_only',
+        'offline',
       ],
     },
   },
@@ -55,5 +56,11 @@ export const LimitOnly: Story = {
 export const PostOnly: Story = {
   args: {
     status: 'post_only',
+  },
+};
+
+export const Offline: Story = {
+  args: {
+    status: 'offline',
   },
 };

@@ -6,7 +6,8 @@ export type SystemStatusType =
   | 'maintenance'
   | 'cancel_only'
   | 'limit_only'
-  | 'post_only';
+  | 'post_only'
+  | 'offline';
 
 export type SystemStatusProps = {
   status: SystemStatusType | (string & {}) | null | undefined;

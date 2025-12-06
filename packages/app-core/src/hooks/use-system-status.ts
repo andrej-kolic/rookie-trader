@@ -3,7 +3,7 @@ import type { Subscription } from 'rxjs';
 import { subscribeToStatus } from '../services/kraken-ws-service';
 import { mapSystemStatus } from '../mappers/system-status-mapper';
 import { toError } from '../utils/error-utils';
-import type { SystemStatus } from '../domain/SystemStatus';
+import { SystemStatus } from '../domain/SystemStatus';
 
 export type SystemStatusState = {
   status: SystemStatus | null;
@@ -19,20 +19,35 @@ export type SystemStatusState = {
  * @returns System status state with loading and error handling
  */
 export function useSystemStatus(): SystemStatusState {
-  const [status, setStatus] = useState<SystemStatus | null>(null);
+  const [wsStatus, setWsStatus] = useState<SystemStatus | null>(null);
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  const status = isOnline
+    ? wsStatus
+    : new SystemStatus('offline', 'N/A', 0, 'N/A', new Date());
 
   useEffect(() => {
     let isMounted = true;
     let subscription: Subscription | null = null;
+
+    const handleOnline = () => {
+      setIsOnline(true);
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     subscription = subscribeToStatus().subscribe({
       next: (update) => {
         if (!isMounted) return;
 
         const domainStatus = mapSystemStatus(update);
-        setStatus(domainStatus);
+        setWsStatus(domainStatus);
         setLoading(false);
         setError(null);
       },
@@ -50,6 +65,8 @@ export function useSystemStatus(): SystemStatusState {
     return () => {
       isMounted = false;
       subscription.unsubscribe();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 

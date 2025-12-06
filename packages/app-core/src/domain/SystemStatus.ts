@@ -2,7 +2,8 @@ export type SystemStatusType =
   | 'online'
   | 'cancel_only'
   | 'maintenance'
-  | 'post_only';
+  | 'post_only'
+  | 'offline';
 
 /**
  * System Status Domain Model
@@ -63,6 +64,13 @@ export class SystemStatus {
   }
 
   /**
+   * Check if network is offline
+   */
+  isOffline(): boolean {
+    return this.system === 'offline';
+  }
+
+  /**
    * Get human-readable status message
    */
   getStatusMessage(): string {
@@ -75,6 +83,8 @@ export class SystemStatus {
         return 'Post-only limit orders allowed';
       case 'maintenance':
         return 'System maintenance in progress';
+      case 'offline':
+        return 'Network offline';
       default:
         return 'Unknown status';
     }

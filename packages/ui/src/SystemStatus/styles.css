@@ -42,3 +42,7 @@
 .SystemStatus--post_only {
   --status-color: rgb(52, 152, 219);
 }
+
+.SystemStatus--offline {
+  --status-color: rgb(128, 128, 128);
+}
