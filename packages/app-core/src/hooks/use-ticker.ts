@@ -5,8 +5,6 @@ import { toError } from '../utils/error-utils';
 import type { Ticker } from '../domain/Ticker';
 import type { Subscription } from 'rxjs';
 
-const RETRY_DELAY_MS = 5000;
-
 export type TickerState = {
   ticker: Ticker | null;
   loading: boolean;
@@ -16,7 +14,7 @@ export type TickerState = {
 /**
  * Business hook: Subscribe to real-time ticker updates for given symbol
  * Automatically manages WebSocket subscription lifecycle
- * Auto-retries on error, keeps last ticker while loading new pair
+ * Keeps last ticker while loading new pair
  *
  * @param symbol Trading pair symbol (e.g., "BTC/USD") or null
  * @returns Ticker state with loading and error handling
@@ -32,7 +30,6 @@ export function useTicker(symbol: string | null): TickerState {
     }
 
     let isMounted = true;
-    let retryTimeout: NodeJS.Timeout | null = null;
     let subscription: Subscription | null = null;
 
     // WebSocket subscription legitimately requires setting loading state
@@ -67,15 +64,6 @@ export function useTicker(symbol: string | null): TickerState {
 
           setLoading(false);
           setError(toError(err));
-
-          // Auto-retry after 5 seconds
-          retryTimeout = setTimeout(() => {
-            if (!isMounted) return;
-
-            setLoading(true);
-            setError(null);
-            subscribe();
-          }, RETRY_DELAY_MS);
         },
       });
     };
@@ -87,10 +75,6 @@ export function useTicker(symbol: string | null): TickerState {
       if (subscription) {
         subscription.unsubscribe();
         subscription = null;
-      }
-      if (retryTimeout) {
-        clearTimeout(retryTimeout);
-        retryTimeout = null;
       }
     };
   }, [symbol]);

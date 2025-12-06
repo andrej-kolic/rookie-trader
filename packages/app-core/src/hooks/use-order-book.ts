@@ -8,7 +8,6 @@ import { toError } from '../utils/error-utils';
 import type { OrderBook } from '../domain/OrderBook';
 import type { Subscription } from 'rxjs';
 
-const RETRY_DELAY_MS = 5000;
 const THROTTLE_MS = 500; // Max 2 updates per second
 
 export type OrderBookState = {
@@ -21,7 +20,6 @@ export type OrderBookState = {
  * Business hook: Subscribe to real-time order book updates for given symbol
  * Automatically manages WebSocket subscription lifecycle
  * Handles snapshot (initial) and incremental update messages
- * Auto-retries on error
  *
  * @param symbol Trading pair symbol (e.g., "BTC/USD") or null
  * @param depth Number of price levels to subscribe to (10, 25, 100, 500, 1000)
@@ -45,7 +43,6 @@ export function useOrderBook(
     }
 
     let isMounted = true;
-    let retryTimeout: NodeJS.Timeout | null = null;
     let subscription: Subscription | null = null;
     let pendingUpdateTimeout: NodeJS.Timeout | null = null;
     let lastUpdate = 0;
@@ -125,15 +122,6 @@ export function useOrderBook(
 
           setLoading(false);
           setError(toError(err));
-
-          // Auto-retry after delay
-          retryTimeout = setTimeout(() => {
-            if (!isMounted) return;
-
-            setLoading(true);
-            setError(null);
-            subscribe();
-          }, RETRY_DELAY_MS);
         },
       });
     };
@@ -145,10 +133,6 @@ export function useOrderBook(
       if (subscription) {
         subscription.unsubscribe();
         subscription = null;
-      }
-      if (retryTimeout) {
-        clearTimeout(retryTimeout);
-        retryTimeout = null;
       }
       if (pendingUpdateTimeout) {
         clearTimeout(pendingUpdateTimeout);

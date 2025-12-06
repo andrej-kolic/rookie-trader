@@ -1,15 +1,30 @@
-import {
-  publicWsSubscription,
-  publicWsStatus$,
-  type PublicWsTypes,
-} from 'ts-kraken';
-import type { Status } from 'ts-kraken/dist/types/ws';
+import * as Kraken from 'ts-kraken';
+import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
+import { retry, take, delay, share } from 'rxjs/operators';
 
-export type TickerUpdate = PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
-export type BookUpdate = PublicWsTypes.PublicSubscriptionUpdate<'book'>;
+const RECONNECT_DELAY_MS = 1000;
+
+// Shared observables to ensure single WebSocket connection per channel/params
+const instrumentShared$ = Kraken.publicWsSubscription({
+  channel: 'instrument',
+  params: { snapshot: true },
+}).pipe(
+  retry({
+    delay: () =>
+      Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
+  }),
+  share({ resetOnRefCountZero: false }),
+);
+
+const tickerShared$ = new Map<string, Observable<TickerUpdate>>();
+const orderBookShared$ = new Map<string, Observable<BookUpdate>>();
+
+export type TickerUpdate =
+  Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
+export type BookUpdate = Kraken.PublicWsTypes.PublicSubscriptionUpdate<'book'>;
 export type InstrumentUpdate =
-  PublicWsTypes.PublicSubscriptionUpdate<'instrument'>;
+  Kraken.PublicWsTypes.PublicSubscriptionUpdate<'instrument'>;
 export type StatusUpdate = Status.Update;
 
 /**
@@ -22,10 +37,8 @@ export type StatusUpdate = Status.Update;
 export function subscribeToInstrument(
   snapshot = true,
 ): Observable<InstrumentUpdate> {
-  return publicWsSubscription({
-    channel: 'instrument',
-    params: { snapshot },
-  });
+  // Note: Shared observable always uses snapshot: true for consistency
+  return instrumentShared$;
 }
 
 /**
@@ -36,10 +49,24 @@ export function subscribeToInstrument(
  * @returns Observable stream of ticker updates
  */
 export function subscribeToTicker(symbols: string[]): Observable<TickerUpdate> {
-  return publicWsSubscription({
-    channel: 'ticker',
-    params: { symbol: symbols },
-  });
+  const key = symbols.sort().join(',');
+  if (!tickerShared$.has(key)) {
+    tickerShared$.set(
+      key,
+      Kraken.publicWsSubscription({
+        channel: 'ticker',
+        params: { symbol: symbols },
+      }).pipe(
+        retry({
+          delay: () =>
+            Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
+        }),
+        share({ resetOnRefCountZero: false }),
+      ),
+    );
+  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return tickerShared$.get(key)!;
 }
 
 /**
@@ -54,10 +81,24 @@ export function subscribeToOrderBook(
   symbols: string[],
   depth: 10 | 25 | 100 | 500 | 1000 = 10,
 ): Observable<BookUpdate> {
-  return publicWsSubscription({
-    channel: 'book',
-    params: { symbol: symbols, depth },
-  });
+  const key = `${symbols.sort().join(',')}-${depth}`;
+  if (!orderBookShared$.has(key)) {
+    orderBookShared$.set(
+      key,
+      Kraken.publicWsSubscription({
+        channel: 'book',
+        params: { symbol: symbols, depth },
+      }).pipe(
+        retry({
+          delay: () =>
+            Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
+        }),
+        share({ resetOnRefCountZero: false }),
+      ),
+    );
+  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return orderBookShared$.get(key)!;
 }
 
 /**
@@ -68,5 +109,35 @@ export function subscribeToOrderBook(
  * @returns Observable stream of system status updates
  */
 export function subscribeToStatus(): Observable<StatusUpdate> {
-  return publicWsStatus$;
+  return Kraken.publicWsStatus$;
+}
+
+/**
+ * Subscribe to WebSocket connection event
+ * Returns RxJS Observable that emits when the WebSocket connection is established
+ *
+ * @returns Observable stream of connection events
+ */
+export function subscribeToConnection(): Observable<unknown> {
+  return Kraken.publicWsConnected$;
+}
+
+/**
+ * Subscribe to WebSocket disconnection event
+ * Returns RxJS Observable that emits when the WebSocket connection is closed
+ *
+ * @returns Observable stream of disconnection events
+ */
+export function subscribeToDisconnection(): Observable<unknown> {
+  return Kraken.publicWsDisconnected$;
+}
+
+/**
+ * Subscribe to WebSocket heartbeat event
+ * Returns RxJS Observable that emits when a heartbeat is received
+ *
+ * @returns Observable stream of heartbeat events
+ */
+export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
+  return Kraken.publicWsHeartbeat$;
 }

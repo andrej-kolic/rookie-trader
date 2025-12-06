@@ -24,46 +24,40 @@ export function useTradingPairs(): TradingPairsState {
     let subscription: Subscription | null = null;
     let isMounted = true;
 
-    // Small delay to prevent StrictMode double-mount issues
-    const timeoutId = setTimeout(() => {
-      if (!isMounted) return;
+    subscription = subscribeToInstrument(true).subscribe({
+      next: (update) => {
+        if (!isMounted) return;
 
-      subscription = subscribeToInstrument(true).subscribe({
-        next: (update) => {
-          if (!isMounted) return;
+        const { pairs: pairData } = update.data;
 
-          const { pairs: pairData } = update.data;
-
-          if (update.type === 'snapshot') {
-            // Initial snapshot - replace all pairs
-            const pairMap = mapInstrumentPairs(pairData);
-            setPairs(pairMap);
-            setLoading(false);
-            setError(null);
-          } else {
-            // Update - merge changes
-            setPairs((prev) => {
-              const updated = new Map(prev);
-              const changes = mapInstrumentPairs(pairData);
-              changes.forEach((pair, symbol) => {
-                updated.set(symbol, pair);
-              });
-              return updated;
-            });
-          }
-        },
-        error: (err: unknown) => {
-          if (!isMounted) return;
-          setError(toError(err));
+        if (update.type === 'snapshot') {
+          // Initial snapshot - replace all pairs
+          const pairMap = mapInstrumentPairs(pairData);
+          setPairs(pairMap);
           setLoading(false);
-        },
-      });
-    }, 100);
+          setError(null);
+        } else {
+          // Update - merge changes
+          setPairs((prev) => {
+            const updated = new Map(prev);
+            const changes = mapInstrumentPairs(pairData);
+            changes.forEach((pair, symbol) => {
+              updated.set(symbol, pair);
+            });
+            return updated;
+          });
+        }
+      },
+      error: (err: unknown) => {
+        if (!isMounted) return;
+        setError(toError(err));
+        setLoading(false);
+      },
+    });
 
     return () => {
       isMounted = false;
-      clearTimeout(timeoutId);
-      subscription?.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 

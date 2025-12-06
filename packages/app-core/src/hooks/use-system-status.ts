@@ -27,37 +27,29 @@ export function useSystemStatus(): SystemStatusState {
     let isMounted = true;
     let subscription: Subscription | null = null;
 
-    // Small delay to prevent StrictMode double-mount issues
-    const timeoutId = setTimeout(() => {
-      if (!isMounted) return;
+    subscription = subscribeToStatus().subscribe({
+      next: (update) => {
+        if (!isMounted) return;
 
-      subscription = subscribeToStatus().subscribe({
-        next: (update) => {
-          if (!isMounted) return;
+        const domainStatus = mapSystemStatus(update);
+        setStatus(domainStatus);
+        setLoading(false);
+        setError(null);
+      },
+      error: (err) => {
+        if (!isMounted) return;
 
-          const domainStatus = mapSystemStatus(update);
-          setStatus(domainStatus);
-          setLoading(false);
-          setError(null);
-        },
-        error: (err) => {
-          if (!isMounted) return;
-
-          const error = toError(err);
-          // eslint-disable-next-line no-console
-          console.error('System status error:', error);
-          setError(error);
-          setLoading(false);
-        },
-      });
-    }, 100);
+        const error = toError(err);
+        // eslint-disable-next-line no-console
+        console.error('System status error:', error);
+        setError(error);
+        setLoading(false);
+      },
+    });
 
     return () => {
       isMounted = false;
-      clearTimeout(timeoutId);
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      subscription.unsubscribe();
     };
   }, []);
 
