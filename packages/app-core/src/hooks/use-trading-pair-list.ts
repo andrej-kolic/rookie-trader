@@ -17,9 +17,8 @@ export function useTradingPairList(): TradingPairListState {
   const { pairs: pairsMap, loading, error } = useTradingPairs();
 
   const pairs = useMemo(() => {
-    return Array.from(pairsMap.values())
-      .filter((pair) => pair.isTradeable())
-      .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName()));
+    return Array.from(pairsMap.values()).filter((pair) => pair.isTradeable());
+    // .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName()));
   }, [pairsMap]);
 
   const getPairById = useCallback(
