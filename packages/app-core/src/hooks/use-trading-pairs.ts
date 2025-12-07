@@ -24,7 +24,7 @@ export function useTradingPairs(): TradingPairsState {
     let subscription: Subscription | null = null;
     let isMounted = true;
 
-    subscription = subscribeToInstrument(true).subscribe({
+    subscription = subscribeToInstrument().subscribe({
       next: (update) => {
         if (!isMounted) return;
 
