@@ -1,24 +1,7 @@
 import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
-import { retry, take, delay, share } from 'rxjs/operators';
-
-const RECONNECT_DELAY_MS = 1000;
-
-// Shared observables to ensure single WebSocket connection per channel/params
-const instrumentShared$ = Kraken.publicWsSubscription({
-  channel: 'instrument',
-  params: { snapshot: true },
-}).pipe(
-  retry({
-    delay: () =>
-      Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
-  }),
-  share({ resetOnRefCountZero: false }),
-);
-
-const tickerShared$ = new Map<string, Observable<TickerUpdate>>();
-const orderBookShared$ = new Map<string, Observable<BookUpdate>>();
+import { retry, delay, share } from 'rxjs/operators';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -27,19 +10,49 @@ export type InstrumentUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'instrument'>;
 export type StatusUpdate = Status.Update;
 
+//
+// Helper function to add retry and share operators to an observable
+//
+
+const RECONNECT_DELAY_MS = 3000;
+
+function withRetryAndShare<T>(source$: Observable<T>): Observable<T> {
+  return source$.pipe(
+    retry({
+      delay: (errors: Observable<unknown>) =>
+        errors.pipe(delay(RECONNECT_DELAY_MS)),
+    }),
+    share({ resetOnRefCountZero: false }),
+  );
+}
+
+//
+// instrument
+//
+
+const instrumentShared$ = withRetryAndShare(
+  Kraken.publicWsSubscription({
+    channel: 'instrument',
+    params: { snapshot: true },
+  }),
+);
+
 /**
  * Subscribe to instrument updates (trading pairs and assets reference data)
  * Returns RxJS Observable that emits snapshots and updates of all active pairs
  *
- * @param snapshot Whether to request initial snapshot (default: true)
  * @returns Observable stream of instrument updates
  */
-export function subscribeToInstrument(
-  snapshot = true,
-): Observable<InstrumentUpdate> {
+export function subscribeToInstrument(): Observable<InstrumentUpdate> {
   // Note: Shared observable always uses snapshot: true for consistency
   return instrumentShared$;
 }
+
+//
+// ticker
+//
+
+const tickerShared$ = new Map<string, Observable<TickerUpdate>>();
 
 /**
  * Subscribe to ticker updates for specified trading pair symbols
@@ -53,21 +66,23 @@ export function subscribeToTicker(symbols: string[]): Observable<TickerUpdate> {
   if (!tickerShared$.has(key)) {
     tickerShared$.set(
       key,
-      Kraken.publicWsSubscription({
-        channel: 'ticker',
-        params: { symbol: symbols },
-      }).pipe(
-        retry({
-          delay: () =>
-            Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
+      withRetryAndShare(
+        Kraken.publicWsSubscription({
+          channel: 'ticker',
+          params: { symbol: symbols },
         }),
-        share({ resetOnRefCountZero: false }),
       ),
     );
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return tickerShared$.get(key)!;
 }
+
+//
+// order book
+//
+
+const orderBookShared$ = new Map<string, Observable<BookUpdate>>();
 
 /**
  * Subscribe to order book updates for specified trading pair symbols
@@ -85,21 +100,23 @@ export function subscribeToOrderBook(
   if (!orderBookShared$.has(key)) {
     orderBookShared$.set(
       key,
-      Kraken.publicWsSubscription({
-        channel: 'book',
-        params: { symbol: symbols, depth },
-      }).pipe(
-        retry({
-          delay: () =>
-            Kraken.publicWsConnected$.pipe(take(1), delay(RECONNECT_DELAY_MS)),
+      withRetryAndShare(
+        Kraken.publicWsSubscription({
+          channel: 'book',
+          params: { symbol: symbols, depth },
         }),
-        share({ resetOnRefCountZero: false }),
       ),
     );
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return orderBookShared$.get(key)!;
 }
+
+//
+// system status
+//
+
+const statusShared$ = withRetryAndShare(Kraken.publicWsStatus$);
 
 /**
  * Subscribe to system status updates
@@ -109,8 +126,14 @@ export function subscribeToOrderBook(
  * @returns Observable stream of system status updates
  */
 export function subscribeToStatus(): Observable<StatusUpdate> {
-  return Kraken.publicWsStatus$;
+  return statusShared$;
 }
+
+//
+// connection events
+//
+
+const connectionShared$ = withRetryAndShare(Kraken.publicWsConnected$);
 
 /**
  * Subscribe to WebSocket connection event
@@ -119,8 +142,14 @@ export function subscribeToStatus(): Observable<StatusUpdate> {
  * @returns Observable stream of connection events
  */
 export function subscribeToConnection(): Observable<unknown> {
-  return Kraken.publicWsConnected$;
+  return connectionShared$;
 }
+
+//
+// disconnection events
+//
+
+const disconnectionShared$ = withRetryAndShare(Kraken.publicWsDisconnected$);
 
 /**
  * Subscribe to WebSocket disconnection event
@@ -129,8 +158,14 @@ export function subscribeToConnection(): Observable<unknown> {
  * @returns Observable stream of disconnection events
  */
 export function subscribeToDisconnection(): Observable<unknown> {
-  return Kraken.publicWsDisconnected$;
+  return disconnectionShared$;
 }
+
+//
+// heartbeat
+//
+
+const heartbeatShared$ = withRetryAndShare(Kraken.publicWsHeartbeat$);
 
 /**
  * Subscribe to WebSocket heartbeat event
@@ -139,5 +174,5 @@ export function subscribeToDisconnection(): Observable<unknown> {
  * @returns Observable stream of heartbeat events
  */
 export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
-  return Kraken.publicWsHeartbeat$;
+  return heartbeatShared$;
 }
