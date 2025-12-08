@@ -1,7 +1,7 @@
 import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
-import { retry, delay, share } from 'rxjs/operators';
+import { retry, share } from 'rxjs/operators';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -19,8 +19,7 @@ const RECONNECT_DELAY_MS = 3000;
 function withRetryAndShare<T>(source$: Observable<T>): Observable<T> {
   return source$.pipe(
     retry({
-      delay: (errors: Observable<unknown>) =>
-        errors.pipe(delay(RECONNECT_DELAY_MS)),
+      delay: RECONNECT_DELAY_MS,
     }),
     share({ resetOnRefCountZero: false }),
   );
