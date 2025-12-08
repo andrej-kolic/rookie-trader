@@ -1,81 +1,110 @@
-# Rookie
+# Rookie Trader
 
-Simple exchange build on top of Kraken API
+A simple exchange built on top of the Kraken API.
 
-## What's inside?
+## 🚀 Tech Stack
 
-### Source
+- **Monorepo**: Managed with [Turborepo](https://turbo.build/) and [pnpm workspaces](https://pnpm.io/workspaces).
+- **Languages**: 100% [TypeScript](https://www.typescriptlang.org/).
+- **Frontend**: React.
+- **Component Development**: [Storybook](https://storybook.js.org/) for UI component development and testing.
+- **Bundlers**: Vite, Webpack, and ESBuild (demonstrating multiple build strategies).
+- **Infrastructure**: AWS (CloudFormation) and Netlify.
 
-Most packages are 'light', meaning they only export source code without build/bundle step.
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 🛠 Prerequisites
 
-#### Apps
+- **Node.js**: (Check `.nvmrc` for version)
+- **pnpm**: `v10.18.0` or higher
 
-- `app-esbild`: ESBuild bundler for main app
-- `app-vite`: Vite bundler for main app
-- `app-webpack`: Webpack bundler for main app
-- `ui-storybook`: Storybook as dev server for ui package
+## 🏁 Getting Started
 
-#### Packages
+1. **Install dependencies:**
 
-- `app-core`: React app developed as library
-- `commons`: a stub library shared by other packages. built using tsup
-- `dev-tools`: utils for development, shared by other packages. not meant to be used in source code
-- `@repo/ui`: a stub React component library shared by applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+   ```bash
+   pnpm install
+   ```
 
-#### Infra
+2. **Environment Setup:**
+   Copy the example environment file:
 
-- `aws`: CloudFormation-based AWS deployment with CloudFront, S3, and ACM certificates
-- `netlify`: tools and scripts used to deploy to Netlify, both locally and from CI
+   ```bash
+   cp .env.example .env
+   ```
 
-### Utilities
+3. **Start Development Server:**
+   To start all apps:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+   ```bash
+   pnpm dev
+   ```
+
+   To start a specific app (e.g., using vite):
+
+   ```bash
+   BUNDLER=app-vite pnpm dev:app
+   ```
+
+## 📂 Project Structure
+
+### Apps
+
+- **`app-esbuild`**: Main application bundled with ESBuild.
+- **`app-vite`**: Main application bundled with Vite.
+- **`app-webpack`**: Main application bundled with Webpack.
+- **`ui-storybook`**: Storybook development environment for the UI library.
+
+### Packages
+
+- **`app-core`**: Core React application logic (developed as a library).
+- **`commons`**: Shared utility library (built with tsup).
+- **`dev-tools`**: Development utilities and shared configurations.
+- **`@repo/ui`**: Shared React component library.
+- **`@repo/eslint-config`**: Shared ESLint configurations.
+- **`@repo/typescript-config`**: Shared TypeScript configurations.
+
+### Infrastructure
+
+- **`infra/aws`**: CloudFormation templates for AWS deployment (CloudFront, S3, ACM).
+- **`infra/netlify`**: Scripts and tools for Netlify deployment.
+
+## 📜 Scripts
+
+### Development
+
+- `pnpm dev`: Start all applications in development mode.
+- `pnpm dev:app`: Start a specific app (requires `BUNDLER` env var).
+- `pnpm dev:ui`: Start Storybook.
+- `pnpm preview`: Preview production builds locally.
 
 ### Build
 
-To build all apps and packages, run the following command:
+- `pnpm build`: Build all apps and packages.
+- `pnpm build:app`: Build a specific app.
 
-```
-pnpm build
-```
+### Quality & Maintenance
 
-### Develop
+- `pnpm lint`: Run ESLint across the workspace.
+- `pnpm test`: Run tests.
+- `pnpm quality-checks`: Run dependencies check, type check, lint, and tests.
+- `pnpm format:code`: Format code with Prettier.
+- `pnpm check:dependencies`: Check dependency versions with syncpack.
 
-To develop all apps and packages, run the following command:
+### Deployment
 
-```
-pnpm dev
-```
+- `pnpm deploy:aws`: Deploy to AWS (requires configuration).
+- `pnpm deploy:netlify`: Deploy to Netlify.
 
-### Test
+## 🐛 Debugging
 
-To test all apps and packages, run the following command:
+To debug the application in Chrome:
 
-```
-pnpm test
-```
+1. Open Chrome with remote debugging enabled:
 
-### Lint
+   ```bash
+   /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile
+   ```
 
-To lint all apps and packages, run the following command:
+   _(Note: Data will be saved to the 'remote-debug-profile' directory)_
 
-```
-pnpm lint
-```
-
-### Debug
-
-https://code.visualstudio.com/docs/nodejs/reactjs-tutorial#_debugging-react
-
-To open chrome in debug mode run:
-
-```
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir=remote-debug-profile
-```
-
-(lot's of data will be saved to 'remote-debug-profile' dir)
+2. Use the VS Code debugger to attach to the process.
+   See [VS Code React Debugging](https://code.visualstudio.com/docs/nodejs/reactjs-tutorial#_debugging-react) for more details.
