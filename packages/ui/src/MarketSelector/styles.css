@@ -9,6 +9,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  max-width: 400px;
   padding: 8px 12px;
   background-color: #1e2026;
   border: 1px solid #2b2f36;
@@ -60,6 +61,7 @@
   color: #e6e8ea;
   font-size: 14px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .MarketSelector__search-input:focus {

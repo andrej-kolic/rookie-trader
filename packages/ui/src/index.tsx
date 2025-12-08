@@ -8,6 +8,7 @@ export { SystemStatus } from './SystemStatus';
 
 // type exports
 export type { ListItem } from './DynamicList';
+export type { MarketSelectorProps } from './MarketSelector';
 export type { TickerDisplayProps } from './TickerDisplay';
 export type {
   OrderBookDisplayProps,

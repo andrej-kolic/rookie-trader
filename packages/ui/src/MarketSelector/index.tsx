@@ -18,6 +18,7 @@ export type MarketSelectorProps = {
   favorites: string[];
   onToggleFavorite: (id: string) => void;
   placeholder?: string;
+  initialOpen?: boolean;
 };
 
 type Tab = 'favorites' | 'all' | 'spot' | 'margin';
@@ -29,8 +30,9 @@ export function MarketSelector({
   favorites,
   onToggleFavorite,
   placeholder = 'Select market',
+  initialOpen = false,
 }: MarketSelectorProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const dropdownRef = useRef<HTMLDivElement>(null);
