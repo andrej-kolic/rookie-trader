@@ -72,27 +72,53 @@ A simple exchange built on top of the Kraken API.
 ### Development
 
 - `pnpm dev`: Start all applications in development mode.
-- `pnpm dev:app`: Start a specific app (requires `BUNDLER` env var).
-- `pnpm dev:ui`: Start Storybook.
-- `pnpm preview`: Preview production builds locally.
+- `pnpm dev:app`: Start a specific app (requires `BUNDLER` env var, e.g., `BUNDLER=app-vite pnpm dev:app`).
+- `pnpm dev:ui`: Start Storybook development server.
+
+### Preview
+
+- `pnpm preview`: Preview all production builds locally.
+- `pnpm preview:app`: Preview a specific app build (requires `BUNDLER` env var).
+- `pnpm preview:ui`: Preview Storybook build.
 
 ### Build
 
 - `pnpm build`: Build all apps and packages.
-- `pnpm build:app`: Build a specific app.
+- `pnpm build:app`: Build a specific app (requires `BUNDLER` env var).
+- `pnpm build:ui`: Build Storybook.
 
-### Quality & Maintenance
+### Code Quality
 
 - `pnpm lint`: Run ESLint across the workspace.
-- `pnpm test`: Run tests.
-- `pnpm quality-checks`: Run dependencies check, type check, lint, and tests.
+- `pnpm lint:app`: Lint a specific app and its dependencies (requires `BUNDLER` env var).
+- `pnpm lint:ui`: Lint Storybook and its dependencies.
+- `pnpm check:type`: Run TypeScript type checking.
+- `pnpm check:format`: Check code formatting with Prettier.
 - `pnpm format:code`: Format code with Prettier.
-- `pnpm check:dependencies`: Check dependency versions with syncpack.
+
+### Testing
+
+- `pnpm test`: Run all tests.
+- `pnpm test:watch`: Run tests in watch mode.
+
+### Dependencies Management
+
+- `pnpm check:dependencies`: Check dependency versions are in sync with syncpack.
+- `pnpm format:dependencies`: Auto-fix dependency issues with sherif.
+
+### Quality Checks
+
+- `pnpm quality-checks`: Run full quality suite (dependency check, type check, lint, and tests).
 
 ### Deployment
 
-- `pnpm deploy:aws`: Deploy to AWS (requires configuration).
-- `pnpm deploy:netlify`: Deploy to Netlify.
+- `pnpm deploy:aws`: Build and deploy to AWS (requires `BUILD_ENVIRONMENT` env var).
+- `pnpm deploy:netlify`: Build and deploy to Netlify.
+
+### Maintenance
+
+- `pnpm clear:cache`: Clear pnpm cache and all node_modules directories.
+- `pnpm clear:output`: Clear build outputs across all packages.
 
 ## 🐛 Debugging
 
