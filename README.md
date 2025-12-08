@@ -2,6 +2,91 @@
 
 A simple exchange built on top of the Kraken API.
 
+## 📖 Overview
+
+Rookie Trader is a real-time cryptocurrency trading platform that demonstrates modern web application architecture through a fully-featured monorepo. The application connects to Kraken's WebSocket and REST APIs to provide live market data, order books, price charts, and trading pair information.
+
+### Key Features
+
+- **Real-time Market Data**: Live order book updates, ticker information, and price feeds via WebSocket
+- **Interactive Price Charts**: OHLC (candlestick) data visualization for market analysis
+- **Trading Pair Management**: Browse and select from all available Kraken trading pairs
+- **System Status Monitoring**: Real-time exchange status and health indicators
+- **Multi-Bundler Support**: Same application built with Vite, Webpack, and ESBuild
+- **Component Library**: Isolated, reusable UI components developed with Storybook
+
+### Application Architecture
+
+The app-core package implements a clean, layered architecture following Domain-Driven Design principles:
+
+#### **Domain Layer** (`domain/`)
+
+Rich domain models with encapsulated business logic:
+
+- `TradingPair`: Trading pair with validation, fee calculation, and formatting
+- `OrderBook`: Bid/ask levels with market depth analysis
+- `Ticker`: Real-time price, volume, and market statistics
+- `Candle`: OHLC data for charting and technical analysis
+- `SystemStatus`: Exchange operational status tracking
+
+#### **Service Layer** (`services/`)
+
+External API integration with reactive patterns:
+
+- `kraken-ws-service.ts`: WebSocket subscriptions (ticker, order book, OHLC, system status)
+- `kraken-rest-service.ts`: REST API calls for trading pair metadata
+- Built on RxJS observables with automatic reconnection and error handling
+
+#### **State Management** (`state/`)
+
+Global application state with Zustand:
+
+- Centralized trading pair selection
+- Optimized updates to prevent unnecessary re-renders
+
+#### **Data Mapping** (`mappers/`)
+
+DTO-to-domain transformations:
+
+- Converts raw Kraken API responses to typed domain models
+- Handles incremental updates (e.g., merging order book deltas)
+
+#### **Hooks Layer** (`hooks/`)
+
+Business logic React hooks that bridge services and UI:
+
+- `use-order-book`: Subscribe to real-time order book with throttling
+- `use-ticker`: Live price and volume updates
+- `use-ohlc`: Historical candlestick data for charts
+- `use-trading-pairs`: Load and filter available trading pairs
+- `use-system-status`: Monitor exchange health
+
+#### **Container Components** (`containers/`)
+
+Smart components that connect hooks to presentational components:
+
+- `OrderBookDisplayContainer`: Manages order book state and display
+- `PriceChartContainer`: Handles OHLC data and chart rendering
+- `TickerDisplayContainer`: Real-time price ticker integration
+- `TradingPairSelectorContainer`: Trading pair selection interface
+- `SystemStatusContainer`: Exchange status monitoring
+
+#### **Presentation Layer** (`components/`)
+
+Reusable UI components from `@repo/ui` package:
+
+- Consumes domain models as props
+- Pure, testable components with no business logic
+- Developed in isolation using Storybook
+
+### Technical Highlights
+
+- **Type Safety**: 100% TypeScript with strict mode enabled
+- **Reactive Programming**: RxJS for WebSocket stream management with retry logic
+- **Performance Optimizations**: Throttled updates, memoization, and efficient re-render prevention
+- **Testing**: Jest with React Testing Library for unit and integration tests
+- **Kraken Integration**: Uses `ts-kraken` library for type-safe API communication
+
 ## 🚀 Tech Stack
 
 - **Monorepo**: Managed with [Turborepo](https://turbo.build/) and [pnpm workspaces](https://pnpm.io/workspaces).
