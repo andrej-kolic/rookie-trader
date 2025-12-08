@@ -1,7 +1,8 @@
 import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
-import { retry, share } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { retry, share, switchMap } from 'rxjs/operators';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -16,12 +17,24 @@ export type StatusUpdate = Status.Update;
 
 const RECONNECT_DELAY_MS = 3000;
 
+/**
+Used to fix Strict Mode's "WebSocket is closed before the connection is established"
+error when subscribing to WebSocket channels immediately after connection.
+this is a workaround for the issue, not a solution
+*/
+const SUBSCRIPTION_DEBOUNCE_MS = 100;
+
 function withRetryAndShare<T>(source$: Observable<T>): Observable<T> {
-  return source$.pipe(
+  return timer(SUBSCRIPTION_DEBOUNCE_MS).pipe(
+    switchMap(() => source$),
     retry({
       delay: RECONNECT_DELAY_MS,
     }),
-    share({ resetOnRefCountZero: false }),
+    share({
+      resetOnRefCountZero: true,
+      resetOnError: true,
+      resetOnComplete: true,
+    }),
   );
 }
 
@@ -76,7 +89,6 @@ export function subscribeToTicker(symbols: string[]): Observable<TickerUpdate> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return tickerShared$.get(key)!;
 }
-
 //
 // order book
 //
