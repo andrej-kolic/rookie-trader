@@ -1,0 +1,25 @@
+.TradingHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 60px;
+}
+
+.TradingHeader__selector {
+  display: flex;
+  flex-shrink: 0;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.TradingHeader__ticker {
+  display: flex;
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  overflow: hidden; /* Contain the horizontal scroll */
+}

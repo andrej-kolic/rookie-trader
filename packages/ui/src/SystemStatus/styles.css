@@ -1,0 +1,48 @@
+.SystemStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: rgba(0, 0, 0, 0.35);
+  padding: 5px 10px;
+  border-radius: 0.5rem;
+  --status-color: rgb(53, 223, 141); /* Default to online color */
+}
+
+.SystemStatus__indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--status-color);
+  box-shadow: 0 0 4px var(--status-color);
+}
+
+.SystemStatus__text {
+  color: var(--status-color);
+  text-transform: capitalize;
+}
+
+.SystemStatus--online {
+  --status-color: rgb(53, 223, 141);
+}
+
+.SystemStatus--maintenance {
+  --status-color: rgb(231, 76, 60);
+}
+
+.SystemStatus--cancel_only {
+  --status-color: rgb(230, 126, 34);
+}
+
+.SystemStatus--limit_only {
+  --status-color: rgb(241, 196, 15);
+}
+
+.SystemStatus--post_only {
+  --status-color: rgb(52, 152, 219);
+}
+
+.SystemStatus--offline {
+  --status-color: rgb(128, 128, 128);
+}

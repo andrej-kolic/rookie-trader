@@ -11,8 +11,11 @@ import {
 
 import 'webpack-dev-server';
 import util from 'util';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const debuglog = util.debuglog('app-webpack');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 //
 
@@ -58,6 +61,14 @@ const webpackConfig = (
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      alias: {
+        // Polyfill Node.js modules that ts-kraken tries to import but doesn't actually need in browser
+        dotenv: path.resolve(__dirname, '../src/polyfills/empty.js'),
+        // Replace Node.js 'ws' module with browser's native WebSocket
+        ws: path.resolve(__dirname, '../src/polyfills/ws.js'),
+        // Polyfill crypto module (used by ts-kraken for private API, not needed in browser)
+        crypto: path.resolve(__dirname, '../src/polyfills/crypto.js'),
+      },
     },
 
     plugins: [

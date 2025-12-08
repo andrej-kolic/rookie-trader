@@ -1,0 +1,9 @@
+.TradingPairSelectorContainer--error {
+  background: #1a1a1a;
+  border-radius: 0.5rem;
+  flex-grow: 1;
+  color: crimson;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -22,7 +22,10 @@
     "@repo/commons": "workspace:*",
     "@repo/ui": "workspace:*",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "rxjs": "7.8.2",
+    "ts-kraken": "4.0.14",
+    "zustand": "5.0.9"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

@@ -52,6 +52,15 @@ async function bundle() {
       },
       format: 'esm',
 
+      alias: {
+        // Polyfill Node.js modules that ts-kraken tries to import but doesn't actually need in browser
+        dotenv: './src/polyfills/empty.js',
+        // Replace Node.js 'ws' module with browser's native WebSocket
+        ws: './src/polyfills/ws.js',
+        // Polyfill crypto module (used by ts-kraken for private API, not needed in browser)
+        crypto: './src/polyfills/crypto.js',
+      },
+
       define: {
         'import.meta.env': JSON.stringify(environmentVariables),
       },

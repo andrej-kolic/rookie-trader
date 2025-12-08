@@ -44,6 +44,7 @@ concurrency:
 env:
   AWS_DEFAULT_REGION: us-east-1
   HUSKY: 0
+  APP_REACT_TITLE: ${{ vars.APP_REACT_TITLE }}
   BUNDLER: >-
     ${{
       (github.event.inputs.bundler == 'default' && vars.DEFAULT_BUNDLER)

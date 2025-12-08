@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import util from 'util';
+import path from 'path';
 
 const debuglog = util.debuglog('app-vite');
 
@@ -38,11 +39,24 @@ export default defineConfig((configEnv) => {
       'import.meta.env.BUILD_ENVIRONMENT': JSON.stringify(
         process.env.BUILD_ENVIRONMENT,
       ),
+      // Polyfill process.env for ts-kraken which imports dotenv
+      // 'process.env': {},
     },
 
     plugins: [react()],
 
     publicDir: appCorePublic,
+
+    resolve: {
+      alias: {
+        // Polyfill Node.js modules that ts-kraken tries to import but doesn't actually need in browser
+        dotenv: path.resolve(__dirname, 'src/polyfills/empty.js'),
+        // Replace Node.js 'ws' module with browser's native WebSocket
+        ws: path.resolve(__dirname, 'src/polyfills/ws.js'),
+        // Polyfill crypto module (used by ts-kraken for private API, not needed in browser)
+        crypto: path.resolve(__dirname, 'src/polyfills/crypto.js'),
+      },
+    },
 
     // TODO: remove, added for readable output
     // build: {
