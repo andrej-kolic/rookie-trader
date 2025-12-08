@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "generate:component": "turbo gen react-component",
     "compile": "tsc",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "check:type": "tsc --noEmit",
     "clear:cache": "jest --clearCache"
