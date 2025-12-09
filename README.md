@@ -17,6 +17,10 @@ Rookie Trader is a real-time cryptocurrency trading platform that demonstrates m
 - **Multi-Bundler Support**: Same application built with Vite, Webpack, and ESBuild
 - **Component Library**: Isolated, reusable UI components developed with Storybook
 
+### TODO
+
+- Private subscriptions and endpoints (spot trading)
+
 ### Application Architecture
 
 The app-core package implements a clean, layered architecture following Domain-Driven Design principles:
