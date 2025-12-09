@@ -2,6 +2,8 @@
 
 A simple exchange built on top of the Kraken API.
 
+![Rookie Trader Application](docs/rookie-screenshot.png)
+
 ## 📖 Overview
 
 Rookie Trader is a real-time cryptocurrency trading platform that demonstrates modern web application architecture through a fully-featured monorepo. The application connects to Kraken's WebSocket and REST APIs to provide live market data, order books, price charts, and trading pair information.
