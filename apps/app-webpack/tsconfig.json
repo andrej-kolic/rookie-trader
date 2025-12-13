@@ -1,7 +1,6 @@
 {
   "extends": "@repo/typescript-config/webpack.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "outDir": "build"
   },
 
