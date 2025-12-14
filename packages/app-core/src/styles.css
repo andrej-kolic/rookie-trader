@@ -47,7 +47,7 @@ body {
 /* Main application container - full viewport grid layout */
 .AppCore {
   display: grid;
-  grid-template-rows: auto auto 1fr; /* brand header, trading header, main content */
+  grid-template-rows: auto auto 1fr auto; /* brand header, trading header, main content, footer */
   gap: 1rem; /* Gap between sections */
   height: 100vh;
   overflow: hidden;
