@@ -37,13 +37,11 @@ app.get(
       res.json({ result: { token } });
     } catch (error: unknown) {
       console.error('Error fetching WS token:', error);
-      res
-        .status(500)
-        .json({
-          error:
-            (error instanceof Error ? error.message : null) ??
-            'Failed to fetch token',
-        });
+      res.status(500).json({
+        error:
+          (error instanceof Error ? error.message : null) ??
+          'Failed to fetch token',
+      });
     }
   }),
 );
@@ -61,13 +59,11 @@ app.get(
       res.json(response);
     } catch (error: unknown) {
       console.error('Error fetching balance:', error);
-      res
-        .status(500)
-        .json({
-          error:
-            (error instanceof Error ? error.message : null) ??
-            'Failed to fetch balance',
-        });
+      res.status(500).json({
+        error:
+          (error instanceof Error ? error.message : null) ??
+          'Failed to fetch balance',
+      });
     }
   }),
 );
