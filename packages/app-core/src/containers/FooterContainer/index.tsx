@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import type { Subscription } from 'rxjs';
-import { subscribeToBalances } from '../../services/kraken-ws-service';
-import { toError } from '../../utils/error-utils';
+import React, { useState } from 'react';
+import { useBalances } from '../../hooks/use-balances';
 import './styles.css';
 
 type Tab = 'balances' | 'orders' | 'trades';
 
 export function FooterContainer() {
   const [activeTab, setActiveTab] = useState<Tab>('balances');
-
-  // TODO: move subscription to business layer
-  useEffect(() => {
-    let subscription: Subscription | null = null;
-
-    subscription = subscribeToBalances().subscribe({
-      next: (update) => {
-        // if (!isMounted) return;
-        console.log('Balances update:', update);
-      },
-      error: (err) => {
-        // if (!isMounted) return;
-        const error = toError(err);
-        console.error('Balances error:', error);
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  const { balances, loading, error } = useBalances();
 
   return (
     <footer className="FooterContainer">
@@ -44,8 +22,33 @@ export function FooterContainer() {
       </div>
       <div className="FooterContainer__content">
         {activeTab === 'balances' && (
+          // TODO: extract balances component
           <div>
-            <p>Balances content goes here</p>
+            {loading && <div>Loading balances...</div>}
+            {error && (
+              <div style={{ color: 'red' }}>Error: {error.message}</div>
+            )}
+            {!loading && !error && balances.length === 0 && (
+              <div>No balances</div>
+            )}
+            {!loading && !error && balances.length > 0 && (
+              <table style={{ width: '100%', textAlign: 'left' }}>
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {balances.map((balance) => (
+                    <tr key={balance.asset}>
+                      <td>{balance.asset}</td>
+                      <td>{balance.balance}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         )}
       </div>
