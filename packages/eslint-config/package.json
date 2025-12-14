@@ -10,7 +10,8 @@
     "./react-internal": "./react-internal.js",
     "./webpack": "./webpack.js",
     "./vite": "./vite.js",
-    "./esbuild": "./esbuild.js"
+    "./esbuild": "./esbuild.js",
+    "./express": "./express.js"
   },
   "devDependencies": {
     "@eslint/js": "9.39.0",

@@ -16,9 +16,10 @@ const credentials = {
 
 // Helper to handle async errors
 const asyncHandler =
-  (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) =>
-  (req: Request, res: Response, next: NextFunction) =>
+  (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
+  (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
+  };
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Kraken Proxy is running');
@@ -34,9 +35,15 @@ app.get(
     try {
       const token = await getWsAuthToken(credentials);
       res.json({ result: { token } });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching WS token:', error);
-      res.status(500).json({ error: error.message || 'Failed to fetch token' });
+      res
+        .status(500)
+        .json({
+          error:
+            (error instanceof Error ? error.message : null) ??
+            'Failed to fetch token',
+        });
     }
   }),
 );
@@ -52,11 +59,15 @@ app.get(
         credentials,
       );
       res.json(response);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching balance:', error);
       res
         .status(500)
-        .json({ error: error.message || 'Failed to fetch balance' });
+        .json({
+          error:
+            (error instanceof Error ? error.message : null) ??
+            'Failed to fetch balance',
+        });
     }
   }),
 );

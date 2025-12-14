@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  port: process.env.PORT || 3000,
+  port: process.env.PORT ?? 3000,
   kraken: {
-    apiKey: process.env.KRAKEN_API_KEY || '',
-    apiSecret: process.env.KRAKEN_API_SECRET || '',
+    apiKey: process.env.KRAKEN_API_KEY ?? '',
+    apiSecret: process.env.KRAKEN_API_SECRET ?? '',
   },
 };
 
