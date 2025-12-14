@@ -1,7 +1,7 @@
 import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
-import { timer } from 'rxjs';
+import { timer, defer } from 'rxjs';
 import { retry, share, switchMap } from 'rxjs/operators';
 
 export type TickerUpdate =
@@ -186,4 +186,49 @@ const heartbeatShared$ = withRetryAndShare(Kraken.publicWsHeartbeat$);
  */
 export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
   return heartbeatShared$;
+}
+
+//
+// Private / Authenticated
+//
+
+async function getWsToken(): Promise<string> {
+  const response = await fetch('http://localhost:3000/ws-token');
+  if (!response.ok) {
+    throw new Error(`Failed to fetch WS token: ${response.statusText}`);
+  }
+  const data = (await response.json()) as { result: { token: string } };
+  console.log('WS token:', data.result.token);
+  return data.result.token;
+}
+
+// Shared token for all private subscriptions
+const tokenShared$ = defer(() => getWsToken()).pipe(
+  share({
+    resetOnRefCountZero: false, // Keep token cached across subscriptions
+    resetOnError: true, // Refetch on error (e.g., token expired)
+    resetOnComplete: true, // Refetch if completed (rare)
+  }),
+);
+
+const balancesShared$ = withRetryAndShare(
+  tokenShared$.pipe(
+    switchMap((token) =>
+      Kraken.privateWsSubscription({ channel: 'balances' }, token),
+    ),
+    switchMap((obs) => obs),
+  ),
+);
+
+export type BalanceUpdate =
+  Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
+
+/**
+ * Subscribe to private balance updates
+ * Automatically fetches fresh token on connection/reconnection
+ *
+ * @returns Observable stream of balance updates
+ */
+export function subscribeToBalances(): Observable<BalanceUpdate> {
+  return balancesShared$;
 }
