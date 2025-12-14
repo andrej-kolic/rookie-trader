@@ -3,6 +3,7 @@ import { debugLog } from './utils/debug';
 import { TradingHeader } from './components/TradingHeader';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
 import { PriceChartContainer } from './containers/PriceChartContainer';
+import { FooterContainer } from './containers/FooterContainer';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -14,7 +15,7 @@ export function AppCore(_props: {
   children: React.ReactNode;
   href: string;
 }): React.JSX.Element {
-  debugLog();
+  // debugLog();
 
   return (
     <div className="AppCore">
@@ -32,6 +33,8 @@ export function AppCore(_props: {
           <PriceChartContainer />
         </div>
       </main>
+
+      <FooterContainer />
     </div>
   );
 }
