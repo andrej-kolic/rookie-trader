@@ -3,6 +3,7 @@ import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
 import { timer, defer } from 'rxjs';
 import { retry, share, switchMap } from 'rxjs/operators';
+import { getEnvironmentVariables } from '../utils/environment';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -193,7 +194,8 @@ export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
 //
 
 async function getWsToken(): Promise<string> {
-  const response = await fetch('http://localhost:3000/ws-token');
+  const krakenProxyUrl = getEnvironmentVariables().APP_REACT_KRAKEN_PROXY_URL;
+  const response = await fetch(`${krakenProxyUrl}/ws-token`);
   if (!response.ok) {
     throw new Error(`Failed to fetch WS token: ${response.statusText}`);
   }

@@ -7,6 +7,7 @@ export type EnvironmentVariables = {
   // client
   readonly APP_REACT_ENV_FILE: string;
   readonly APP_REACT_TITLE: string;
+  readonly APP_REACT_KRAKEN_PROXY_URL: string;
 };
 
 const environmentVariables: EnvironmentVariables = {
@@ -16,6 +17,7 @@ const environmentVariables: EnvironmentVariables = {
 
   APP_REACT_ENV_FILE: import.meta.env.APP_REACT_ENV_FILE,
   APP_REACT_TITLE: import.meta.env.APP_REACT_TITLE,
+  APP_REACT_KRAKEN_PROXY_URL: import.meta.env.APP_REACT_KRAKEN_PROXY_URL,
 };
 
 // TODO: rename to getRuntimeEnvVariables()
