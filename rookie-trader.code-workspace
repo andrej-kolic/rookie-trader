@@ -17,6 +17,10 @@
 			"path": "apps/app-webpack"
 		},
 		{
+			"name": "🚀 kraken-proxy",
+			"path": "apps/kraken-proxy"
+		},
+		{
 			"name": "🚀 ui-storybook",
 			"path": "apps/ui-storybook"
 		},
