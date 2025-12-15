@@ -8,6 +8,7 @@ import { FooterContainer } from './containers/FooterContainer';
 import '@repo/ui/theme.css';
 import './styles.css';
 import { Header } from './components/Header';
+import { LoginContainer } from './containers/LoginContainer';
 
 export function AppCore(_props: {
   className?: string;
@@ -20,6 +21,8 @@ export function AppCore(_props: {
   return (
     <div className="AppCore">
       <Header title="Rookie" />
+
+      <LoginContainer />
 
       <header className="AppCore__trading-header">
         <TradingHeader />

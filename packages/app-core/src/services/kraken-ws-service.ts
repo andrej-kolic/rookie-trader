@@ -193,9 +193,26 @@ export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
 // Private / Authenticated
 //
 
+import { getToken } from '../utils/auth';
+
 async function getWsToken(): Promise<string> {
   const krakenProxyUrl = getEnvironmentVariables().APP_REACT_KRAKEN_PROXY_URL;
-  const response = await fetch(`${krakenProxyUrl}/ws-token`);
+  const token = getToken();
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  console.log('Headers:', headers);
+
+  const response = await fetch(`${krakenProxyUrl}/ws-token`, {
+    headers,
+  });
+
   if (!response.ok) {
     throw new Error(`Failed to fetch WS token: ${response.statusText}`);
   }
