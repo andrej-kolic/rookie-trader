@@ -8,6 +8,9 @@ export const config = {
     apiKey: process.env.KRAKEN_API_KEY ?? '',
     apiSecret: process.env.KRAKEN_API_SECRET ?? '',
   },
+  appSecret:
+    process.env.APP_SECRET ??
+    'dev-secret-do-not-use-in-prod-01234567890123456789012345678901',
 };
 
 if (!config.kraken.apiKey || !config.kraken.apiSecret) {
