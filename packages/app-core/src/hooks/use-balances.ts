@@ -4,6 +4,7 @@ import { mapBalance } from '../mappers/balance-mapper';
 import { toError } from '../utils/error-utils';
 import type { Balance } from '../domain/Balance';
 import type { Subscription } from 'rxjs';
+import { useAuthStore } from '../state/auth-store';
 
 export type BalancesState = {
   balances: Balance[];
@@ -41,7 +42,9 @@ export function useBalances(): BalancesState {
         subscription = null;
       }
 
-      subscription = subscribeToBalances().subscribe({
+      subscription = subscribeToBalances(
+        () => useAuthStore.getState().session?.token ?? null,
+      ).subscribe({
         next: (update) => {
           if (!isMounted) return;
 

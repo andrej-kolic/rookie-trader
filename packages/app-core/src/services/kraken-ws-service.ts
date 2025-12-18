@@ -3,7 +3,6 @@ import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
 import { timer, defer } from 'rxjs';
 import { retry, share, switchMap } from 'rxjs/operators';
-import { getEnvironmentVariables } from '../utils/environment';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -193,51 +192,28 @@ export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
 // Private / Authenticated
 //
 
-import { getToken } from '../utils/auth';
+import * as authService from './auth-service';
 
-async function getWsToken(): Promise<string> {
-  const krakenProxyUrl = getEnvironmentVariables().APP_REACT_KRAKEN_PROXY_URL;
-  const token = getToken();
-
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  console.log('Headers:', headers);
-
-  const response = await fetch(`${krakenProxyUrl}/ws-token`, {
-    headers,
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch WS token: ${response.statusText}`);
-  }
-  const data = (await response.json()) as { result: { token: string } };
-  console.log('WS token:', data.result.token);
-  return data.result.token;
+/**
+ * Get WebSocket authentication token
+ * Pure function - token must be provided by caller
+ *
+ * @param authToken - The encrypted authentication token from login
+ * @returns Promise with WebSocket token
+ */
+function getWsToken(authToken: string): Promise<string> {
+  return authService.getWsToken(authToken);
 }
 
-// Shared token for all private subscriptions
-const tokenShared$ = defer(() => getWsToken()).pipe(
-  share({
-    resetOnRefCountZero: false, // Keep token cached across subscriptions
-    resetOnError: true, // Refetch on error (e.g., token expired)
-    resetOnComplete: true, // Refetch if completed (rare)
-  }),
-);
-
-const balancesShared$ = withRetryAndShare(
-  tokenShared$.pipe(
-    switchMap((token) =>
-      Kraken.privateWsSubscription({ channel: 'balances' }, token),
-    ),
-    switchMap((obs) => obs),
-  ),
-);
+/**
+ * Shared WebSocket token observable (module-level singleton)
+ * Initialized lazily on first private subscription
+ * Shared across all authenticated subscriptions to avoid redundant token fetches
+ *
+ * Assumption: Single user session per app instance (consistent with app architecture)
+ * The first call to any private subscription establishes the token provider
+ */
+let wsTokenShared$: Observable<string> | null = null;
 
 export type BalanceUpdate =
   Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
@@ -246,8 +222,39 @@ export type BalanceUpdate =
  * Subscribe to private balance updates
  * Automatically fetches fresh token on connection/reconnection
  *
+ * Note: Uses module-level shared token observable for efficiency
+ * All subscriptions share the same WS token to avoid redundant API calls
+ *
+ * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
  * @returns Observable stream of balance updates
  */
-export function subscribeToBalances(): Observable<BalanceUpdate> {
-  return balancesShared$;
+export function subscribeToBalances(
+  getAuthToken: () => string | null,
+): Observable<BalanceUpdate> {
+  // Initialize shared token observable on first call
+  // Subsequent calls reuse the same token observable for efficiency
+  wsTokenShared$ ??= defer(() => {
+    const authToken = getAuthToken();
+
+    if (!authToken) {
+      throw new Error('Not authenticated. Please login first.');
+    }
+
+    return getWsToken(authToken);
+  }).pipe(
+    share({
+      resetOnRefCountZero: false, // Keep token cached across subscriptions
+      resetOnError: true, // Refetch on error (e.g., token expired)
+      resetOnComplete: true, // Refetch if completed (rare)
+    }),
+  );
+
+  return withRetryAndShare(
+    wsTokenShared$.pipe(
+      switchMap((token) =>
+        Kraken.privateWsSubscription({ channel: 'balances' }, token),
+      ),
+      switchMap((obs) => obs),
+    ),
+  );
 }
