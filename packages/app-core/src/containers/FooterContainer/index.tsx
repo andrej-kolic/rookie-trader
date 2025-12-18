@@ -4,6 +4,11 @@ import './styles.css';
 
 type Tab = 'balances' | 'orders' | 'trades';
 
+// TODO: Add authentication guard
+// This component should only render if user is authenticated
+// Consider wrapping sensitive data (balances, orders, trades) with AuthGuard component
+// Example: {isAuthenticated ? <BalancesTab /> : <div>Please login to view balances</div>}
+
 export function FooterContainer() {
   const [activeTab, setActiveTab] = useState<Tab>('balances');
   const { balances, loading, error } = useBalances();
