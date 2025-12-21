@@ -215,6 +215,15 @@ function getWsToken(authToken: string): Promise<string> {
  */
 let wsTokenShared$: Observable<string> | null = null;
 
+/**
+ * Reset the cached WebSocket token
+ * Called on logout to ensure fresh token fetch on next authentication
+ * This clears the module-level token cache forcing re-authentication
+ */
+export function resetWsToken(): void {
+  wsTokenShared$ = null;
+}
+
 export type BalanceUpdate =
   Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
 
