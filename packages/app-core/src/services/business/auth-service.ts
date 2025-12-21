@@ -1,15 +1,15 @@
 /**
- * Authentication Business Service - Business Logic Layer
+ * Authentication Service - Business Logic Layer
  *
  * Framework-agnostic service containing authentication business logic.
  * Orchestrates between data services and state management.
  * Handles validation, error handling, and business rules.
  */
 
-import { AuthSession } from '../domain/AuthSession';
-import * as authDataService from './auth-service';
-import { useAuthStore } from '../state/auth-store';
-import { resetWsToken } from './kraken-ws-service';
+import { AuthSession } from '../../domain/AuthSession';
+import * as authApi from '../api/auth-api';
+import { useAuthStore } from '../../state/auth-store';
+import { resetWsToken } from '../api/kraken-ws-api';
 
 const AUTH_STORAGE_KEY = 'kraken_auth_session';
 
@@ -94,7 +94,7 @@ export async function login(apiKey: string, apiSecret: string): Promise<void> {
 
   try {
     // Call data service
-    const loginResponse = await authDataService.login({ apiKey, apiSecret });
+    const loginResponse = await authApi.login({ apiKey, apiSecret });
 
     // Create domain model
     const authSession = new AuthSession(loginResponse.token);
@@ -108,7 +108,7 @@ export async function login(apiKey: string, apiSecret: string): Promise<void> {
   } catch (error) {
     // Business logic: convert service errors to user-friendly messages
     const errorMessage =
-      error instanceof authDataService.AuthServiceError
+      error instanceof authApi.AuthServiceError
         ? error.message
         : 'Failed to login. Please try again.';
 
@@ -134,7 +134,7 @@ export async function logout(): Promise<void> {
     resetWsToken();
 
     // Call data service (currently no-op, but may invalidate server-side session in future)
-    await authDataService.logout();
+    await authApi.logout();
 
     // Business rule: always clear local session, even if server call fails
     removeSessionFromStorage();

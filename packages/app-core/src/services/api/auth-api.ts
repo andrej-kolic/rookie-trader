@@ -1,5 +1,5 @@
 /**
- * Authentication Service - Data Layer
+ * Authentication API Service - Data Layer
  *
  * Handles all HTTP communication with the kraken-proxy for authentication.
  * This service is responsible for:
@@ -8,7 +8,7 @@
  * - Logout operations
  */
 
-import { getEnvironmentVariables } from '../utils/environment';
+import { getEnvironmentVariables } from '../../utils/environment';
 
 export type LoginCredentials = {
   apiKey: string;
