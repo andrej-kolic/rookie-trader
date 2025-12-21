@@ -84,12 +84,12 @@ const getCredentials = (req: Request) => {
   }
 
   // Fallback to Env
-  if (config.kraken.apiKey && config.kraken.apiSecret) {
-    return {
-      apiKey: config.kraken.apiKey,
-      apiSecret: config.kraken.apiSecret,
-    };
-  }
+  // if (config.kraken.apiKey && config.kraken.apiSecret) {
+  //   return {
+  //     apiKey: config.kraken.apiKey,
+  //     apiSecret: config.kraken.apiSecret,
+  //   };
+  // }
 
   throw new Error('No credentials provided');
 };
