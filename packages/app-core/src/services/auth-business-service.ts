@@ -9,6 +9,7 @@
 import { AuthSession } from '../domain/AuthSession';
 import * as authDataService from './auth-service';
 import { useAuthStore } from '../state/auth-store';
+import { resetWsToken } from './kraken-ws-service';
 
 const AUTH_STORAGE_KEY = 'kraken_auth_session';
 
@@ -129,6 +130,9 @@ export async function logout(): Promise<void> {
   store.setError(null);
 
   try {
+    // Clear WebSocket token cache to force fresh token on next login
+    resetWsToken();
+
     // Call data service (currently no-op, but may invalidate server-side session in future)
     await authDataService.logout();
 
@@ -141,6 +145,7 @@ export async function logout(): Promise<void> {
     console.error('Logout failed:', error);
 
     // Business rule: still clear local session on error
+    resetWsToken();
     removeSessionFromStorage();
     store.setSession(null);
     store.setLoading(false);

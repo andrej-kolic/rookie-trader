@@ -25,14 +25,23 @@ export function useBalances(): BalancesState {
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
     let isMounted = true;
     let subscription: Subscription | null = null;
 
-    // WebSocket subscription legitimately requires setting loading state
-    // This syncs React state with external WebSocket system
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Only subscribe when authenticated
+    if (!isAuthenticated) {
+      // WebSocket subscription legitimately requires setting state
+      // This syncs React state with external WebSocket system
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBalancesMap(new Map());
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -42,6 +51,7 @@ export function useBalances(): BalancesState {
         subscription = null;
       }
 
+      console.log(' * Subscribing to balances updates');
       subscription = subscribeToBalances(
         () => useAuthStore.getState().session?.token ?? null,
       ).subscribe({
@@ -79,7 +89,7 @@ export function useBalances(): BalancesState {
         subscription.unsubscribe();
       }
     };
-  }, []);
+  }, [isAuthenticated]);
 
   return {
     balances: Array.from(balancesMap.values()),
