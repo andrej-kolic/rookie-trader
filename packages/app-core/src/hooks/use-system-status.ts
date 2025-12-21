@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Subscription } from 'rxjs';
-import { subscribeToStatus } from '../services/kraken-ws-service';
+import { subscribeToStatus } from '../services/api/kraken-ws-api';
 import { mapSystemStatus } from '../mappers/system-status-mapper';
 import { toError } from '../utils/error-utils';
 import { SystemStatus } from '../domain/SystemStatus';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Subscription } from 'rxjs';
-import { subscribeToInstrument } from '../services/kraken-ws-service';
+import { subscribeToInstrument } from '../services/api/kraken-ws-api';
 import { mapInstrumentPairs } from '../mappers/instrument-mapper';
 import { toError } from '../utils/error-utils';
 import type { TradingPair } from '../domain/TradingPair';

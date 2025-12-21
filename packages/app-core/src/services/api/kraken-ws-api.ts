@@ -192,7 +192,7 @@ export function subscribeToHeartbeat(): Observable<Heartbeat.Update> {
 // Private / Authenticated
 //
 
-import * as authService from './auth-service';
+import * as authApi from './auth-api';
 
 /**
  * Get WebSocket authentication token
@@ -202,7 +202,7 @@ import * as authService from './auth-service';
  * @returns Promise with WebSocket token
  */
 function getWsToken(authToken: string): Promise<string> {
-  return authService.getWsToken(authToken);
+  return authApi.getWsToken(authToken);
 }
 
 /**
