@@ -23,6 +23,10 @@ export function debugLog() {
     '* import.meta.env.APP_REACT_ENV_FILE:',
     import.meta.env.APP_REACT_ENV_FILE,
   );
+  console.log(
+    '* import.meta.env.APP_REACT_KRAKEN_PROXY_URL:',
+    import.meta.env.APP_REACT_KRAKEN_PROXY_URL,
+  );
 
   // // @ts-ignore - external
   // console.log("* import.meta.env.APP_REACT_ROOT_TEST:", import.meta.env.APP_REACT_ROOT_TEST, typeof import.meta.env.APP_REACT_ROOT_TEST, import.meta.env.APP_REACT_ROOT_TEST?.length);

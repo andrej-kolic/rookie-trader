@@ -14,6 +14,10 @@ interface ImportMetaEnv {
   // client:
   readonly APP_REACT_TITLE: string;
   readonly APP_REACT_ENV_FILE: string;
+  readonly APP_REACT_ENV_FILE_ROOT: string;
+  readonly APP_REACT_ENV_FILE_STAGING: string;
+  readonly APP_REACT_ENV_FILE_STAGING_LOCAL: string;
+
   readonly APP_REACT_KRAKEN_PROXY_URL: string;
 
   readonly [key: string]: string;
