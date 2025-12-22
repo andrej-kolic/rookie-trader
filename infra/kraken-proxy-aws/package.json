@@ -1,0 +1,24 @@
+{
+  "name": "@repo/infra-kraken-proxy-aws",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS infrastructure for kraken-proxy API deployment",
+  "type": "module",
+  "scripts": {
+    "deploy:infra": "./scripts/deploy.sh infra",
+    "deploy:update": "./scripts/deploy.sh update",
+    "deploy:outputs": "./scripts/deploy.sh outputs",
+    "validate": "./scripts/deploy.sh validate",
+    "setup:oidc": "./scripts/oidc.sh"
+  },
+  "keywords": [
+    "aws",
+    "cloudformation",
+    "lambda",
+    "cloudfront",
+    "kraken",
+    "api"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}

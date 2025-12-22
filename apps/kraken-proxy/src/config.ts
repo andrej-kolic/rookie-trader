@@ -1,6 +1,11 @@
+// TODO: move to separate file
 import dotenv from 'dotenv';
 
-dotenv.config();
+// TODO: move to separate file
+// In Lambda, don't try to load .env file
+if (process.env.AWS_LAMBDA_FUNCTION_NAME === undefined) {
+  dotenv.config();
+}
 
 export const config = {
   port: process.env.PORT ?? 3000,

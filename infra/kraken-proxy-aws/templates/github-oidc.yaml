@@ -1,0 +1,219 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'GitHub OIDC Provider and IAM Role for Kraken Proxy Deployments'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Project name used for resource naming
+    Default: 'kraken-proxy'
+
+  GitHubOrg:
+    Type: String
+    Description: GitHub organization or username
+
+  GitHubRepo:
+    Type: String
+    Description: GitHub repository name
+
+  OIDCProviderArn:
+    Type: String
+    Description: Existing OIDC Provider ARN (leave empty to create new)
+    Default: ''
+
+Conditions:
+  CreateOIDCProvider: !Equals [!Ref OIDCProviderArn, '']
+
+Resources:
+  # GitHub OIDC Provider (only if doesn't exist)
+  GithubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: CreateOIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+        - 1c58a3a8518e8759bf075b76b750d4f2df264fcd
+
+  # IAM Role for GitHub Actions
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-github-actions-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !If
+                - CreateOIDCProvider
+                - !Ref GithubOIDCProvider
+                - !Ref OIDCProviderArn
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com'
+              StringLike:
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+      ManagedPolicyArns:
+        - !Ref DeploymentPolicy
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Deployment Policy
+  DeploymentPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${ProjectName}-deployment-policy'
+      Description: Permissions for deploying Kraken Proxy infrastructure
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # CloudFormation permissions
+          - Sid: CloudFormationAccess
+            Effect: Allow
+            Action:
+              - 'cloudformation:CreateStack'
+              - 'cloudformation:UpdateStack'
+              - 'cloudformation:DeleteStack'
+              - 'cloudformation:DescribeStacks'
+              - 'cloudformation:DescribeStackEvents'
+              - 'cloudformation:DescribeStackResources'
+              - 'cloudformation:GetTemplate'
+              - 'cloudformation:ValidateTemplate'
+              - 'cloudformation:ListStacks'
+              - 'cloudformation:CreateChangeSet'
+              - 'cloudformation:DescribeChangeSet'
+              - 'cloudformation:ExecuteChangeSet'
+            Resource:
+              - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${ProjectName}*/*'
+
+          # S3 permissions for template storage
+          - Sid: S3TemplateStorage
+            Effect: Allow
+            Action:
+              - 's3:CreateBucket'
+              - 's3:PutObject'
+              - 's3:GetObject'
+              - 's3:ListBucket'
+              - 's3:PutBucketVersioning'
+              - 's3:PutBucketPublicAccessBlock'
+            Resource:
+              - !Sub 'arn:aws:s3:::${ProjectName}-cf-templates-*'
+              - !Sub 'arn:aws:s3:::${ProjectName}-cf-templates-*/*'
+
+          # Lambda permissions
+          - Sid: LambdaManagement
+            Effect: Allow
+            Action:
+              - 'lambda:CreateFunction'
+              - 'lambda:UpdateFunctionCode'
+              - 'lambda:UpdateFunctionConfiguration'
+              - 'lambda:DeleteFunction'
+              - 'lambda:GetFunction'
+              - 'lambda:ListFunctions'
+              - 'lambda:PublishVersion'
+              - 'lambda:CreateFunctionUrlConfig'
+              - 'lambda:UpdateFunctionUrlConfig'
+              - 'lambda:DeleteFunctionUrlConfig'
+              - 'lambda:GetFunctionUrlConfig'
+              - 'lambda:AddPermission'
+              - 'lambda:RemovePermission'
+              - 'lambda:GetPolicy'
+            Resource:
+              - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ProjectName}*'
+
+          # IAM Role permissions (for Lambda execution role)
+          - Sid: IAMRoleManagement
+            Effect: Allow
+            Action:
+              - 'iam:CreateRole'
+              - 'iam:DeleteRole'
+              - 'iam:GetRole'
+              - 'iam:PassRole'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DetachRolePolicy'
+              - 'iam:PutRolePolicy'
+              - 'iam:DeleteRolePolicy'
+              - 'iam:GetRolePolicy'
+              - 'iam:TagRole'
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${ProjectName}*'
+
+          # CloudWatch Logs
+          - Sid: CloudWatchLogs
+            Effect: Allow
+            Action:
+              - 'logs:CreateLogGroup'
+              - 'logs:DeleteLogGroup'
+              - 'logs:DescribeLogGroups'
+              - 'logs:PutRetentionPolicy'
+              - 'logs:TagLogGroup'
+            Resource:
+              - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ProjectName}*'
+
+          # CloudFront permissions
+          - Sid: CloudFrontManagement
+            Effect: Allow
+            Action:
+              - 'cloudfront:CreateDistribution'
+              - 'cloudfront:UpdateDistribution'
+              - 'cloudfront:DeleteDistribution'
+              - 'cloudfront:GetDistribution'
+              - 'cloudfront:GetDistributionConfig'
+              - 'cloudfront:ListDistributions'
+              - 'cloudfront:TagResource'
+              - 'cloudfront:CreateCachePolicy'
+              - 'cloudfront:UpdateCachePolicy'
+              - 'cloudfront:DeleteCachePolicy'
+              - 'cloudfront:GetCachePolicy'
+              - 'cloudfront:CreateOriginRequestPolicy'
+              - 'cloudfront:UpdateOriginRequestPolicy'
+              - 'cloudfront:DeleteOriginRequestPolicy'
+              - 'cloudfront:GetOriginRequestPolicy'
+              - 'cloudfront:CreateResponseHeadersPolicy'
+              - 'cloudfront:UpdateResponseHeadersPolicy'
+              - 'cloudfront:DeleteResponseHeadersPolicy'
+              - 'cloudfront:GetResponseHeadersPolicy'
+              - 'cloudfront:CreateInvalidation'
+            Resource: '*'
+
+          # ACM Certificate permissions
+          - Sid: ACMCertificateManagement
+            Effect: Allow
+            Action:
+              - 'acm:RequestCertificate'
+              - 'acm:DescribeCertificate'
+              - 'acm:DeleteCertificate'
+              - 'acm:ListCertificates'
+              - 'acm:AddTagsToCertificate'
+            Resource: '*'
+
+          # Route53 permissions
+          - Sid: Route53Management
+            Effect: Allow
+            Action:
+              - 'route53:GetHostedZone'
+              - 'route53:ListHostedZones'
+              - 'route53:GetChange'
+              - 'route53:ChangeResourceRecordSets'
+              - 'route53:ListResourceRecordSets'
+            Resource: '*'
+
+Outputs:
+  RoleArn:
+    Description: IAM Role ARN for GitHub Actions
+    Value: !GetAtt GitHubActionsRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+
+  OIDCProviderArn:
+    Description: OIDC Provider ARN (reuse this for other projects)
+    Value: !If
+      - CreateOIDCProvider
+      - !Ref GithubOIDCProvider
+      - !Ref OIDCProviderArn
+    Export:
+      Name: !Sub '${AWS::StackName}-OIDCProviderArn'

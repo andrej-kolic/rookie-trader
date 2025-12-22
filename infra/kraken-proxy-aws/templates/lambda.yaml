@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Lambda Function with Function URL for Kraken Proxy API'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Project name used for resource naming
+
+  NodeRuntime:
+    Type: String
+    Description: Node.js runtime version
+
+  LambdaMemory:
+    Type: Number
+    Description: Lambda memory allocation in MB
+
+  LambdaTimeout:
+    Type: Number
+    Description: Lambda timeout in seconds
+
+  AppSecret:
+    Type: String
+    Description: Application secret for encryption
+    NoEcho: true
+    Default: 'changeme-production-secret-32-chars-minimum!'
+
+Resources:
+  # IAM Role for Lambda
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-lambda-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # CloudWatch Log Group
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${ProjectName}-api'
+      RetentionInDays: 7
+
+  # Lambda Function
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub '${ProjectName}-api'
+      Description: 'Kraken Proxy API - Express.js REST API'
+      Runtime: !Ref NodeRuntime
+      Handler: lambda-handler.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: !Ref LambdaMemory
+      Timeout: !Ref LambdaTimeout
+      Code:
+        ZipFile: |
+          exports.handler = async (event) => {
+            return {
+              statusCode: 200,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({
+                message: 'Placeholder - Deploy actual code using deployment script',
+                timestamp: new Date().toISOString()
+              })
+            };
+          };
+      Environment:
+        Variables:
+          # TODO: extract to separate file
+          NODE_ENV: production
+          LOG_LEVEL: info
+          APP_SECRET: !Ref AppSecret
+          # Prevent ts-kraken from trying to load .env file
+          DOTENV_CONFIG_PATH: /dev/null
+          # Dummy credentials to prevent ts-kraken from crashing on init
+          KRAKEN_API_KEY: dummy
+          KRAKEN_API_SECRET: dummy
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # Lambda Function URL
+  FunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt ApiFunction.Arn
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - HEAD
+        AllowHeaders:
+          - '*'
+        ExposeHeaders:
+          - '*'
+        MaxAge: 86400
+        AllowCredentials: false
+
+  # Permission for Function URL - required for AuthType NONE
+  FunctionUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ApiFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+Outputs:
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt ApiFunction.Arn
+
+  FunctionName:
+    Description: Lambda Function Name
+    Value: !Ref ApiFunction
+
+  FunctionUrl:
+    Description: Lambda Function URL
+    Value: !GetAtt FunctionUrl.FunctionUrl
+
+  LogGroupName:
+    Description: CloudWatch Log Group Name
+    Value: !Ref LogGroup

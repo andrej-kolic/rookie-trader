@@ -29,6 +29,10 @@
 			"path": "infra/aws"
 		},
 		{
+			"name": "🛠️ @repo/infra-kraken-proxy-aws",
+			"path": "infra/kraken-proxy-aws"
+		},
+		{
 			"name": "🛠️ @repo/infra-netlify",
 			"path": "infra/netlify"
 		},

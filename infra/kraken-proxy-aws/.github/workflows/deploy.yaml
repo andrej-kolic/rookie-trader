@@ -1,0 +1,68 @@
+name: Deploy Kraken Proxy
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Deployment action'
+        required: true
+        type: choice
+        options:
+          - infra
+          - update
+          - outputs
+        default: 'update'
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/kraken-proxy-aws/**'
+      - 'apps/kraken-proxy/**'
+      - '.github/workflows/deploy-kraken-proxy.yaml'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-kraken-proxy-${{ github.ref }}-${{ github.event.inputs.action || 'update' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/kraken-proxy-aws
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: apps/kraken-proxy
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.KRAKEN_PROXY_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy
+        uses: ./.github/actions/deploy
+        with:
+          action: ${{ github.event.inputs.action || 'update' }}
+          working-directory: infra/kraken-proxy-aws

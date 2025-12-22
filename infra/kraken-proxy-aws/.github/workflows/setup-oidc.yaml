@@ -1,0 +1,49 @@
+name: Setup GitHub OIDC
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'I understand this is a one-time setup (type "yes" to confirm)'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup-oidc:
+    name: Setup OIDC Provider and Role
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'yes'
+    defaults:
+      run:
+        working-directory: infra/kraken-proxy-aws
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (Initial Setup)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup OIDC
+        run: |
+          chmod +x scripts/oidc.sh
+          ./scripts/oidc.sh
+
+      - name: Display Role ARN
+        run: |
+          ROLE_ARN=$(aws cloudformation describe-stacks \
+            --stack-name kraken-proxy-github-oidc \
+            --region us-east-1 \
+            --query 'Stacks[0].Outputs[?OutputKey==`RoleArn`].OutputValue' \
+            --output text)
+
+          echo "::notice title=OIDC Setup Complete::Add this Role ARN as GitHub secret 'KRAKEN_PROXY_AWS_ROLE_ARN': ${ROLE_ARN}"
+          echo "ROLE_ARN=${ROLE_ARN}" >> $GITHUB_OUTPUT

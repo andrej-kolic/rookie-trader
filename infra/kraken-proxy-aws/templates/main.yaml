@@ -1,0 +1,179 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Kraken Proxy API - Main Stack (Lambda + API Gateway + Route53)'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Project name used for resource naming
+    AllowedPattern: '^[a-z][a-z0-9-]{2,19}$'
+    ConstraintDescription: 'Must be lowercase, alphanumeric with hyphens, 3-20 characters'
+
+  DomainName:
+    Type: String
+    Description: 'The apex domain name (e.g., example.com)'
+
+  SubDomain:
+    Type: String
+    Description: 'Subdomain prefix (e.g., api for api.example.com)'
+    Default: 'kraken'
+
+  HostedZoneId:
+    Type: String
+    Description: 'Route 53 Hosted Zone ID for the domain'
+
+  NodeRuntime:
+    Type: String
+    Description: 'Node.js runtime version for Lambda'
+    Default: 'nodejs20.x'
+    AllowedValues:
+      - 'nodejs18.x'
+      - 'nodejs20.x'
+
+  LambdaMemory:
+    Type: Number
+    Description: 'Lambda memory allocation in MB'
+    Default: 512
+    MinValue: 128
+    MaxValue: 10240
+
+  LambdaTimeout:
+    Type: Number
+    Description: 'Lambda timeout in seconds'
+    Default: 30
+    MinValue: 3
+    MaxValue: 900
+
+  AppSecret:
+    Type: String
+    Description: 'Application secret for encryption (min 32 characters)'
+    NoEcho: true
+    Default: 'changeme-production-secret-32-chars-minimum!'
+    MinLength: 32
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: 'Project Configuration'
+        Parameters:
+          - ProjectName
+      - Label:
+          default: 'Domain Configuration'
+        Parameters:
+          - DomainName
+          - SubDomain
+          - HostedZoneId
+      - Label:
+          default: 'Lambda Configuration'
+        Parameters:
+          - NodeRuntime
+          - LambdaMemory
+          - LambdaTimeout
+
+Resources:
+  # ACM Certificate (must be in us-east-1)
+  CertificateStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./acm-certificate.yaml
+      Parameters:
+        DomainName: !Ref DomainName
+        SubDomain: !Ref SubDomain
+        HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # Lambda Function with Function URL
+  LambdaStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./lambda.yaml
+      Parameters:
+        ProjectName: !Ref ProjectName
+        NodeRuntime: !Ref NodeRuntime
+        LambdaMemory: !Ref LambdaMemory
+        LambdaTimeout: !Ref LambdaTimeout
+        AppSecret: !Ref AppSecret
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # API Gateway HTTP API with Custom Domain
+  ApiGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - CertificateStack
+      - LambdaStack
+    Properties:
+      TemplateURL: ./api-gateway.yaml
+      Parameters:
+        ProjectName: !Ref ProjectName
+        DomainName: !Ref DomainName
+        SubDomain: !Ref SubDomain
+        CertificateArn: !GetAtt CertificateStack.Outputs.CertificateArn
+        LambdaFunctionArn: !GetAtt LambdaStack.Outputs.FunctionArn
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # Route 53 DNS Records (Alias to API Gateway)
+  Route53Stack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: ApiGatewayStack
+    Properties:
+      TemplateURL: ./route53.yaml
+      Parameters:
+        DomainName: !Ref DomainName
+        SubDomain: !Ref SubDomain
+        HostedZoneId: !Ref HostedZoneId
+        ApiGatewayDomainName: !GetAtt ApiGatewayStack.Outputs.CustomDomainRegionalDomainName
+        ApiGatewayHostedZoneId: !GetAtt ApiGatewayStack.Outputs.CustomDomainRegionalHostedZoneId
+      Tags:
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: ManagedBy
+          Value: CloudFormation
+
+Outputs:
+  LambdaFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt LambdaStack.Outputs.FunctionArn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaFunctionArn'
+
+  LambdaFunctionName:
+    Description: Lambda Function Name
+    Value: !GetAtt LambdaStack.Outputs.FunctionName
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaFunctionName'
+
+  FunctionUrl:
+    Description: Lambda Function URL (direct access)
+    Value: !GetAtt LambdaStack.Outputs.FunctionUrl
+
+  ApiGatewayId:
+    Description: API Gateway HTTP API ID
+    Value: !GetAtt ApiGatewayStack.Outputs.ApiId
+
+  ApiGatewayEndpoint:
+    Description: API Gateway default endpoint
+    Value: !GetAtt ApiGatewayStack.Outputs.ApiEndpoint
+
+  ApiUrl:
+    Description: API URL (custom domain)
+    Value: !Sub 'https://${SubDomain}.${DomainName}'
+
+  CertificateArn:
+    Description: ACM Certificate ARN
+    Value: !GetAtt CertificateStack.Outputs.CertificateArn
+
+  LogGroupName:
+    Description: CloudWatch Log Group Name
+    Value: !GetAtt LambdaStack.Outputs.LogGroupName
