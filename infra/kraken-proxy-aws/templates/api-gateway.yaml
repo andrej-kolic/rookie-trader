@@ -46,6 +46,7 @@ Resources:
         ExposeHeaders:
           - '*'
         MaxAge: 86400
+        AllowCredentials: false
 
   # Lambda Integration
   LambdaIntegration:
