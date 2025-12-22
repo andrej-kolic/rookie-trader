@@ -9,7 +9,8 @@
     "deploy:update": "./scripts/deploy.sh update",
     "deploy:outputs": "./scripts/deploy.sh outputs",
     "validate": "./scripts/deploy.sh validate",
-    "setup:oidc": "./scripts/oidc.sh"
+    "setup:oidc": "./scripts/oidc.sh",
+    "logs": "aws logs tail \"/aws/lambda/kraken-proxy-api\" --since 1m --format short --region us-east-1"
   },
   "keywords": [
     "aws",
