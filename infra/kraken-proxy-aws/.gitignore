@@ -1,0 +1,25 @@
+# Package outputs
+packaged.template
+deploy_output.json
+.aws-sam/
+
+# Lambda build artifacts
+dist/
+lambda/
+*.zip
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

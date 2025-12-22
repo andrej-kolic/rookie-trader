@@ -1,0 +1,132 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'API Gateway HTTP API with Custom Domain for Kraken Proxy'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Description: Project name used for resource naming
+
+  DomainName:
+    Type: String
+    Description: The apex domain name
+
+  SubDomain:
+    Type: String
+    Description: Subdomain prefix
+
+  CertificateArn:
+    Type: String
+    Description: ACM Certificate ARN
+
+  LambdaFunctionArn:
+    Type: String
+    Description: Lambda Function ARN
+
+Resources:
+  # API Gateway HTTP API
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub '${ProjectName}-api'
+      Description: Kraken Proxy HTTP API
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+          - HEAD
+          - OPTIONS
+        AllowHeaders:
+          - '*'
+        ExposeHeaders:
+          - '*'
+        MaxAge: 86400
+
+  # Lambda Integration
+  LambdaIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Ref LambdaFunctionArn
+      PayloadFormatVersion: '2.0'
+
+  # Default Route (catch all)
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: '$default'
+      Target: !Sub 'integrations/${LambdaIntegration}'
+
+  # Default Stage
+  DefaultStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: '$default'
+      AutoDeploy: true
+      AccessLogSettings:
+        DestinationArn: !GetAtt ApiLogGroup.Arn
+        Format: '$context.requestId $context.error.message $context.error.messageString'
+
+  # CloudWatch Log Group for API Gateway
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/apigateway/${ProjectName}'
+      RetentionInDays: 7
+
+  # Custom Domain
+  CustomDomain:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: !Sub '${SubDomain}.${DomainName}'
+      DomainNameConfigurations:
+        - CertificateArn: !Ref CertificateArn
+          EndpointType: REGIONAL
+          SecurityPolicy: TLS_1_2
+
+  # API Mapping
+  ApiMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    DependsOn: DefaultStage
+    Properties:
+      DomainName: !Ref CustomDomain
+      ApiId: !Ref HttpApi
+      Stage: '$default'
+
+  # Permission for API Gateway to invoke Lambda
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LambdaFunctionArn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*'
+
+Outputs:
+  ApiId:
+    Description: API Gateway HTTP API ID
+    Value: !Ref HttpApi
+
+  ApiEndpoint:
+    Description: API Gateway default endpoint
+    Value: !GetAtt HttpApi.ApiEndpoint
+
+  CustomDomainName:
+    Description: Custom Domain Name
+    Value: !Ref CustomDomain
+
+  CustomDomainRegionalDomainName:
+    Description: Regional Domain Name for Route53
+    Value: !GetAtt CustomDomain.RegionalDomainName
+
+  CustomDomainRegionalHostedZoneId:
+    Description: Regional Hosted Zone ID for Route53
+    Value: !GetAtt CustomDomain.RegionalHostedZoneId

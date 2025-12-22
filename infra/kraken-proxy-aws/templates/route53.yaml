@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Route 53 DNS Records for Kraken Proxy API (Alias to API Gateway)'
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: The apex domain name
+
+  SubDomain:
+    Type: String
+    Description: Subdomain prefix
+
+  HostedZoneId:
+    Type: String
+    Description: Route 53 Hosted Zone ID
+
+  ApiGatewayDomainName:
+    Type: String
+    Description: API Gateway Regional Domain Name
+
+  ApiGatewayHostedZoneId:
+    Type: String
+    Description: API Gateway Regional Hosted Zone ID
+
+Resources:
+  # A Record (Alias to API Gateway)
+  DNSRecordIPv4:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub '${SubDomain}.${DomainName}'
+      Type: A
+      AliasTarget:
+        DNSName: !Ref ApiGatewayDomainName
+        HostedZoneId: !Ref ApiGatewayHostedZoneId
+        EvaluateTargetHealth: false
+
+  # AAAA Record (IPv6 Alias to API Gateway)
+  DNSRecordIPv6:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub '${SubDomain}.${DomainName}'
+      Type: AAAA
+      AliasTarget:
+        DNSName: !Ref ApiGatewayDomainName
+        HostedZoneId: !Ref ApiGatewayHostedZoneId
+        EvaluateTargetHealth: false
+
+Outputs:
+  RecordName:
+    Description: DNS Record Name
+    Value: !Sub '${SubDomain}.${DomainName}'

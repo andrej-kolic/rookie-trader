@@ -1,0 +1,36 @@
+name: Validate Templates
+
+on:
+  pull_request:
+    paths:
+      - 'infra/kraken-proxy-aws/templates/**'
+      - 'infra/kraken-proxy-aws/deploy-config.json'
+  push:
+    branches:
+      - develop
+    paths:
+      - 'infra/kraken-proxy-aws/templates/**'
+
+jobs:
+  validate:
+    name: Validate CloudFormation Templates
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/kraken-proxy-aws
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (for validation)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Validate templates
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh validate

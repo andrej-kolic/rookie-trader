@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { type Express } from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
 import type { Request, Response, NextFunction } from 'express';
 import { privateRestRequest, getWsAuthToken } from 'ts-kraken';
 import { config } from './config.js';
 
-const app = express();
+const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
@@ -183,6 +183,13 @@ app.get(
   }),
 );
 
-app.listen(config.port, () => {
-  console.log(`Kraken Proxy listening at http://localhost:${config.port}`);
-});
+// Export app for Lambda handler
+export { app };
+
+// TODO: move to separate file
+// Only start server if not running in Lambda
+if (process.env.AWS_LAMBDA_FUNCTION_NAME === undefined) {
+  app.listen(config.port, () => {
+    console.log(`Kraken Proxy listening at http://localhost:${config.port}`);
+  });
+}

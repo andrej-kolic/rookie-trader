@@ -1,0 +1,18 @@
+{
+  "project_name": "kraken-proxy",
+  "region": "us-east-1",
+  "oidc": {
+    "provider_arn": "arn:aws:iam::629994690329:oidc-provider/token.actions.githubusercontent.com",
+    "github_org": "andrej-kolic",
+    "github_repo": "rookie-trader",
+    "create_provider": false
+  },
+  "parameters": {
+    "DomainName": "andrejkolic.com",
+    "SubDomain": "kraken-proxy",
+    "HostedZoneId": "Z00295123IDZ7CVMX671W",
+    "NodeRuntime": "nodejs20.x",
+    "LambdaMemory": "512",
+    "LambdaTimeout": "30"
+  }
+}
