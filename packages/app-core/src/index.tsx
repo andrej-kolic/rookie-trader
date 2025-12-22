@@ -16,7 +16,7 @@ export function AppCore(_props: {
   children: React.ReactNode;
   href: string;
 }): React.JSX.Element {
-  // debugLog();
+  debugLog();
 
   return (
     <div className="AppCore">

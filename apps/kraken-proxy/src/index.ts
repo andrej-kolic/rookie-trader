@@ -146,15 +146,52 @@ app.get(
   asyncHandler(async (req: Request, res: Response) => {
     try {
       const credentials = getCredentials(req);
-      console.log('Credentials:', credentials);
+
+      // Validate credentials are not empty or error messages
+      if (
+        !credentials.apiKey ||
+        !credentials.apiSecret ||
+        credentials.apiKey.length < 10 ||
+        credentials.apiSecret.length < 10
+      ) {
+        console.error('Invalid credentials format:', {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          keyLength: credentials.apiKey?.length,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          secretLength: credentials.apiSecret?.length,
+        });
+        res.status(400).json({
+          error: 'Invalid credentials format. Please login again.',
+        });
+        return;
+      }
+
+      console.log('Fetching WS token with valid credentials');
       const token = await getWsAuthToken(credentials);
+
+      console.log('Credentials used:', credentials);
+      console.log('Obtained ws token:', token);
+      console.log('Config.appSecret:', config.appSecret);
+
       res.json({ result: { token } });
     } catch (error: unknown) {
       console.error('Error fetching WS token:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      // Check if it's an authentication error
+      if (
+        errorMessage.includes('No credentials provided') ||
+        errorMessage.includes('Invalid authentication token')
+      ) {
+        res.status(401).json({
+          error: 'Authentication required. Please login first.',
+        });
+        return;
+      }
+
       res.status(401).json({
-        error:
-          (error instanceof Error ? error.message : null) ??
-          'Failed to fetch token',
+        error: errorMessage || 'Failed to fetch token',
       });
     }
   }),
