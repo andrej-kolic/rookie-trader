@@ -8,7 +8,7 @@
 
 import { useEffect } from 'react';
 import { useAuthStore } from '../state/auth-store';
-import * as authBusinessService from '../services/business/auth-service';
+import * as authBusinessService from '../services/auth-service';
 
 export function useAuth() {
   // Subscribe to state
