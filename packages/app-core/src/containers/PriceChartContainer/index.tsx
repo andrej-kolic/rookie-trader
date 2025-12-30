@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { PriceChart } from '@repo/ui';
 import { useOHLC } from '../../hooks/use-ohlc';
 import { useTradingStore } from '../../state/trading-store';
-import type { OHLCInterval } from '../../services/api/kraken-rest-api';
+import type { OHLCInterval } from '../../api/kraken-rest-api';
 
 export function PriceChartContainer() {
   const selectedPair = useTradingStore((state) => state.selectedPair);

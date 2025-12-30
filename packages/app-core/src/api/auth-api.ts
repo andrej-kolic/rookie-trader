@@ -8,7 +8,7 @@
  * - Logout operations
  */
 
-import { getEnvironmentVariables } from '../../utils/environment';
+import { getEnvironmentVariables } from '../utils/environment';
 
 export type LoginCredentials = {
   apiKey: string;

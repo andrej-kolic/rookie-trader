@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { subscribeToOrderBook } from '../services/api/kraken-ws-api';
+import { subscribeToOrderBook } from '../api/kraken-ws-api';
 import {
   mapOrderBook,
   mergeOrderBookUpdate,
