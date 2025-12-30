@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { subscribeToBalances } from '../services/api/kraken-ws-api';
+import { subscribeToBalances } from '../api/kraken-ws-api';
 import { mapBalance } from '../mappers/balance-mapper';
 import { toError } from '../utils/error-utils';
 import type { Balance } from '../domain/Balance';
