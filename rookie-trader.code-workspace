@@ -17,20 +17,12 @@
 			"path": "apps/app-webpack"
 		},
 		{
-			"name": "🚀 kraken-proxy",
-			"path": "apps/kraken-proxy"
-		},
-		{
 			"name": "🚀 ui-storybook",
 			"path": "apps/ui-storybook"
 		},
 		{
 			"name": "🛠️ @repo/infra-aws",
 			"path": "infra/aws"
-		},
-		{
-			"name": "🛠️ @repo/infra-kraken-proxy-aws",
-			"path": "infra/kraken-proxy-aws"
 		},
 		{
 			"name": "🛠️ @repo/infra-netlify",
