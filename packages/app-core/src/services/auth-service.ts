@@ -6,10 +6,10 @@
  * Handles validation, error handling, and business rules.
  */
 
-import { AuthSession } from '../../domain/AuthSession';
-import * as authApi from '../../api/auth-api';
-import { useAuthStore } from '../../state/auth-store';
-import { resetWsToken } from '../../api/kraken-ws-api';
+import { AuthSession } from '../domain/AuthSession';
+import * as authApi from '../api/auth-api';
+import { useAuthStore } from '../state/auth-store';
+import { resetWsToken } from '../api/kraken-ws-api';
 
 const AUTH_STORAGE_KEY = 'kraken_auth_session';
 
