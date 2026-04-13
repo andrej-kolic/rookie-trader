@@ -27,8 +27,100 @@
     0 0 42px rgba(255, 255, 255, 0.6);
 }
 
+.Header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .Header__github {
   width: 32px;
   opacity: 0.9;
   position: relative;
+  display: block;
+}
+
+/* Auth lock icon button */
+.Header__auth {
+  position: relative;
+}
+
+.Header__auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #4ade80;
+  opacity: 0.9;
+  transition:
+    opacity 0.15s,
+    background 0.15s;
+}
+
+.Header__auth-btn:hover {
+  opacity: 1;
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.Header__auth-btn--unlocked {
+  /* color: #9ca3af; */
+  color: black;
+  opacity: 0.7;
+}
+
+.Header__auth-btn--unlocked:hover {
+  background: rgba(156, 163, 175, 0.12);
+}
+
+.Header__auth-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* Dropdown menu */
+.Header__auth-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: #1e2a1e;
+  border: 1px solid #28a745;
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.Header__auth-menu-label {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #4ade80;
+  font-weight: 500;
+}
+
+.Header__auth-menu-disconnect {
+  width: 100%;
+  padding: 7px 12px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.Header__auth-menu-disconnect:hover:not(:disabled) {
+  background: #bb2d3b;
+}
+
+.Header__auth-menu-disconnect:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

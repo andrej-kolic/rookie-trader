@@ -1,0 +1,54 @@
+.FooterContainer {
+  background-color: #1e2026;
+  border-top: 1px solid #2b2f36;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  /* Ensure it takes some space but doesn't overflow if empty */
+  min-height: 150px;
+}
+
+.FooterContainer__tabs {
+  display: flex;
+  padding: 0 12px;
+  border-bottom: 1px solid #2b2f36;
+  gap: 16px;
+  background-color: #1e2026;
+}
+
+.FooterContainer__tab {
+  padding: 12px 0;
+  color: #848e9c;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  background: none;
+  border: none;
+}
+
+.FooterContainer__tab:hover {
+  color: #e6e8ea;
+}
+
+.FooterContainer__tab--active {
+  color: #e6e8ea;
+}
+
+.FooterContainer__tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #5841d8;
+}
+
+.FooterContainer__content {
+  padding: 1rem;
+  color: #e6e8ea;
+  flex: 1;
+  overflow-y: auto;
+}

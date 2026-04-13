@@ -34,7 +34,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  width: 400px; /* Wider than trigger to fit columns */
+  width: 300px; /* Wider than trigger to fit columns */
   margin-top: 4px;
   background-color: #1e2026;
   border: 1px solid #2b2f36;
