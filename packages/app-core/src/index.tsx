@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { debugLog } from './utils/debug';
 import { TradingHeader } from './components/TradingHeader';
 import { OrderBookDisplayContainer } from './containers/OrderBookDisplayContainer';
 import { PriceChartContainer } from './containers/PriceChartContainer';
 import { FooterContainer } from './containers/FooterContainer';
+import { useAuth } from './hooks/use-auth';
+import * as authService from './services/auth-service';
 
 import '@repo/ui/theme.css';
 import './styles.css';
@@ -18,11 +20,31 @@ export function AppCore(_props: {
 }): React.JSX.Element {
   debugLog();
 
+  const { isAuthenticated, isLoading } = useAuth();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  const handleLogout = () => {
+    void authService.logout();
+  };
+
   return (
     <div className="AppCore">
-      <Header title="Rookie" />
+      <Header
+        title="Rookie"
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
+        onLogout={handleLogout}
+        onLoginClick={() => {
+          setIsLoginOpen(true);
+        }}
+      />
 
-      <LoginContainer />
+      <LoginContainer
+        isOpen={isLoginOpen}
+        onClose={() => {
+          setIsLoginOpen(false);
+        }}
+      />
 
       <header className="AppCore__trading-header">
         <TradingHeader />
