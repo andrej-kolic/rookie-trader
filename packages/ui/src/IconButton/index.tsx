@@ -2,31 +2,27 @@ import React from 'react';
 import { tv, type VariantProps } from 'tailwind-variants';
 
 export const iconButton = tv({
-  base: 'flex size-8 cursor-pointer items-center justify-center rounded-md transition-[opacity,background] duration-150 hover:opacity-100 [&_svg]:size-[22px]',
+  base: 'relative flex size-8 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-current text-ink opacity-75 transition-[opacity,background] duration-150 hover:bg-white/8 hover:opacity-100 [&_svg]:size-4',
   variants: {
-    tone: {
-      success: 'text-success opacity-90 hover:bg-success/12',
-      muted: 'text-muted opacity-70 hover:bg-muted/12',
+    // Small dot on the ring's top-right edge, e.g. to show a live connection
+    dot: {
+      success:
+        'after:absolute after:-top-0.5 after:-right-0.5 after:size-2.5 after:rounded-full after:bg-success after:ring-2 after:ring-bg',
     },
   },
-  defaultVariants: { tone: 'muted' },
 });
 
 export type IconButtonProps = React.ComponentProps<'button'> &
   VariantProps<typeof iconButton>;
 
-/** Square button holding a single 22px icon */
+/** Round outlined button holding a single 16px icon, sized to match the GitHub mark */
 export function IconButton({
-  tone,
+  dot,
   className,
   type = 'button',
   ...props
 }: IconButtonProps) {
   return (
-    <button
-      type={type}
-      className={iconButton({ tone, className })}
-      {...props}
-    />
+    <button type={type} className={iconButton({ dot, className })} {...props} />
   );
 }

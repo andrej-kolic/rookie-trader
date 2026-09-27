@@ -55,11 +55,7 @@ export function Header({
 
       <div className={s.actions()}>
         {!isAuthenticated && (
-          <IconButton
-            tone="muted"
-            title="Connect to Kraken"
-            onClick={onLoginClick}
-          >
+          <IconButton title="Connect to Kraken" onClick={onLoginClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -78,7 +74,7 @@ export function Header({
         {isAuthenticated && (
           <div className={s.auth()} ref={authRef}>
             <IconButton
-              tone="success"
+              dot="success"
               title="Connected to Kraken — click to disconnect"
               onClick={() => {
                 setMenuOpen((o) => !o);
