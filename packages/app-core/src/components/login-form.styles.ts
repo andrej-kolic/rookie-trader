@@ -14,7 +14,7 @@ export const loginForm = tv({
     label:
       'text-[0.8125rem] font-medium tracking-[0.02em] text-muted uppercase',
     input:
-      'w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink outline-none transition-[border-color] duration-150 focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]',
+      'w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink transition-[border-color] duration-150 outline-none focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]',
     error:
       'rounded-md border border-danger/40 bg-danger/15 px-3 py-2 text-sm text-danger',
   },

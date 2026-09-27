@@ -23,8 +23,8 @@ export const orderBook = tv({
     message: 'px-4 py-8 text-center text-sm text-dim',
     skeletonGrid: 'p-4',
     skeletonRow: 'my-2 flex gap-2',
-    skeletonShort: 'skeleton h-4 w-[60px] rounded',
-    skeletonLong: 'skeleton h-4 flex-1 rounded',
+    skeletonShort: 'h-4 w-[60px] skeleton rounded',
+    skeletonLong: 'h-4 flex-1 skeleton rounded',
   },
   variants: {
     side: {
