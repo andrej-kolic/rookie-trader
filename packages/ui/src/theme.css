@@ -1,5 +1,42 @@
+/* Navy palette, copied from reys-lab's palette experiment (navy, shade a).
+   Components read colours only through these tokens. */
+:root {
+  /* Surfaces, darkest to lightest */
+  --theme-void: #0d0f23;
+  --theme-bg: #141631;
+  --theme-surface: #202445;
+  --theme-raised: #2c3368;
+  --theme-border: #353a75;
+  --theme-line: #564996;
+
+  /* Text */
+  --theme-ink: #eceefa;
+  --theme-muted: #aaafcf;
+  --theme-dim: #9ca1bd;
+
+  /* Interactive accent. The palette's mint is kept for rising prices so an
+     active tab or button never reads as "price up". */
+  --theme-accent: #8b8cf7;
+  --theme-accent-hover: #a5a6fa;
+  --theme-on-accent: #0d0f23;
+  --theme-gold: #ffcf4d;
+
+  /* Market direction */
+  --theme-rise: #5ee9b5;
+  --theme-fall: #ff6b81;
+
+  /* Status */
+  --theme-success: #5ee9b5;
+  --theme-danger: #ff6b81;
+  --theme-caution: #ffa24d;
+
+  --theme-overlay: rgb(13 15 35 / 70%);
+  --theme-shadow: rgb(0 0 0 / 50%);
+}
+
 body {
   font-family:
     'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans',
     Arial, sans-serif;
+  color: var(--theme-ink);
 }

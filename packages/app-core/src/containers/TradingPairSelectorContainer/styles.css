@@ -1,8 +1,8 @@
 .TradingPairSelectorContainer--error {
-  background: #1a1a1a;
+  background: var(--theme-surface);
   border-radius: 0.5rem;
   flex-grow: 1;
-  color: crimson;
+  color: var(--theme-danger);
   display: flex;
   align-items: center;
   justify-content: center;

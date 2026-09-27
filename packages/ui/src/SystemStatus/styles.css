@@ -7,7 +7,7 @@
   background-color: rgba(0, 0, 0, 0.35);
   padding: 5px 10px;
   border-radius: 0.5rem;
-  --status-color: rgb(53, 223, 141); /* Default to online color */
+  --status-color: var(--theme-success); /* Default to online color */
 }
 
 .SystemStatus__indicator {
@@ -24,25 +24,25 @@
 }
 
 .SystemStatus--online {
-  --status-color: rgb(53, 223, 141);
+  --status-color: var(--theme-success);
 }
 
 .SystemStatus--maintenance {
-  --status-color: rgb(231, 76, 60);
+  --status-color: var(--theme-danger);
 }
 
 .SystemStatus--cancel_only {
-  --status-color: rgb(230, 126, 34);
+  --status-color: var(--theme-caution);
 }
 
 .SystemStatus--limit_only {
-  --status-color: rgb(241, 196, 15);
+  --status-color: var(--theme-gold);
 }
 
 .SystemStatus--post_only {
-  --status-color: rgb(52, 152, 219);
+  --status-color: var(--theme-accent);
 }
 
 .SystemStatus--offline {
-  --status-color: rgb(128, 128, 128);
+  --status-color: var(--theme-dim);
 }

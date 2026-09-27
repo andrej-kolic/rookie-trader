@@ -220,13 +220,13 @@ export class Candle {
   }
 
   /**
-   * Convert volume for volume series in chart
+   * Convert volume for volume series in chart. The chart colours each bar by
+   * its candle's direction, using the theme's rise/fall colours.
    */
-  toVolumeData(): { time: number; value: number; color: string } {
+  toVolumeData(): { time: number; value: number } {
     return {
       time: this.timestamp,
       value: this.volume,
-      color: this.isBullish() ? '#26a69a' : '#ef5350', // Green for bullish, red for bearish
     };
   }
 }

@@ -1,6 +1,6 @@
 .FooterContainer {
-  background-color: #1e2026;
-  border-top: 1px solid #2b2f36;
+  background-color: var(--theme-surface);
+  border-top: 1px solid var(--theme-border);
   overflow: hidden;
   border-radius: 0.5rem;
   display: flex;
@@ -12,14 +12,14 @@
 .FooterContainer__tabs {
   display: flex;
   padding: 0 12px;
-  border-bottom: 1px solid #2b2f36;
+  border-bottom: 1px solid var(--theme-border);
   gap: 16px;
-  background-color: #1e2026;
+  background-color: var(--theme-surface);
 }
 
 .FooterContainer__tab {
   padding: 12px 0;
-  color: #848e9c;
+  color: var(--theme-muted);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -29,11 +29,11 @@
 }
 
 .FooterContainer__tab:hover {
-  color: #e6e8ea;
+  color: var(--theme-ink);
 }
 
 .FooterContainer__tab--active {
-  color: #e6e8ea;
+  color: var(--theme-ink);
 }
 
 .FooterContainer__tab--active::after {
@@ -43,12 +43,12 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #5841d8;
+  background-color: var(--theme-accent);
 }
 
 .FooterContainer__content {
   padding: 1rem;
-  color: #e6e8ea;
+  color: var(--theme-ink);
   flex: 1;
   overflow-y: auto;
 }

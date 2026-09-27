@@ -125,7 +125,7 @@ export function MarketSelector({
               )}
             </>
           ) : (
-            <span style={{ color: '#848e9c' }}>{placeholder}</span>
+            <span style={{ color: 'var(--theme-muted)' }}>{placeholder}</span>
           )}
         </div>
         <svg
@@ -270,7 +270,7 @@ export function MarketSelector({
                       </div>
                       <div className="MarketSelector__col-price">
                         {/* Placeholder for price since we don't have it yet */}
-                        <span style={{ color: '#848e9c' }}>--</span>
+                        <span style={{ color: 'var(--theme-muted)' }}>--</span>
                       </div>
                     </div>
                   );

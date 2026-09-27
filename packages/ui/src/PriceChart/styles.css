@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background-color: #1a1a1a;
+  background-color: var(--theme-surface);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -13,8 +13,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background-color: #252525;
-  border-bottom: 1px solid #2d2d2d;
+  background-color: var(--theme-raised);
+  border-bottom: 1px solid var(--theme-border);
   flex-shrink: 0;
 }
 
@@ -28,12 +28,12 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #f9fafb;
+  color: var(--theme-ink);
 }
 
 .loading-indicator {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--theme-muted);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -56,7 +56,7 @@
 .interval-selector {
   display: flex;
   gap: 4px;
-  background-color: #1a1a1a;
+  background-color: var(--theme-surface);
   padding: 4px;
   border-radius: 6px;
 }
@@ -65,7 +65,7 @@
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 500;
-  color: #9ca3af;
+  color: var(--theme-muted);
   background-color: transparent;
   border: none;
   border-radius: 4px;
@@ -74,13 +74,13 @@
 }
 
 .interval-selector button:hover:not(:disabled) {
-  background-color: #2d2d2d;
-  color: #d1d5db;
+  background-color: var(--theme-border);
+  color: var(--theme-ink);
 }
 
 .interval-selector button.active {
-  background-color: #3b82f6;
-  color: #ffffff;
+  background-color: var(--theme-accent);
+  color: var(--theme-on-accent);
 }
 
 .interval-selector button:disabled {
@@ -91,17 +91,17 @@
 .refresh-button {
   padding: 6px 10px;
   font-size: 16px;
-  color: #9ca3af;
-  background-color: #1a1a1a;
-  border: 1px solid #2d2d2d;
+  color: var(--theme-muted);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .refresh-button:hover:not(:disabled) {
-  background-color: #2d2d2d;
-  color: #d1d5db;
+  background-color: var(--theme-border);
+  color: var(--theme-ink);
 }
 
 .refresh-button:disabled {
@@ -116,7 +116,7 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  background-color: #1a1a1a; /* Ensure consistent background */
+  background-color: var(--theme-surface); /* Ensure consistent background */
 }
 
 /* Ensure canvas and child elements respect container width */
@@ -132,12 +132,12 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: #1a1a1a;
+  background-color: var(--theme-surface);
   border-radius: 8px;
 }
 
 .price-chart-empty p {
-  color: #9ca3af;
+  color: var(--theme-muted);
   font-size: 14px;
   margin: 0;
 }
@@ -150,21 +150,21 @@
   justify-content: center;
   gap: 12px;
   height: 100%;
-  background-color: #1a1a1a;
+  background-color: var(--theme-surface);
   border-radius: 8px;
   padding: 24px;
   flex-grow: 1;
 }
 
 .error-message {
-  color: #ef4444;
+  color: var(--theme-danger);
   font-size: 14px;
   font-weight: 600;
   margin: 0;
 }
 
 .error-detail {
-  color: #9ca3af;
+  color: var(--theme-muted);
   font-size: 13px;
   margin: 0;
   max-width: 400px;
@@ -176,8 +176,8 @@
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
-  background-color: #3b82f6;
+  color: var(--theme-on-accent);
+  background-color: var(--theme-accent);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -185,7 +185,7 @@
 }
 
 .retry-button:hover {
-  background-color: #2563eb;
+  background-color: var(--theme-accent-hover);
 }
 
 /* Loading skeleton */
@@ -193,7 +193,7 @@
   flex: 1;
   position: relative;
   min-height: 0;
-  background-color: #1a1a1a;
+  background-color: var(--theme-surface);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -211,7 +211,12 @@
 .skeleton-bar {
   width: 100%;
   height: 60px;
-  background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+  background: linear-gradient(
+    90deg,
+    var(--theme-border) 25%,
+    var(--theme-line) 50%,
+    var(--theme-border) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 4px;

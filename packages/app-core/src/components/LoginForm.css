@@ -6,21 +6,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--theme-overlay);
   backdrop-filter: blur(3px);
 }
 
 .LoginDialog__card {
   width: 100%;
   max-width: 380px;
-  background: #1a1f2e;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   padding: 2rem;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 8px 32px var(--theme-shadow),
     0 0 0 1px rgba(255, 255, 255, 0.04);
-  color: #e2e8f0;
+  color: var(--theme-ink);
 }
 
 .LoginDialog__header {
@@ -34,13 +34,13 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--theme-ink);
 }
 
 .LoginDialog__close {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--theme-muted);
   font-size: 1rem;
   cursor: pointer;
   padding: 2px 6px;
@@ -52,7 +52,7 @@
 }
 
 .LoginDialog__close:hover {
-  color: #e2e8f0;
+  color: var(--theme-ink);
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -71,7 +71,7 @@
 .LoginDialog__label {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #94a3b8;
+  color: var(--theme-muted);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -79,34 +79,35 @@
 .LoginDialog__input {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  background: #0f1422;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--theme-void);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
-  color: #e2e8f0;
+  color: var(--theme-ink);
   font-size: 0.9375rem;
   outline: none;
   transition: border-color 0.15s;
 }
 
 .LoginDialog__input:focus {
-  border-color: rgba(99, 179, 237, 0.7);
-  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.12);
+  border-color: color-mix(in oklab, var(--theme-accent) 70%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklab, var(--theme-accent) 12%, transparent);
 }
 
 .LoginDialog__error {
   padding: 0.5rem 0.75rem;
-  background: rgba(220, 53, 69, 0.15);
-  border: 1px solid rgba(220, 53, 69, 0.4);
+  background: color-mix(in oklab, var(--theme-danger) 15%, transparent);
+  border: 1px solid color-mix(in oklab, var(--theme-danger) 40%, transparent);
   border-radius: 6px;
-  color: #f87171;
+  color: var(--theme-danger);
   font-size: 0.875rem;
 }
 
 .LoginDialog__submit {
   margin-top: 0.25rem;
   padding: 0.625rem 1rem;
-  background: #3b82f6;
-  color: white;
+  background: var(--theme-accent);
+  color: var(--theme-on-accent);
   border: none;
   border-radius: 6px;
   font-size: 0.9375rem;
@@ -116,7 +117,7 @@
 }
 
 .LoginDialog__submit:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--theme-accent-hover);
 }
 
 .LoginDialog__submit:disabled {

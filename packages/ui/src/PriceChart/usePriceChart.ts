@@ -8,6 +8,7 @@ import {
   type HistogramData,
   type Time,
 } from 'lightweight-charts';
+import { readChartTheme, withAlpha, type ChartTheme } from './chartTheme';
 
 type UsePriceChartOptions = {
   symbol: string;
@@ -35,6 +36,7 @@ export function usePriceChart({
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
   const initializedRef = useRef(false);
+  const themeRef = useRef<ChartTheme | null>(null);
 
   // Initialize chart when symbol becomes available
   useEffect(() => {
@@ -42,15 +44,17 @@ export function usePriceChart({
       return;
     }
     const container = chartContainerRef.current;
+    const theme = readChartTheme();
+    themeRef.current = theme;
 
     const chart = createChart(container, {
       layout: {
-        background: { type: ColorType.Solid, color: '#1a1a1a' },
-        textColor: '#d1d5db',
+        background: { type: ColorType.Solid, color: theme.background },
+        textColor: theme.text,
       },
       grid: {
-        vertLines: { color: '#2d2d2d' },
-        horzLines: { color: '#2d2d2d' },
+        vertLines: { color: theme.grid },
+        horzLines: { color: theme.grid },
       },
       width: container.clientWidth,
       height: container.clientHeight,
@@ -72,11 +76,11 @@ export function usePriceChart({
     });
 
     const candlestickSeries = chart.addCandlestickSeries({
-      upColor: '#26a69a',
-      downColor: '#ef5350',
+      upColor: theme.rise,
+      downColor: theme.fall,
       borderVisible: false,
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
+      wickUpColor: theme.rise,
+      wickDownColor: theme.fall,
     });
 
     const volumeSeries = chart.addHistogramSeries({
@@ -125,10 +129,17 @@ export function usePriceChart({
       candlestickSeriesRef.current.setData(chartData);
 
       if (volumeData && volumeData.length > 0) {
+        // Bars without their own colour follow their candle's direction
+        const theme = themeRef.current ?? readChartTheme();
+        const risingByTime = new Map(
+          candles.map((c) => [c.time, c.close > c.open]),
+        );
         const volData: HistogramData[] = volumeData.map((v) => ({
           time: v.time as Time,
           value: v.value,
-          color: v.color,
+          color:
+            v.color ??
+            withAlpha(risingByTime.get(v.time) ? theme.rise : theme.fall, 0.5),
         }));
         volumeSeriesRef.current.setData(volData);
       }

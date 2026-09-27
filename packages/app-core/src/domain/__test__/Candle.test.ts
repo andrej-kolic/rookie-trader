@@ -352,7 +352,7 @@ describe('Candle', () => {
   });
 
   describe('toVolumeData', () => {
-    it('should convert bullish candle to green volume bar', () => {
+    it('should convert candle to time and volume', () => {
       const candle = createTestCandle({
         timestamp: 1701604800,
         open: 50000,
@@ -365,24 +365,6 @@ describe('Candle', () => {
       expect(volumeData).toEqual({
         time: 1701604800,
         value: 125.5,
-        color: '#26a69a',
-      });
-    });
-
-    it('should convert bearish candle to red volume bar', () => {
-      const candle = createTestCandle({
-        timestamp: 1701604800,
-        open: 50500,
-        close: 50000,
-        volume: 125.5,
-      });
-
-      const volumeData = candle.toVolumeData();
-
-      expect(volumeData).toEqual({
-        time: 1701604800,
-        value: 125.5,
-        color: '#ef5350',
       });
     });
   });

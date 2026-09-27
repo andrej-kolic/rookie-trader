@@ -56,7 +56,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #4ade80;
+  color: var(--theme-success);
   opacity: 0.9;
   transition:
     opacity 0.15s,
@@ -65,17 +65,16 @@
 
 .Header__auth-btn:hover {
   opacity: 1;
-  background: rgba(74, 222, 128, 0.12);
+  background: color-mix(in oklab, var(--theme-success) 12%, transparent);
 }
 
 .Header__auth-btn--unlocked {
-  /* color: #9ca3af; */
-  color: black;
+  color: var(--theme-muted);
   opacity: 0.7;
 }
 
 .Header__auth-btn--unlocked:hover {
-  background: rgba(156, 163, 175, 0.12);
+  background: color-mix(in oklab, var(--theme-muted) 12%, transparent);
 }
 
 .Header__auth-icon {
@@ -89,26 +88,26 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 200px;
-  background: #1e2a1e;
-  border: 1px solid #28a745;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-success);
   border-radius: 8px;
   padding: 12px;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px var(--theme-shadow);
 }
 
 .Header__auth-menu-label {
   margin: 0 0 10px;
   font-size: 13px;
-  color: #4ade80;
+  color: var(--theme-success);
   font-weight: 500;
 }
 
 .Header__auth-menu-disconnect {
   width: 100%;
   padding: 7px 12px;
-  background: #dc3545;
-  color: white;
+  background: var(--theme-danger);
+  color: var(--theme-void);
   border: none;
   border-radius: 4px;
   font-size: 13px;
@@ -117,7 +116,7 @@
 }
 
 .Header__auth-menu-disconnect:hover:not(:disabled) {
-  background: #bb2d3b;
+  background: color-mix(in oklab, var(--theme-danger) 80%, black);
 }
 
 .Header__auth-menu-disconnect:disabled {
