@@ -28,7 +28,7 @@ export const marketSelector = tv({
   variants: {
     open: {
       true: {
-        trigger: 'border-accent hover:border-accent',
+        trigger: 'border-line',
         chevron: 'rotate-180',
       },
     },
