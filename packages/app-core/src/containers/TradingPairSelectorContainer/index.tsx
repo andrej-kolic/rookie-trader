@@ -90,7 +90,7 @@ export function TradingPairSelectorContainer() {
       onSelect={handleSelect}
       favorites={favorites}
       onToggleFavorite={toggleFavorite}
-      placeholder={loading ? 'Loading markets...' : 'Select a trading pair...'}
+      placeholder={loading ? 'Loading markets…' : 'Select pair'}
     />
   );
 }
