@@ -7,17 +7,17 @@
 @source '../../ui/src';
 
 body {
-  /* Navy base with two faint glows from the palette's accents */
+  /* Navy base with two faint glows centred on the header's logo and GitHub icons */
   background:
     radial-gradient(
-      circle at 15% 20%,
-      color-mix(in oklab, var(--theme-accent) 18%, transparent) 0%,
-      transparent 45%
+      42rem 20rem at 32px 37px,
+      color-mix(in oklab, var(--theme-accent) 18%, transparent),
+      transparent 70%
     ),
     radial-gradient(
-      circle at 85% 80%,
-      color-mix(in oklab, var(--theme-rise) 10%, transparent) 0%,
-      transparent 45%
+      34rem 18rem at calc(100% - 32px) 37px,
+      color-mix(in oklab, var(--theme-rise) 10%, transparent),
+      transparent 72%
     ),
     var(--theme-bg);
   color-scheme: dark;
