@@ -16,13 +16,14 @@ export const marketSelector = tv({
     tabs: 'flex gap-4 border-b border-border px-3',
     listHeader: 'flex border-b border-border px-3 py-2 text-xs text-muted',
     colFav: 'w-6 shrink-0',
-    colMarket: 'flex flex-1',
+    colMarket: 'flex flex-1 items-center',
     colPrice: 'w-20 text-right',
     list: 'max-h-[350px] overflow-y-auto',
     empty: 'p-6 text-center text-sm text-muted',
     symbol: 'text-sm font-medium text-ink',
-    badges: 'ml-2 flex gap-1',
-    badge: 'rounded-xs bg-border px-1 py-px text-[10px] text-muted',
+    badges: 'ml-2 flex items-center gap-1',
+    badge:
+      'rounded-sm bg-white/10 px-1.5 py-1 text-[10px] leading-none text-ink/70',
   },
   variants: {
     open: {
