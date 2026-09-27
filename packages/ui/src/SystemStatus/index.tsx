@@ -1,5 +1,4 @@
 import React from 'react';
-import './styles.css';
 
 export type SystemStatusType =
   | 'online'
@@ -8,6 +7,15 @@ export type SystemStatusType =
   | 'limit_only'
   | 'post_only'
   | 'offline';
+
+const STATUS_COLORS: Record<string, string> = {
+  online: 'text-success',
+  maintenance: 'text-danger',
+  cancel_only: 'text-caution',
+  limit_only: 'text-gold',
+  post_only: 'text-accent',
+  offline: 'text-dim',
+};
 
 export type SystemStatusProps = {
   status: SystemStatusType | (string & {}) | null | undefined;
@@ -22,12 +30,14 @@ export function SystemStatus({
     return null;
   }
   const formattedStatus = status.replace('_', ' ');
-  const statusClass = `SystemStatus--${status}`;
+  const statusColor = STATUS_COLORS[status] ?? STATUS_COLORS.online;
 
   return (
-    <div className={`SystemStatus ${statusClass} ${className}`}>
-      <div className="SystemStatus__indicator" />
-      <span className="SystemStatus__text">{formattedStatus}</span>
+    <div
+      className={`inline-flex items-center gap-2 rounded-lg bg-black/35 px-2.5 py-[5px] text-sm font-medium ${statusColor} ${className}`}
+    >
+      <div className="size-2 rounded-full bg-current shadow-[0_0_4px_currentColor]" />
+      <span className="capitalize">{formattedStatus}</span>
     </div>
   );
 }

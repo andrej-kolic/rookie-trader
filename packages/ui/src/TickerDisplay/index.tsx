@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import './styles.css';
 
 export type TickerDisplayProps = {
   symbol: string;
@@ -16,6 +15,15 @@ export type TickerDisplayProps = {
   loading?: boolean;
   error?: string;
 };
+
+const ROOT =
+  'box-border flex w-full max-w-full min-w-0 items-center overflow-x-auto overflow-y-hidden rounded-lg border px-6 py-4 font-system whitespace-nowrap scroll-smooth [scrollbar-color:var(--theme-line)_transparent] [scrollbar-width:thin] max-md:gap-4 max-md:px-4 max-md:py-3 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-line [&::-webkit-scrollbar-thumb:hover]:bg-muted [&::-webkit-scrollbar-track]:bg-transparent';
+const NORMAL = 'gap-6 border-border bg-surface';
+const SECTION = 'flex shrink-0 flex-col gap-1 max-md:min-w-[100px]';
+const LABEL = 'text-xs font-medium tracking-[0.05em] text-muted uppercase';
+const VALUE = 'text-sm font-medium text-ink tabular-nums';
+const QTY = 'text-xs font-normal text-dim';
+const SKELETON = 'skeleton h-5 rounded';
 
 const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   const {
@@ -35,75 +43,75 @@ const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
 
   if (error) {
     return (
-      <div className="ticker-display ticker-display--error">
-        <span className="ticker-display__error">⚠️ {error}</span>
+      <div
+        className={`${ROOT} justify-center gap-6 border-danger bg-[color-mix(in_oklab,var(--theme-danger)_12%,var(--theme-surface))]`}
+      >
+        <span className="text-sm font-medium text-danger">⚠️ {error}</span>
       </div>
     );
   }
 
   if (loading && !lastPrice) {
     return (
-      <div className="ticker-display ticker-display--loading">
-        <div className="ticker-display__skeleton ticker-display__skeleton--wide"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
+      <div className={`${ROOT} gap-8 border-border bg-surface`}>
+        <div className={`${SKELETON} w-[120px]`}></div>
+        <div className={`${SKELETON} w-20`}></div>
+        <div className={`${SKELETON} w-20`}></div>
+        <div className={`${SKELETON} w-20`}></div>
       </div>
     );
   }
 
-  const changeClass = isPriceRising
-    ? 'ticker-display__change--rising'
-    : 'ticker-display__change--falling';
+  const changeColor = isPriceRising ? 'text-rise' : 'text-fall';
 
   return (
     <div
-      className={`ticker-display ${loading ? 'ticker-display--updating' : ''}`}
+      className={`${ROOT} ${NORMAL} ${loading ? 'pointer-events-none opacity-60 transition-opacity duration-200 ease-in-out' : ''}`}
     >
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Last</span>
-        <span className="ticker-display__value">{lastPrice ?? '—'}</span>
+      <div className={SECTION}>
+        <span className={LABEL}>Last</span>
+        <span className={VALUE}>{lastPrice ?? '—'}</span>
       </div>
 
       {changePct && (
-        <div className="ticker-display__section">
-          <span className="ticker-display__label">24h Change</span>
+        <div className={SECTION}>
+          <span className={LABEL}>24h Change</span>
           <span
-            className={`ticker-display__value ticker-display__change ${changeClass}`}
+            className={`inline-block rounded text-sm font-semibold tabular-nums ${changeColor}`}
           >
             {changePct}
           </span>
         </div>
       )}
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Volume</span>
-        <span className="ticker-display__value">{volume24h ?? '—'}</span>
+      <div className={SECTION}>
+        <span className={LABEL}>24h Volume</span>
+        <span className={VALUE}>{volume24h ?? '—'}</span>
       </div>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h High</span>
-        <span className="ticker-display__value">{high24h ?? '—'}</span>
+      <div className={SECTION}>
+        <span className={LABEL}>24h High</span>
+        <span className={VALUE}>{high24h ?? '—'}</span>
       </div>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Low</span>
-        <span className="ticker-display__value">{low24h ?? '—'}</span>
+      <div className={SECTION}>
+        <span className={LABEL}>24h Low</span>
+        <span className={VALUE}>{low24h ?? '—'}</span>
       </div>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Bid</span>
-        <span className="ticker-display__value">
+      <div className={SECTION}>
+        <span className={LABEL}>Bid</span>
+        <span className={VALUE}>
           {bid ?? '—'}
-          {bidQty && <span className="ticker-display__qty"> ({bidQty})</span>}
+          {bidQty && <span className={QTY}> ({bidQty})</span>}
         </span>
       </div>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Ask</span>
-        <span className="ticker-display__value">
+      <div className={SECTION}>
+        <span className={LABEL}>Ask</span>
+        <span className={VALUE}>
           {ask ?? '—'}
-          {askQty && <span className="ticker-display__qty"> ({askQty})</span>}
+          {askQty && <span className={QTY}> ({askQty})</span>}
         </span>
       </div>
     </div>

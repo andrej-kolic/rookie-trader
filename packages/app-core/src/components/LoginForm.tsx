@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './LoginForm.css';
 
 type LoginFormProps = {
   onSubmit: (apiKey: string, apiSecret: string) => Promise<void>;
@@ -24,7 +23,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div
-      className="LoginDialog__backdrop"
+      className="fixed inset-0 z-200 flex items-center justify-center bg-(--theme-overlay) backdrop-blur-[3px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-dialog-title"
@@ -32,13 +31,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="LoginDialog__card">
-        <div className="LoginDialog__header">
-          <h2 id="login-dialog-title" className="LoginDialog__title">
+      <div className="w-full max-w-[380px] rounded-xl border border-border bg-surface p-8 text-ink shadow-[0_8px_32px_var(--theme-shadow),0_0_0_1px_rgb(255_255_255/4%)]">
+        <div className="mb-6 flex items-center justify-between">
+          <h2
+            id="login-dialog-title"
+            className="m-0 text-xl font-semibold text-ink"
+          >
             Connect to Kraken
           </h2>
           <button
-            className="LoginDialog__close"
+            className="cursor-pointer rounded border-none bg-transparent px-1.5 py-0.5 text-base leading-none text-muted transition-[color,background] duration-150 hover:bg-white/8 hover:text-ink"
             onClick={onClose}
             aria-label="Close"
             type="button"
@@ -46,9 +48,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             ✕
           </button>
         </div>
-        <form className="LoginDialog__form" onSubmit={handleSubmit}>
-          <div className="LoginDialog__field">
-            <label htmlFor="apiKey" className="LoginDialog__label">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="apiKey"
+              className="text-[0.8125rem] font-medium tracking-[0.02em] text-muted uppercase"
+            >
               API Key
             </label>
             <input
@@ -59,12 +64,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiKey(e.target.value);
               }}
               required
-              className="LoginDialog__input"
+              className="w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink outline-none transition-[border-color] duration-150 focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]"
               autoComplete="off"
             />
           </div>
-          <div className="LoginDialog__field">
-            <label htmlFor="apiSecret" className="LoginDialog__label">
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="apiSecret"
+              className="text-[0.8125rem] font-medium tracking-[0.02em] text-muted uppercase"
+            >
               API Secret
             </label>
             <input
@@ -75,19 +83,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiSecret(e.target.value);
               }}
               required
-              className="LoginDialog__input"
+              className="w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink outline-none transition-[border-color] duration-150 focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]"
               autoComplete="current-password"
             />
           </div>
           {error && (
-            <div className="LoginDialog__error" role="alert">
+            <div
+              className="rounded-md border border-danger/40 bg-danger/15 px-3 py-2 text-sm text-danger"
+              role="alert"
+            >
               {error}
             </div>
           )}
           <button
             type="submit"
             disabled={isLoading}
-            className="LoginDialog__submit"
+            className="mt-1 cursor-pointer rounded-md border-none bg-accent px-4 py-2.5 text-[0.9375rem] font-medium text-on-accent transition-[background] duration-150 enabled:hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? 'Connecting…' : 'Connect'}
           </button>

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import './styles.css';
+import { tabClassName } from '../tabClassName';
 
 export type MarketItem = {
   id: string;
@@ -104,28 +104,28 @@ export function MarketSelector({
   };
 
   return (
-    <div className="MarketSelector">
+    <div className="relative flex grow">
       <button
         ref={triggerRef}
-        className="MarketSelector__trigger"
+        className="flex w-full max-w-[400px] cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink transition-[border-color] duration-200 hover:border-line"
         onClick={() => {
           setIsOpen(!isOpen);
         }}
       >
-        <div className="MarketSelector__trigger-content">
+        <div className="flex items-center gap-2">
           {selectedItem ? (
             <>
-              <span className="MarketSelector__symbol">
+              <span className="text-sm font-medium text-ink">
                 {selectedItem.symbol}
               </span>
               {selectedItem.leverage && (
-                <span className="MarketSelector__badge">
+                <span className="rounded-xs bg-border px-1 py-px text-[10px] text-muted">
                   {selectedItem.leverage}
                 </span>
               )}
             </>
           ) : (
-            <span style={{ color: 'var(--theme-muted)' }}>{placeholder}</span>
+            <span className="text-muted">{placeholder}</span>
           )}
         </div>
         <svg
@@ -137,21 +137,21 @@ export function MarketSelector({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s',
-          }}
+          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         >
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
 
       {isOpen && (
-        <div className="MarketSelector__dropdown" ref={dropdownRef}>
-          <div className="MarketSelector__search-container">
+        <div
+          className="absolute top-full left-0 z-1000 mt-1 flex max-h-[500px] w-[300px] flex-col rounded-lg border border-border bg-surface shadow-[0_4px_12px_var(--theme-shadow)]"
+          ref={dropdownRef}
+        >
+          <div className="border-b border-border p-3">
             <input
               type="text"
-              className="MarketSelector__search-input"
+              className="box-border w-full rounded border border-border bg-void px-3 py-2 text-sm text-ink outline-none focus:border-accent"
               placeholder="Search"
               value={searchQuery}
               onChange={(e) => {
@@ -161,11 +161,9 @@ export function MarketSelector({
             />
           </div>
 
-          <div className="MarketSelector__tabs">
+          <div className="flex gap-4 border-b border-border px-3">
             <button
-              className={`MarketSelector__tab ${
-                activeTab === 'favorites' ? 'MarketSelector__tab--active' : ''
-              }`}
+              className={tabClassName(activeTab === 'favorites')}
               onClick={() => {
                 setActiveTab('favorites');
               }}
@@ -173,9 +171,7 @@ export function MarketSelector({
               Favorites
             </button>
             <button
-              className={`MarketSelector__tab ${
-                activeTab === 'all' ? 'MarketSelector__tab--active' : ''
-              }`}
+              className={tabClassName(activeTab === 'all')}
               onClick={() => {
                 setActiveTab('all');
               }}
@@ -183,9 +179,7 @@ export function MarketSelector({
               All
             </button>
             <button
-              className={`MarketSelector__tab ${
-                activeTab === 'margin' ? 'MarketSelector__tab--active' : ''
-              }`}
+              className={tabClassName(activeTab === 'margin')}
               onClick={() => {
                 setActiveTab('margin');
               }}
@@ -194,15 +188,17 @@ export function MarketSelector({
             </button>
           </div>
 
-          <div className="MarketSelector__list-header">
-            <div className="MarketSelector__col-fav"></div>
-            <div className="MarketSelector__col-market">Market</div>
-            <div className="MarketSelector__col-price">Price</div>
+          <div className="flex border-b border-border px-3 py-2 text-xs text-muted">
+            <div className="w-6 shrink-0"></div>
+            <div className="flex flex-1">Market</div>
+            <div className="w-20 text-right">Price</div>
           </div>
 
-          <div className="MarketSelector__list">
+          <div className="max-h-[350px] overflow-y-auto">
             {filteredItems.length === 0 ? (
-              <div className="MarketSelector__empty">No markets found</div>
+              <div className="p-6 text-center text-sm text-muted">
+                No markets found
+              </div>
             ) : (
               <Virtuoso
                 style={{ height: '350px' }}
@@ -211,19 +207,17 @@ export function MarketSelector({
                   const isFav = favorites.includes(item.id);
                   return (
                     <div
-                      className={`MarketSelector__item ${
-                        item.id === selectedId
-                          ? 'MarketSelector__item--selected'
-                          : ''
+                      className={`flex cursor-pointer items-center px-3 py-2 transition-colors duration-100 hover:bg-border ${
+                        item.id === selectedId ? 'bg-border' : ''
                       }`}
                       onClick={() => {
                         handleSelect(item.id);
                       }}
                     >
-                      <div className="MarketSelector__col-fav">
+                      <div className="w-6 shrink-0">
                         <button
-                          className={`MarketSelector__fav-btn ${
-                            isFav ? 'MarketSelector__fav-btn--active' : ''
+                          className={`flex cursor-pointer items-center justify-center border-none bg-transparent p-0 hover:text-gold ${
+                            isFav ? 'text-gold' : 'text-line'
                           }`}
                           onClick={(e) => {
                             toggleFavorite(e, item.id);
@@ -256,21 +250,21 @@ export function MarketSelector({
                           )}
                         </button>
                       </div>
-                      <div className="MarketSelector__col-market">
-                        <span className="MarketSelector__symbol">
+                      <div className="flex flex-1">
+                        <span className="text-sm font-medium text-ink">
                           {item.symbol}
                         </span>
-                        <div className="MarketSelector__badges">
+                        <div className="ml-2 flex gap-1">
                           {item.leverage && (
-                            <span className="MarketSelector__badge">
+                            <span className="rounded-xs bg-border px-1 py-px text-[10px] text-muted">
                               {item.leverage}
                             </span>
                           )}
                         </div>
                       </div>
-                      <div className="MarketSelector__col-price">
+                      <div className="w-20 text-right">
                         {/* Placeholder for price since we don't have it yet */}
-                        <span style={{ color: 'var(--theme-muted)' }}>--</span>
+                        <span className="text-muted">--</span>
                       </div>
                     </div>
                   );

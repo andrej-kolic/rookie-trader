@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { usePriceChart } from './usePriceChart';
-import './styles.css';
 
 export type PriceChartProps = {
   candles: {
@@ -35,6 +34,12 @@ const INTERVALS = [
   { value: 10080, label: '1w' },
 ] as const;
 
+const INTERVAL_BUTTON =
+  'cursor-pointer rounded border-none px-3 py-1.5 text-[13px] font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 max-md:flex-1 max-md:px-1.5 max-md:py-2 max-md:text-xs';
+const INTERVAL_ACTIVE = 'bg-accent text-on-accent';
+const INTERVAL_IDLE =
+  'bg-transparent text-muted enabled:hover:bg-border enabled:hover:text-ink';
+
 type ChartCanvasProps = {
   symbol: string;
   candles: PriceChartProps['candles'];
@@ -48,7 +53,12 @@ const ChartCanvas = ({ symbol, candles, volumeData }: ChartCanvasProps) => {
     volumeData,
   });
 
-  return <div ref={chartContainerRef} className="chart-container" />;
+  return (
+    <div
+      ref={chartContainerRef}
+      className="relative min-h-[300px] w-full max-w-full flex-1 overflow-hidden bg-surface *:max-w-full! [&_canvas]:max-w-full!"
+    />
+  );
 };
 
 const _priceChart = function PriceChart({
@@ -64,8 +74,10 @@ const _priceChart = function PriceChart({
   // Empty state
   if (!symbol) {
     return (
-      <div className="price-chart-empty">
-        <p>Select a trading pair to view price chart</p>
+      <div className="flex h-full grow items-center justify-center rounded-lg bg-surface">
+        <p className="m-0 text-sm text-muted">
+          Select a trading pair to view price chart
+        </p>
       </div>
     );
   }
@@ -73,11 +85,18 @@ const _priceChart = function PriceChart({
   // Error state
   if (error) {
     return (
-      <div className="price-chart-error">
-        <p className="error-message">Failed to load chart data</p>
-        <p className="error-detail">{error}</p>
+      <div className="flex h-full grow flex-col items-center justify-center gap-3 rounded-lg bg-surface p-6">
+        <p className="m-0 text-sm font-semibold text-danger">
+          Failed to load chart data
+        </p>
+        <p className="m-0 max-w-[400px] text-center text-[13px] text-muted">
+          {error}
+        </p>
         {onRefresh && (
-          <button onClick={onRefresh} className="retry-button">
+          <button
+            onClick={onRefresh}
+            className="mt-2 cursor-pointer rounded-md border-none bg-accent px-4 py-2 text-[13px] font-medium text-on-accent transition-colors duration-200 hover:bg-accent-hover"
+          >
             Retry
           </button>
         )}
@@ -86,18 +105,20 @@ const _priceChart = function PriceChart({
   }
 
   return (
-    <div className="price-chart">
-      <div className="chart-header">
-        <div className="chart-title">
-          <h3>{symbol}</h3>
-          {loading && <span className="loading-indicator">Loading...</span>}
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-surface">
+      <div className="flex shrink-0 items-center justify-between border-b border-border bg-raised px-4 py-3 max-md:flex-col max-md:items-start max-md:gap-3">
+        <div className="flex items-center gap-3">
+          <h3 className="m-0 text-base font-semibold text-ink">{symbol}</h3>
+          {loading && (
+            <span className="animate-pulse text-xs text-muted">Loading...</span>
+          )}
         </div>
-        <div className="chart-controls">
-          <div className="interval-selector">
+        <div className="flex items-center gap-3 max-md:w-full max-md:flex-col max-md:gap-2">
+          <div className="flex gap-1 rounded-md bg-surface p-1 max-md:w-full max-md:justify-between">
             {INTERVALS.map(({ value, label }) => (
               <button
                 key={value}
-                className={interval === value ? 'active' : ''}
+                className={`${INTERVAL_BUTTON} ${interval === value ? INTERVAL_ACTIVE : INTERVAL_IDLE}`}
                 onClick={() => onIntervalChange?.(value)}
                 disabled={loading}
               >
@@ -108,7 +129,7 @@ const _priceChart = function PriceChart({
           {onRefresh && (
             <button
               onClick={onRefresh}
-              className="refresh-button"
+              className="cursor-pointer rounded-md border border-border bg-surface px-2.5 py-1.5 text-base text-muted transition-all duration-200 enabled:hover:bg-border enabled:hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 max-md:w-full"
               disabled={loading}
               title="Refresh chart data"
             >

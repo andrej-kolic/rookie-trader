@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { tabClassName } from '@repo/ui';
 import { useBalances } from '../../hooks/use-balances';
 import { AuthGuard } from '../../components/AuthGuard';
-import './styles.css';
 
 type Tab = 'balances' | 'orders' | 'trades';
 
@@ -10,10 +10,10 @@ export function FooterContainer() {
   const { balances, loading, error } = useBalances();
 
   return (
-    <footer className="FooterContainer">
-      <div className="FooterContainer__tabs">
+    <footer className="flex min-h-[150px] flex-col overflow-hidden rounded-lg border-t border-border bg-surface">
+      <div className="flex gap-4 border-b border-border bg-surface px-3">
         <button
-          className={`FooterContainer__tab ${activeTab === 'balances' ? 'FooterContainer__tab--active' : ''}`}
+          className={tabClassName(activeTab === 'balances')}
           onClick={() => {
             setActiveTab('balances');
           }}
@@ -21,20 +21,20 @@ export function FooterContainer() {
           Balances
         </button>
       </div>
-      <div className="FooterContainer__content">
+      <div className="flex-1 overflow-y-auto p-4 text-ink">
         <AuthGuard fallback={<div>Please login to view balances</div>}>
           {activeTab === 'balances' && (
             // TODO: extract balances component
             <div>
               {loading && <div>Loading balances...</div>}
               {error && (
-                <div style={{ color: 'red' }}>Error: {error.message}</div>
+                <div className="text-danger">Error: {error.message}</div>
               )}
               {!loading && !error && balances.length === 0 && (
                 <div>No balances</div>
               )}
               {!loading && !error && balances.length > 0 && (
-                <table style={{ width: '100%', textAlign: 'left' }}>
+                <table className="w-full text-left">
                   <thead>
                     <tr>
                       <th>Asset</th>

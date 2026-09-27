@@ -5,6 +5,9 @@ export { OrderBookDisplay } from './OrderBookDisplay';
 export { PriceChart } from './PriceChart';
 export { SystemStatus } from './SystemStatus';
 
+// style helpers
+export { tabClassName } from './tabClassName';
+
 // type exports
 export type { MarketSelectorProps } from './MarketSelector';
 export type { TickerDisplayProps } from './TickerDisplay';

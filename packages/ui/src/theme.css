@@ -65,3 +65,37 @@ body {
   --color-danger: var(--theme-danger);
   --color-caution: var(--theme-caution);
 }
+
+@theme {
+  --font-system: system-ui, -apple-system, sans-serif;
+
+  /* Font-size utilities (text-sm, …) keep the browser's normal line height
+     instead of Tailwind's taller defaults; set leading-* where needed. */
+  --text-xs--line-height: normal;
+  --text-sm--line-height: normal;
+  --text-base--line-height: normal;
+  --text-lg--line-height: normal;
+  --text-xl--line-height: normal;
+  --animate-skeleton: skeleton 1.5s ease-in-out infinite;
+
+  @keyframes skeleton {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}
+
+/* Shimmering placeholder bar for loading states */
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--theme-border) 25%,
+    var(--theme-line) 50%,
+    var(--theme-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-skeleton);
+}
