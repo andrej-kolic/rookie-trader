@@ -1,4 +1,4 @@
-import type { StatusUpdate } from '../services/kraken-ws-service';
+import type { StatusUpdate } from '../api/kraken-ws-api';
 import { SystemStatus } from '../domain/SystemStatus';
 
 /**

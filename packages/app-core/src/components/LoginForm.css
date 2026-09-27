@@ -1,0 +1,125 @@
+/* Fixed overlay — takes no grid space */
+.LoginDialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.LoginDialog__card {
+  width: 100%;
+  max-width: 380px;
+  background: #1a1f2e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+}
+
+.LoginDialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.LoginDialog__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.LoginDialog__close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.LoginDialog__close:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.LoginDialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.LoginDialog__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.LoginDialog__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.LoginDialog__input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: #0f1422;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.LoginDialog__input:focus {
+  border-color: rgba(99, 179, 237, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.12);
+}
+
+.LoginDialog__error {
+  padding: 0.5rem 0.75rem;
+  background: rgba(220, 53, 69, 0.15);
+  border: 1px solid rgba(220, 53, 69, 0.4);
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 0.875rem;
+}
+
+.LoginDialog__submit {
+  margin-top: 0.25rem;
+  padding: 0.625rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.LoginDialog__submit:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.LoginDialog__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

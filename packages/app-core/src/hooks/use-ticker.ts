@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { subscribeToTicker } from '../services/kraken-ws-service';
+import { subscribeToTicker } from '../api/kraken-ws-api';
 import { mapTicker } from '../mappers/ticker-mapper';
 import { toError } from '../utils/error-utils';
 import type { Ticker } from '../domain/Ticker';
