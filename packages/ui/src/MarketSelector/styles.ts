@@ -4,7 +4,7 @@ export const marketSelector = tv({
   slots: {
     root: 'relative flex grow',
     trigger:
-      'flex w-full max-w-[400px] cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink transition-[border-color] duration-200 hover:border-line',
+      'flex w-full max-w-[400px] cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink transition-[border-color] duration-200 outline-none hover:border-line focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]',
     triggerContent: 'flex items-center gap-2',
     chevron: 'transition-transform duration-200',
     placeholder: 'text-muted',
@@ -25,7 +25,12 @@ export const marketSelector = tv({
     badge: 'rounded-xs bg-border px-1 py-px text-[10px] text-muted',
   },
   variants: {
-    open: { true: { chevron: 'rotate-180' } },
+    open: {
+      true: {
+        trigger: 'border-accent hover:border-accent',
+        chevron: 'rotate-180',
+      },
+    },
   },
 });
 
