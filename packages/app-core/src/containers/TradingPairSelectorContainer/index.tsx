@@ -3,7 +3,6 @@ import { MarketSelector, type MarketItem } from '@repo/ui';
 import { useTradingPairList } from '../../hooks/use-trading-pair-list';
 import { useTradingPairUrlSync } from './use-trading-pair-url-sync';
 import { useTradingStore } from '../../state/trading-store';
-import './styles.css';
 
 export function TradingPairSelectorContainer() {
   const { pairs, loading, error, getPairById } = useTradingPairList();
@@ -76,7 +75,7 @@ export function TradingPairSelectorContainer() {
   if (error) {
     return (
       <div
-        className="TradingPairSelectorContainer--error"
+        className="flex grow items-center justify-center rounded-lg bg-surface text-danger"
         title={error.message}
       >
         Error loading markets

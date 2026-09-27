@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
-import GithubIcon from './assets/github-mark.svg'; // TODO: report for bad path
+import { Button, IconButton } from '@repo/ui';
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
-import './styles.css';
+import { header } from './styles';
+import { GithubIcon } from './GithubIcon';
 
 type HeaderProps = {
   title: string;
@@ -20,29 +21,29 @@ export function Header({
   onLoginClick,
 }: HeaderProps): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
+  const s = header();
 
   const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (_event) => {
     window.location.href = '/';
   };
 
   return (
-    <div className="Header">
-      <div className="Header__logo-container" onClick={handleClick}>
-        <img className="Header__logo" alt="Logo" src={LogoIcon} />
-        <div className="Header__title">{title}</div>
+    <div className={s.root()}>
+      <div className={s.brand()} onClick={handleClick}>
+        <img className={s.logo()} alt="Logo" src={LogoIcon} />
+        <div className={s.title()}>{title}</div>
       </div>
 
       <SystemStatusContainer />
 
-      <div className="Header__actions">
+      <div className={s.actions()}>
         {!isAuthenticated && (
-          <button
-            className="Header__auth-btn Header__auth-btn--unlocked"
+          <IconButton
+            tone="muted"
             title="Connect to Kraken"
             onClick={onLoginClick}
           >
             <svg
-              className="Header__auth-icon"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
@@ -55,12 +56,12 @@ export function Header({
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 9.9-1" />
             </svg>
-          </button>
+          </IconButton>
         )}
         {isAuthenticated && (
-          <div className="Header__auth">
-            <button
-              className="Header__auth-btn"
+          <div className={s.auth()}>
+            <IconButton
+              tone="success"
               title="Connected to Kraken — click to disconnect"
               onClick={() => {
                 setMenuOpen((o) => !o);
@@ -69,7 +70,6 @@ export function Header({
               aria-expanded={menuOpen}
             >
               <svg
-                className="Header__auth-icon"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -82,12 +82,14 @@ export function Header({
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-            </button>
+            </IconButton>
             {menuOpen && (
-              <div className="Header__auth-menu">
-                <p className="Header__auth-menu-label">✓ Connected to Kraken</p>
-                <button
-                  className="Header__auth-menu-disconnect"
+              <div className={s.menu()}>
+                <p className={s.menuLabel()}>✓ Connected to Kraken</p>
+                <Button
+                  intent="danger-subtle"
+                  size="sm"
+                  className="w-full"
                   onClick={() => {
                     setMenuOpen(false);
                     onLogout?.();
@@ -95,7 +97,7 @@ export function Header({
                   disabled={isLoading}
                 >
                   {isLoading ? 'Disconnecting…' : 'Disconnect'}
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -106,8 +108,9 @@ export function Header({
           target="_blank"
           rel="noopener noreferrer"
           title="https://github.com/andrej-kolic/rookie-trader"
+          aria-label="GitHub"
         >
-          <img className="Header__github" alt="Github" src={GithubIcon} />
+          <GithubIcon className={s.github()} />
         </a>
       </div>
     </div>

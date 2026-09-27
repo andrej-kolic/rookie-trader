@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './LoginForm.css';
+import { Button } from '@repo/ui';
+import { loginForm } from './login-form.styles';
 
 type LoginFormProps = {
   onSubmit: (apiKey: string, apiSecret: string) => Promise<void>;
@@ -16,6 +17,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
+  const s = loginForm();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div
-      className="LoginDialog__backdrop"
+      className={s.backdrop()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-dialog-title"
@@ -32,13 +34,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="LoginDialog__card">
-        <div className="LoginDialog__header">
-          <h2 id="login-dialog-title" className="LoginDialog__title">
+      <div className={s.card()}>
+        <div className={s.header()}>
+          <h2 id="login-dialog-title" className={s.title()}>
             Connect to Kraken
           </h2>
           <button
-            className="LoginDialog__close"
+            className={s.close()}
             onClick={onClose}
             aria-label="Close"
             type="button"
@@ -46,9 +48,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             ✕
           </button>
         </div>
-        <form className="LoginDialog__form" onSubmit={handleSubmit}>
-          <div className="LoginDialog__field">
-            <label htmlFor="apiKey" className="LoginDialog__label">
+        <form className={s.form()} onSubmit={handleSubmit}>
+          <div className={s.field()}>
+            <label htmlFor="apiKey" className={s.label()}>
               API Key
             </label>
             <input
@@ -59,12 +61,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiKey(e.target.value);
               }}
               required
-              className="LoginDialog__input"
+              className={s.input()}
               autoComplete="off"
             />
           </div>
-          <div className="LoginDialog__field">
-            <label htmlFor="apiSecret" className="LoginDialog__label">
+          <div className={s.field()}>
+            <label htmlFor="apiSecret" className={s.label()}>
               API Secret
             </label>
             <input
@@ -75,22 +77,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiSecret(e.target.value);
               }}
               required
-              className="LoginDialog__input"
+              className={s.input()}
               autoComplete="current-password"
             />
           </div>
           {error && (
-            <div className="LoginDialog__error" role="alert">
+            <div className={s.error()} role="alert">
               {error}
             </div>
           )}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="LoginDialog__submit"
-          >
+          <Button type="submit" size="lg" className="mt-1" disabled={isLoading}>
             {isLoading ? 'Connecting…' : 'Connect'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

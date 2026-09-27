@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import './styles.css';
+import { orderBook } from './styles';
 
 export type OrderBookLevelProps = {
   price: string;
@@ -18,54 +18,80 @@ export type OrderBookDisplayProps = {
   error?: string;
 };
 
+type Side = 'ask' | 'bid';
+
+function ColumnHeaders() {
+  const s = orderBook();
+  return (
+    <div className={s.columnHeaders()}>
+      <span className={s.columnHeader()}>Price</span>
+      <span className={s.columnHeader()}>Quantity</span>
+      <span className={s.columnHeader()}>Total</span>
+    </div>
+  );
+}
+
+function Level({ level, side }: { level: OrderBookLevelProps; side: Side }) {
+  const s = orderBook({ side });
+  return (
+    <div
+      className={s.level()}
+      style={
+        {
+          '--depth-percentage': `${level.depthPercentage}%`,
+        } as React.CSSProperties
+      }
+    >
+      <span className={s.price()}>{level.price}</span>
+      <span className={s.quantity()}>{level.quantity}</span>
+      <span className={s.total()} title={`Cumulative: ${level.total}`}>
+        {level.total}
+      </span>
+      <div className={s.depthBar()}></div>
+    </div>
+  );
+}
+
+function SkeletonRows() {
+  const s = orderBook();
+  return (
+    <div className={s.skeletonGrid()}>
+      {Array.from({ length: 10 }).map((_, i) => (
+        <div key={i} className={s.skeletonRow()}>
+          <div className={s.skeletonShort()}></div>
+          <div className={s.skeletonLong()}></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const _orderBookDisplay = function OrderBookDisplay(
   props: OrderBookDisplayProps,
 ) {
   const { bids, asks, spread, spreadPct, loading, error } = props;
+  const s = orderBook({ error: Boolean(error) });
 
   if (error) {
     return (
-      <div className="order-book-display order-book-display--error">
-        <div className="order-book-display__header">
-          {/* <h3 className="order-book-display__title">Order Book</h3> */}
-        </div>
-        <div className="order-book-display__error">⚠️ {error}</div>
+      <div className={s.root()}>
+        <div className={s.header()}></div>
+        <div className={s.message()}>⚠️ {error}</div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="order-book-display order-book-display--loading">
-        <div className="order-book-display__header">
-          {/* <h3 className="order-book-display__title">Order Book</h3> */}
-          <div className="order-book-display__column-headers">
-            <span className="order-book-display__column-header">Price</span>
-            <span className="order-book-display__column-header">Quantity</span>
-            <span className="order-book-display__column-header">Total</span>
-          </div>
+      <div className={s.root()}>
+        <div className={s.header()}>
+          <ColumnHeaders />
         </div>
-        <div className="order-book-display__skeleton-grid">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="order-book-display__skeleton-row">
-              <div className="order-book-display__skeleton order-book-display__skeleton--short"></div>
-              <div className="order-book-display__skeleton order-book-display__skeleton--medium"></div>
-            </div>
-          ))}
+        <SkeletonRows />
+        <div className={s.spread()}>
+          <span className={s.spreadLabel()}>&nbsp;</span>
         </div>
-        {
-          <div className="order-book-display__spread">
-            <span className="order-book-display__spread-label">&nbsp;</span>
-          </div>
-        }
-        <div className="order-book-display__skeleton-grid">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="order-book-display__skeleton-row">
-              <div className="order-book-display__skeleton order-book-display__skeleton--short"></div>
-              <div className="order-book-display__skeleton order-book-display__skeleton--medium"></div>
-            </div>
-          ))}
-        </div>
+        <SkeletonRows />
       </div>
     );
   }
@@ -73,95 +99,45 @@ const _orderBookDisplay = function OrderBookDisplay(
   const hasData = asks.length > 0 || bids.length > 0;
 
   return (
-    <div className="order-book-display">
-      <div className="order-book-display__header">
-        {/* <h3 className="order-book-display__title">Order Book - {symbol}</h3> */}
-        <div className="order-book-display__column-headers">
-          <span className="order-book-display__column-header">Price</span>
-          <span className="order-book-display__column-header">Quantity</span>
-          <span className="order-book-display__column-header">Total</span>
-        </div>
+    <div className={s.root()}>
+      <div className={s.header()}>
+        <ColumnHeaders />
       </div>
 
-      <div className="order-book-display__book">
+      <div className={s.book()}>
         {/* Asks (sell orders) - lowest price at bottom */}
-        <div className="order-book-display__asks">
+        <div className={s.side()}>
           {asks.length > 0 ? (
             asks.map((ask, index) => (
-              <div
-                key={index}
-                className="order-book-display__level order-book-display__level--ask"
-                style={
-                  {
-                    '--depth-percentage': `${ask.depthPercentage}%`,
-                  } as React.CSSProperties
-                }
-              >
-                <span className="order-book-display__price order-book-display__price--ask">
-                  {ask.price}
-                </span>
-                <span className="order-book-display__quantity">
-                  {ask.quantity}
-                </span>
-                <span
-                  className="order-book-display__total"
-                  title={`Cumulative: ${ask.total}`}
-                >
-                  {ask.total}
-                </span>
-                <div className="order-book-display__depth-bar order-book-display__depth-bar--ask"></div>
-              </div>
+              <Level key={index} level={ask} side="ask" />
             ))
           ) : (
-            <div className="order-book-display__empty">No asks</div>
+            <div className={s.message()}>No asks</div>
           )}
         </div>
 
-        {/* Spread */}
         {spread && spreadPct && (
-          <div className="order-book-display__spread">
-            <span className="order-book-display__spread-label">Spread:</span>
-            <span className="order-book-display__spread-value">
+          <div className={s.spread()}>
+            <span className={s.spreadLabel()}>Spread:</span>
+            <span className={s.spreadValue()}>
               {spread} ({spreadPct})
             </span>
           </div>
         )}
 
         {/* Bids (buy orders) - highest price at top */}
-        <div className="order-book-display__bids">
+        <div className={s.side()}>
           {bids.length > 0 ? (
             bids.map((bid, index) => (
-              <div
-                key={index}
-                className="order-book-display__level order-book-display__level--bid"
-                style={
-                  {
-                    '--depth-percentage': `${bid.depthPercentage}%`,
-                  } as React.CSSProperties
-                }
-              >
-                <span className="order-book-display__price order-book-display__price--bid">
-                  {bid.price}
-                </span>
-                <span className="order-book-display__quantity">
-                  {bid.quantity}
-                </span>
-                <span
-                  className="order-book-display__total"
-                  title={`Cumulative: ${bid.total}`}
-                >
-                  {bid.total}
-                </span>
-                <div className="order-book-display__depth-bar order-book-display__depth-bar--bid"></div>
-              </div>
+              <Level key={index} level={bid} side="bid" />
             ))
           ) : (
-            <div className="order-book-display__empty">No bids</div>
+            <div className={s.message()}>No bids</div>
           )}
         </div>
 
         {!hasData && (
-          <div className="order-book-display__empty-state">
+          <div className={s.message()}>
             Select a trading pair to view order book
           </div>
         )}

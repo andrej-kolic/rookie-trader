@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
+import { tailwindPlugin } from '@repo/dev-tools/config/esbuild-tailwind';
 import { loadEnvironmentVariables } from '@repo/dev-tools/config/environment';
 import { appCoreEnvDir } from '@repo/dev-tools/config/paths';
 import util from 'util';
@@ -47,6 +48,8 @@ async function dev() {
     loader: {
       '.webp': 'file',
       '.svg': 'file',
+      '.woff': 'file',
+      '.woff2': 'file',
     },
     format: 'esm',
     logLevel: 'info',
@@ -59,6 +62,7 @@ async function dev() {
       crypto: './src/polyfills/crypto.js',
     },
     plugins: [
+      tailwindPlugin(),
       copy({
         resolveFrom: 'cwd',
         assets: {

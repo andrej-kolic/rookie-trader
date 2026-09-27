@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import './styles.css';
+import { ticker } from './styles';
 
 export type TickerDisplayProps = {
   symbol: string;
@@ -16,6 +16,32 @@ export type TickerDisplayProps = {
   loading?: boolean;
   error?: string;
 };
+
+function Stat({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  const s = ticker();
+  return (
+    <div className={s.stat()}>
+      <span className={s.label()}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function PriceWithQty({ price, qty }: { price?: string; qty?: string }) {
+  const s = ticker();
+  return (
+    <span className={s.value()}>
+      {price ?? '—'}
+      {qty && <span className={s.qty()}> ({qty})</span>}
+    </span>
+  );
+}
 
 const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   const {
@@ -34,78 +60,62 @@ const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   } = props;
 
   if (error) {
+    const s = ticker({ state: 'error' });
     return (
-      <div className="ticker-display ticker-display--error">
-        <span className="ticker-display__error">⚠️ {error}</span>
+      <div className={s.root()}>
+        <span className={s.error()}>⚠️ {error}</span>
       </div>
     );
   }
 
   if (loading && !lastPrice) {
+    const s = ticker({ state: 'loading' });
     return (
-      <div className="ticker-display ticker-display--loading">
-        <div className="ticker-display__skeleton ticker-display__skeleton--wide"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
-        <div className="ticker-display__skeleton ticker-display__skeleton--medium"></div>
+      <div className={s.root()}>
+        <div className={s.skeletonWide()}></div>
+        <div className={s.skeleton()}></div>
+        <div className={s.skeleton()}></div>
+        <div className={s.skeleton()}></div>
       </div>
     );
   }
 
-  const changeClass = isPriceRising
-    ? 'ticker-display__change--rising'
-    : 'ticker-display__change--falling';
+  const s = ticker({
+    state: loading ? 'updating' : 'ready',
+    rising: Boolean(isPriceRising),
+  });
 
   return (
-    <div
-      className={`ticker-display ${loading ? 'ticker-display--updating' : ''}`}
-    >
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Last</span>
-        <span className="ticker-display__value">{lastPrice ?? '—'}</span>
-      </div>
+    <div className={s.root()}>
+      <Stat label="Last">
+        <span className={s.value()}>{lastPrice ?? '—'}</span>
+      </Stat>
 
       {changePct && (
-        <div className="ticker-display__section">
-          <span className="ticker-display__label">24h Change</span>
-          <span
-            className={`ticker-display__value ticker-display__change ${changeClass}`}
-          >
-            {changePct}
-          </span>
-        </div>
+        <Stat label="24h Change">
+          <span className={s.change()}>{changePct}</span>
+        </Stat>
       )}
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Volume</span>
-        <span className="ticker-display__value">{volume24h ?? '—'}</span>
-      </div>
+      <Stat label="24h Volume">
+        <span className={s.value()}>{volume24h ?? '—'}</span>
+      </Stat>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h High</span>
-        <span className="ticker-display__value">{high24h ?? '—'}</span>
-      </div>
+      <Stat label="24h High">
+        <span className={s.value()}>{high24h ?? '—'}</span>
+      </Stat>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">24h Low</span>
-        <span className="ticker-display__value">{low24h ?? '—'}</span>
-      </div>
+      <Stat label="24h Low">
+        <span className={s.value()}>{low24h ?? '—'}</span>
+      </Stat>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Bid</span>
-        <span className="ticker-display__value">
-          {bid ?? '—'}
-          {bidQty && <span className="ticker-display__qty"> ({bidQty})</span>}
-        </span>
-      </div>
+      <Stat label="Bid">
+        <PriceWithQty price={bid} qty={bidQty} />
+      </Stat>
 
-      <div className="ticker-display__section">
-        <span className="ticker-display__label">Ask</span>
-        <span className="ticker-display__value">
-          {ask ?? '—'}
-          {askQty && <span className="ticker-display__qty"> ({askQty})</span>}
-        </span>
-      </div>
+      <Stat label="Ask">
+        <PriceWithQty price={ask} qty={askQty} />
+      </Stat>
     </div>
   );
 };

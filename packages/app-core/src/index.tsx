@@ -7,8 +7,9 @@ import { FooterContainer } from './containers/FooterContainer';
 import { useAuth } from './hooks/use-auth';
 import * as authService from './services/auth-service';
 
-import '@repo/ui/theme.css';
+import '@repo/ui/fonts';
 import './styles.css';
+import { appLayout } from './app.styles';
 import { Header } from './components/Header';
 import { LoginContainer } from './containers/LoginContainer';
 
@@ -22,13 +23,14 @@ export function AppCore(_props: {
 
   const { isAuthenticated, isLoading } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const s = appLayout();
 
   const handleLogout = () => {
     void authService.logout();
   };
 
   return (
-    <div className="AppCore">
+    <div className={s.root()}>
       <Header
         title="Rookie"
         isAuthenticated={isAuthenticated}
@@ -46,15 +48,15 @@ export function AppCore(_props: {
         }}
       />
 
-      <header className="AppCore__trading-header">
+      <header className={s.tradingHeader()}>
         <TradingHeader />
       </header>
 
-      <main className="AppCore__main">
-        <div className="AppCore__orderbook">
+      <main className={s.main()}>
+        <div className={s.panel({ className: 'col-[1]' })}>
           <OrderBookDisplayContainer />
         </div>
-        <div className="AppCore__chart">
+        <div className={s.panel({ className: 'col-[2]' })}>
           <PriceChartContainer />
         </div>
       </main>

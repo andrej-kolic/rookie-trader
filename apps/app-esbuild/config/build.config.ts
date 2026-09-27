@@ -3,6 +3,7 @@ import { appCoreEnvDir } from '@repo/dev-tools/config/paths';
 import * as esbuild from 'esbuild';
 import util from 'util';
 import { copy } from 'esbuild-plugin-copy';
+import { tailwindPlugin } from '@repo/dev-tools/config/esbuild-tailwind';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -49,6 +50,8 @@ async function bundle() {
       loader: {
         '.webp': 'file',
         '.svg': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
       },
       format: 'esm',
 
@@ -66,6 +69,7 @@ async function bundle() {
       },
 
       plugins: [
+        tailwindPlugin(),
         copy({
           resolveFrom: 'cwd',
           assets: {
@@ -82,6 +86,8 @@ async function bundle() {
     debuglog('Build successful:', buildResult);
   } catch (err) {
     debuglog('Error during build:', err);
+    // esbuild already printed the error; fail so a broken bundle isn't "built"
+    process.exitCode = 1;
   }
 }
 

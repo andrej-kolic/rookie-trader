@@ -4,6 +4,9 @@ export { TickerDisplay } from './TickerDisplay';
 export { OrderBookDisplay } from './OrderBookDisplay';
 export { PriceChart } from './PriceChart';
 export { SystemStatus } from './SystemStatus';
+export { Button } from './Button';
+export { IconButton } from './IconButton';
+export { Tab } from './Tab';
 
 // type exports
 export type { MarketSelectorProps } from './MarketSelector';
@@ -13,3 +16,6 @@ export type {
   OrderBookLevelProps,
 } from './OrderBookDisplay';
 export type { PriceChartProps } from './PriceChart';
+export type { ButtonProps } from './Button';
+export type { IconButtonProps } from './IconButton';
+export type { TabProps } from './Tab';

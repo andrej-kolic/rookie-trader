@@ -1,40 +1,40 @@
 import React, { useState } from 'react';
+import { Tab } from '@repo/ui';
 import { useBalances } from '../../hooks/use-balances';
 import { AuthGuard } from '../../components/AuthGuard';
-import './styles.css';
+import { footer } from './styles';
 
-type Tab = 'balances' | 'orders' | 'trades';
+type TabId = 'balances' | 'orders' | 'trades';
 
 export function FooterContainer() {
-  const [activeTab, setActiveTab] = useState<Tab>('balances');
+  const [activeTab, setActiveTab] = useState<TabId>('balances');
   const { balances, loading, error } = useBalances();
+  const s = footer();
 
   return (
-    <footer className="FooterContainer">
-      <div className="FooterContainer__tabs">
-        <button
-          className={`FooterContainer__tab ${activeTab === 'balances' ? 'FooterContainer__tab--active' : ''}`}
+    <footer className={s.root()}>
+      <div className={s.tabs()}>
+        <Tab
+          active={activeTab === 'balances'}
           onClick={() => {
             setActiveTab('balances');
           }}
         >
           Balances
-        </button>
+        </Tab>
       </div>
-      <div className="FooterContainer__content">
+      <div className={s.content()}>
         <AuthGuard fallback={<div>Please login to view balances</div>}>
           {activeTab === 'balances' && (
             // TODO: extract balances component
             <div>
               {loading && <div>Loading balances...</div>}
-              {error && (
-                <div style={{ color: 'red' }}>Error: {error.message}</div>
-              )}
+              {error && <div className={s.error()}>Error: {error.message}</div>}
               {!loading && !error && balances.length === 0 && (
                 <div>No balances</div>
               )}
               {!loading && !error && balances.length > 0 && (
-                <table style={{ width: '100%', textAlign: 'left' }}>
+                <table className={s.table()}>
                   <thead>
                     <tr>
                       <th>Asset</th>
@@ -45,7 +45,7 @@ export function FooterContainer() {
                     {balances.map((balance) => (
                       <tr key={balance.asset}>
                         <td>{balance.asset}</td>
-                        <td>{balance.balance}</td>
+                        <td className={s.amount()}>{balance.balance}</td>
                       </tr>
                     ))}
                   </tbody>

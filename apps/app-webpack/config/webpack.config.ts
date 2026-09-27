@@ -111,7 +111,13 @@ const webpackConfig = (
             MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
-              options: { url: true },
+              options: { url: true, importLoaders: 1 },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: { plugins: ['@tailwindcss/postcss'] },
+              },
             },
           ],
         },
@@ -120,6 +126,13 @@ const webpackConfig = (
           type: 'asset/resource',
           generator: {
             filename: 'static/assets/images/[name][hash][ext]',
+          },
+        },
+        {
+          test: /\.woff2?$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'static/assets/fonts/[name][hash][ext]',
           },
         },
       ],

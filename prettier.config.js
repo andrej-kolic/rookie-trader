@@ -6,6 +6,10 @@
  */
 const config = {
   singleQuote: true,
+  plugins: ['prettier-plugin-tailwindcss'],
+  // Sorts Tailwind classes in className and in tv() style definitions
+  tailwindStylesheet: './packages/app-core/src/styles.css',
+  tailwindFunctions: ['tv'],
   // trailingComma: "es5",
   // tabWidth: 4,
   // semi: false,

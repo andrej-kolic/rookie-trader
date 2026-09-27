@@ -1,6 +1,7 @@
 import { memo } from 'react';
+import { Button } from '../Button';
+import { priceChart, intervalButton } from './styles';
 import { usePriceChart } from './usePriceChart';
-import './styles.css';
 
 export type PriceChartProps = {
   candles: {
@@ -48,7 +49,7 @@ const ChartCanvas = ({ symbol, candles, volumeData }: ChartCanvasProps) => {
     volumeData,
   });
 
-  return <div ref={chartContainerRef} className="chart-container" />;
+  return <div ref={chartContainerRef} className={priceChart().canvas()} />;
 };
 
 const _priceChart = function PriceChart({
@@ -61,11 +62,15 @@ const _priceChart = function PriceChart({
   onIntervalChange,
   onRefresh,
 }: PriceChartProps) {
+  const s = priceChart();
+
   // Empty state
   if (!symbol) {
     return (
-      <div className="price-chart-empty">
-        <p>Select a trading pair to view price chart</p>
+      <div className={s.placeholder()}>
+        <p className={s.placeholderText()}>
+          Select a trading pair to view price chart
+        </p>
       </div>
     );
   }
@@ -73,31 +78,31 @@ const _priceChart = function PriceChart({
   // Error state
   if (error) {
     return (
-      <div className="price-chart-error">
-        <p className="error-message">Failed to load chart data</p>
-        <p className="error-detail">{error}</p>
+      <div className={s.placeholder()}>
+        <p className={s.errorTitle()}>Failed to load chart data</p>
+        <p className={s.errorDetail()}>{error}</p>
         {onRefresh && (
-          <button onClick={onRefresh} className="retry-button">
+          <Button onClick={onRefresh} className="mt-2">
             Retry
-          </button>
+          </Button>
         )}
       </div>
     );
   }
 
   return (
-    <div className="price-chart">
-      <div className="chart-header">
-        <div className="chart-title">
-          <h3>{symbol}</h3>
-          {loading && <span className="loading-indicator">Loading...</span>}
+    <div className={s.root()}>
+      <div className={s.header()}>
+        <div className={s.title()}>
+          <h3 className={s.symbol()}>{symbol}</h3>
+          {loading && <span className={s.loading()}>Loading...</span>}
         </div>
-        <div className="chart-controls">
-          <div className="interval-selector">
+        <div className={s.controls()}>
+          <div className={s.intervals()}>
             {INTERVALS.map(({ value, label }) => (
               <button
                 key={value}
-                className={interval === value ? 'active' : ''}
+                className={intervalButton({ active: interval === value })}
                 onClick={() => onIntervalChange?.(value)}
                 disabled={loading}
               >
@@ -108,7 +113,7 @@ const _priceChart = function PriceChart({
           {onRefresh && (
             <button
               onClick={onRefresh}
-              className="refresh-button"
+              className={s.refresh()}
               disabled={loading}
               title="Refresh chart data"
             >

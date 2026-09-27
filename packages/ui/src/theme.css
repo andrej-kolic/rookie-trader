@@ -1,5 +1,124 @@
+/* Navy palette, copied from reys-lab's palette experiment (navy, shade a).
+   Components read colours only through these tokens. */
+:root {
+  /* Surfaces, darkest to lightest */
+  --theme-void: #0d0f23;
+  --theme-bg: #141631;
+  --theme-surface: #202445;
+  --theme-raised: #2c3368;
+  --theme-border: #353a75;
+  --theme-line: #564996;
+
+  /* Text */
+  --theme-ink: #eceefa;
+  --theme-muted: #aaafcf;
+  --theme-dim: #9ca1bd;
+
+  /* Interactive accent. Cyan, not the palette's mint, which is kept for
+     rising prices so an active tab or button never reads as "price up". */
+  --theme-accent: #4cc9f0;
+  --theme-accent-hover: #70d4f3;
+  /* The palette's indigo, for decoration only (background glow) */
+  --theme-decor: #8b8cf7;
+  --theme-on-accent: #0d0f23;
+  --theme-gold: #ffcf4d;
+
+  /* Market direction */
+  --theme-rise: #5ee9b5;
+  --theme-fall: #ff6b81;
+
+  /* Status */
+  --theme-success: #5ee9b5;
+  --theme-danger: #ff6b81;
+  --theme-caution: #ffa24d;
+
+  --theme-overlay: rgb(13 15 35 / 70%);
+  --theme-shadow: rgb(0 0 0 / 50%);
+}
+
 body {
-  font-family:
-    'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans',
-    Arial, sans-serif;
+  font-family: 'Outfit Variable', system-ui, sans-serif;
+  color: var(--theme-ink);
+  /* Tailwind's reset uses 1.5; the layout was designed on the browser default */
+  line-height: normal;
+}
+
+/* Tailwind colour names for the tokens above, e.g. `bg-surface`,
+   `text-muted`, `border-border`, `text-rise`. `inline` keeps them resolving
+   through the --theme-* variables. Takes effect only when imported from a
+   Tailwind entry stylesheet (app-core's styles.css, Storybook's preview.css). */
+@theme inline {
+  --color-void: var(--theme-void);
+  --color-bg: var(--theme-bg);
+  --color-surface: var(--theme-surface);
+  --color-raised: var(--theme-raised);
+  --color-border: var(--theme-border);
+  --color-line: var(--theme-line);
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-dim: var(--theme-dim);
+  --color-accent: var(--theme-accent);
+  --color-accent-hover: var(--theme-accent-hover);
+  --color-on-accent: var(--theme-on-accent);
+  --color-gold: var(--theme-gold);
+  --color-rise: var(--theme-rise);
+  --color-fall: var(--theme-fall);
+  --color-success: var(--theme-success);
+  --color-danger: var(--theme-danger);
+  --color-caution: var(--theme-caution);
+}
+
+@theme {
+  /* Prices and quantities; fixed-width digits keep columns from jittering */
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  /* Font-size utilities (text-sm, …) keep the browser's normal line height
+     instead of Tailwind's taller defaults; set leading-* where needed. */
+  --text-xs--line-height: normal;
+  --text-sm--line-height: normal;
+  --text-base--line-height: normal;
+  --text-lg--line-height: normal;
+  --text-xl--line-height: normal;
+  --animate-skeleton: skeleton 1.5s ease-in-out infinite;
+
+  @keyframes skeleton {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}
+
+/* Shimmering placeholder bar for loading states */
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--theme-border) 25%,
+    var(--theme-line) 50%,
+    var(--theme-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-skeleton);
+}
+
+/* Thin horizontal scrollbar in theme colours */
+@utility scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-line) transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--theme-line);
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-muted);
+  }
 }

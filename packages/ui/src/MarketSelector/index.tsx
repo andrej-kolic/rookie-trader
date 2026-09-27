@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import './styles.css';
+import { Tab } from '../Tab';
+import { marketSelector, marketRow } from './styles';
 
 export type MarketItem = {
   id: string;
@@ -21,7 +22,13 @@ export type MarketSelectorProps = {
   initialOpen?: boolean;
 };
 
-type Tab = 'favorites' | 'all' | 'spot' | 'margin';
+type TabId = 'favorites' | 'all' | 'spot' | 'margin';
+
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'favorites', label: 'Favorites' },
+  { id: 'all', label: 'All' },
+  { id: 'margin', label: 'Margin' },
+];
 
 export function MarketSelector({
   items,
@@ -34,7 +41,7 @@ export function MarketSelector({
 }: MarketSelectorProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('all');
+  const [activeTab, setActiveTab] = useState<TabId>('all');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -57,6 +64,7 @@ export function MarketSelector({
     };
   }, []);
 
+  const s = marketSelector({ open: isOpen });
   const selectedItem = items.find((item) => item.id === selectedId);
 
   const filteredItems = useMemo(() => {
@@ -104,28 +112,24 @@ export function MarketSelector({
   };
 
   return (
-    <div className="MarketSelector">
+    <div className={s.root()}>
       <button
         ref={triggerRef}
-        className="MarketSelector__trigger"
+        className={s.trigger()}
         onClick={() => {
           setIsOpen(!isOpen);
         }}
       >
-        <div className="MarketSelector__trigger-content">
+        <div className={s.triggerContent()}>
           {selectedItem ? (
             <>
-              <span className="MarketSelector__symbol">
-                {selectedItem.symbol}
-              </span>
+              <span className={s.symbol()}>{selectedItem.symbol}</span>
               {selectedItem.leverage && (
-                <span className="MarketSelector__badge">
-                  {selectedItem.leverage}
-                </span>
+                <span className={s.badge()}>{selectedItem.leverage}</span>
               )}
             </>
           ) : (
-            <span style={{ color: '#848e9c' }}>{placeholder}</span>
+            <span className={s.placeholder()}>{placeholder}</span>
           )}
         </div>
         <svg
@@ -137,21 +141,18 @@ export function MarketSelector({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.2s',
-          }}
+          className={s.chevron()}
         >
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
 
       {isOpen && (
-        <div className="MarketSelector__dropdown" ref={dropdownRef}>
-          <div className="MarketSelector__search-container">
+        <div className={s.dropdown()} ref={dropdownRef}>
+          <div className={s.search()}>
             <input
               type="text"
-              className="MarketSelector__search-input"
+              className={s.searchInput()}
               placeholder="Search"
               value={searchQuery}
               onChange={(e) => {
@@ -161,70 +162,49 @@ export function MarketSelector({
             />
           </div>
 
-          <div className="MarketSelector__tabs">
-            <button
-              className={`MarketSelector__tab ${
-                activeTab === 'favorites' ? 'MarketSelector__tab--active' : ''
-              }`}
-              onClick={() => {
-                setActiveTab('favorites');
-              }}
-            >
-              Favorites
-            </button>
-            <button
-              className={`MarketSelector__tab ${
-                activeTab === 'all' ? 'MarketSelector__tab--active' : ''
-              }`}
-              onClick={() => {
-                setActiveTab('all');
-              }}
-            >
-              All
-            </button>
-            <button
-              className={`MarketSelector__tab ${
-                activeTab === 'margin' ? 'MarketSelector__tab--active' : ''
-              }`}
-              onClick={() => {
-                setActiveTab('margin');
-              }}
-            >
-              Margin
-            </button>
+          <div className={s.tabs()}>
+            {TABS.map(({ id, label }) => (
+              <Tab
+                key={id}
+                active={activeTab === id}
+                onClick={() => {
+                  setActiveTab(id);
+                }}
+              >
+                {label}
+              </Tab>
+            ))}
           </div>
 
-          <div className="MarketSelector__list-header">
-            <div className="MarketSelector__col-fav"></div>
-            <div className="MarketSelector__col-market">Market</div>
-            <div className="MarketSelector__col-price">Price</div>
+          <div className={s.listHeader()}>
+            <div className={s.colFav()}></div>
+            <div className={s.colMarket()}>Market</div>
+            <div className={s.colPrice()}>Price</div>
           </div>
 
-          <div className="MarketSelector__list">
+          <div className={s.list()}>
             {filteredItems.length === 0 ? (
-              <div className="MarketSelector__empty">No markets found</div>
+              <div className={s.empty()}>No markets found</div>
             ) : (
               <Virtuoso
                 style={{ height: '350px' }}
                 data={filteredItems}
                 itemContent={(_index, item) => {
                   const isFav = favorites.includes(item.id);
+                  const row = marketRow({
+                    selected: item.id === selectedId,
+                    favorite: isFav,
+                  });
                   return (
                     <div
-                      className={`MarketSelector__item ${
-                        item.id === selectedId
-                          ? 'MarketSelector__item--selected'
-                          : ''
-                      }`}
+                      className={row.row()}
                       onClick={() => {
                         handleSelect(item.id);
                       }}
                     >
-                      <div className="MarketSelector__col-fav">
+                      <div className={s.colFav()}>
                         <button
-                          className={`MarketSelector__fav-btn ${
-                            isFav ? 'MarketSelector__fav-btn--active' : ''
-                          }`}
+                          className={row.favButton()}
                           onClick={(e) => {
                             toggleFavorite(e, item.id);
                           }}
@@ -256,21 +236,17 @@ export function MarketSelector({
                           )}
                         </button>
                       </div>
-                      <div className="MarketSelector__col-market">
-                        <span className="MarketSelector__symbol">
-                          {item.symbol}
-                        </span>
-                        <div className="MarketSelector__badges">
+                      <div className={s.colMarket()}>
+                        <span className={s.symbol()}>{item.symbol}</span>
+                        <div className={s.badges()}>
                           {item.leverage && (
-                            <span className="MarketSelector__badge">
-                              {item.leverage}
-                            </span>
+                            <span className={s.badge()}>{item.leverage}</span>
                           )}
                         </div>
                       </div>
-                      <div className="MarketSelector__col-price">
+                      <div className={s.colPrice()}>
                         {/* Placeholder for price since we don't have it yet */}
-                        <span style={{ color: '#848e9c' }}>--</span>
+                        <span className={s.placeholder()}>--</span>
                       </div>
                     </div>
                   );

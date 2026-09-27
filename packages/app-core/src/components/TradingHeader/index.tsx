@@ -1,7 +1,7 @@
 import React from 'react';
 import { TradingPairSelectorContainer } from '../../containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from '../../containers/TickerDisplayContainer';
-import './styles.css';
+import { tradingHeader } from './styles';
 
 /**
  * Trading Header Component
@@ -9,12 +9,13 @@ import './styles.css';
  * Maintains side-by-side layout on all screen sizes
  */
 export function TradingHeader(): React.JSX.Element {
+  const s = tradingHeader();
   return (
-    <div className="TradingHeader">
-      <div className="TradingHeader__selector">
+    <div className={s.root()}>
+      <div className={s.selector()}>
         <TradingPairSelectorContainer />
       </div>
-      <div className="TradingHeader__ticker">
+      <div className={s.ticker()}>
         <TickerDisplayContainer />
       </div>
     </div>
