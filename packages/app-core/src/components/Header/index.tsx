@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
 import { Button, IconButton } from '@repo/ui';
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
@@ -21,7 +21,24 @@ export function Header({
   onLoginClick,
 }: HeaderProps): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
+  const authRef = useRef<HTMLDivElement>(null);
   const s = header();
+
+  // Close the disconnect menu when clicking outside it or its toggle
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!authRef.current?.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (_event) => {
     window.location.href = '/';
@@ -59,7 +76,7 @@ export function Header({
           </IconButton>
         )}
         {isAuthenticated && (
-          <div className={s.auth()}>
+          <div className={s.auth()} ref={authRef}>
             <IconButton
               tone="success"
               title="Connected to Kraken — click to disconnect"
