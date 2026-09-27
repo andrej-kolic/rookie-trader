@@ -15,7 +15,7 @@ export function tailwindPlugin(): Plugin {
     setup(build) {
       build.onLoad({ filter: /\.css$/ }, async (args) => {
         const source = await readFile(args.path, 'utf8');
-        if (!source.includes('tailwindcss/')) return undefined;
+        if (!/@import\s+['"]tailwindcss/.test(source)) return undefined;
 
         const result = await postcss([
           tailwindcss({ base: path.dirname(args.path) }),
