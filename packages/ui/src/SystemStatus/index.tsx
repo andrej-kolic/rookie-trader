@@ -5,7 +5,7 @@ const systemStatus = tv({
   slots: {
     root: 'relative',
     trigger:
-      'inline-flex cursor-pointer items-center gap-2 rounded-lg bg-black/35 px-2.5 py-[5px] text-sm font-medium',
+      'inline-flex cursor-pointer items-center gap-2 rounded-lg px-2.5 py-[5px] text-sm font-medium',
     indicator:
       'size-2 shrink-0 rounded-full bg-current shadow-[0_0_4px_currentColor]',
     label: 'capitalize',
