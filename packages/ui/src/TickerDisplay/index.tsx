@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { ticker } from './styles';
 
 export type TickerDisplayProps = {
   symbol: string;
@@ -16,14 +17,31 @@ export type TickerDisplayProps = {
   error?: string;
 };
 
-const ROOT =
-  'flex w-full max-w-full min-w-0 items-center overflow-x-auto overflow-y-hidden rounded-lg border px-6 py-4 font-system whitespace-nowrap scroll-smooth [scrollbar-color:var(--theme-line)_transparent] [scrollbar-width:thin] max-md:gap-4 max-md:px-4 max-md:py-3 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-line [&::-webkit-scrollbar-thumb:hover]:bg-muted [&::-webkit-scrollbar-track]:bg-transparent';
-const NORMAL = 'gap-6 border-border bg-surface';
-const SECTION = 'flex shrink-0 flex-col gap-1 max-md:min-w-[100px]';
-const LABEL = 'text-xs font-medium tracking-[0.05em] text-muted uppercase';
-const VALUE = 'text-sm font-medium text-ink tabular-nums';
-const QTY = 'text-xs font-normal text-dim';
-const SKELETON = 'skeleton h-5 rounded';
+function Stat({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  const s = ticker();
+  return (
+    <div className={s.stat()}>
+      <span className={s.label()}>{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function PriceWithQty({ price, qty }: { price?: string; qty?: string }) {
+  const s = ticker();
+  return (
+    <span className={s.value()}>
+      {price ?? '—'}
+      {qty && <span className={s.qty()}> ({qty})</span>}
+    </span>
+  );
+}
 
 const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   const {
@@ -42,78 +60,62 @@ const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   } = props;
 
   if (error) {
+    const s = ticker({ state: 'error' });
     return (
-      <div
-        className={`${ROOT} justify-center gap-6 border-danger bg-[color-mix(in_oklab,var(--theme-danger)_12%,var(--theme-surface))]`}
-      >
-        <span className="text-sm font-medium text-danger">⚠️ {error}</span>
+      <div className={s.root()}>
+        <span className={s.error()}>⚠️ {error}</span>
       </div>
     );
   }
 
   if (loading && !lastPrice) {
+    const s = ticker({ state: 'loading' });
     return (
-      <div className={`${ROOT} gap-8 border-border bg-surface`}>
-        <div className={`${SKELETON} w-[120px]`}></div>
-        <div className={`${SKELETON} w-20`}></div>
-        <div className={`${SKELETON} w-20`}></div>
-        <div className={`${SKELETON} w-20`}></div>
+      <div className={s.root()}>
+        <div className={s.skeletonWide()}></div>
+        <div className={s.skeleton()}></div>
+        <div className={s.skeleton()}></div>
+        <div className={s.skeleton()}></div>
       </div>
     );
   }
 
-  const changeColor = isPriceRising ? 'text-rise' : 'text-fall';
+  const s = ticker({
+    state: loading ? 'updating' : 'ready',
+    rising: Boolean(isPriceRising),
+  });
 
   return (
-    <div
-      className={`${ROOT} ${NORMAL} ${loading ? 'pointer-events-none opacity-60 transition-opacity duration-200 ease-in-out' : ''}`}
-    >
-      <div className={SECTION}>
-        <span className={LABEL}>Last</span>
-        <span className={VALUE}>{lastPrice ?? '—'}</span>
-      </div>
+    <div className={s.root()}>
+      <Stat label="Last">
+        <span className={s.value()}>{lastPrice ?? '—'}</span>
+      </Stat>
 
       {changePct && (
-        <div className={SECTION}>
-          <span className={LABEL}>24h Change</span>
-          <span
-            className={`inline-block rounded text-sm font-semibold tabular-nums ${changeColor}`}
-          >
-            {changePct}
-          </span>
-        </div>
+        <Stat label="24h Change">
+          <span className={s.change()}>{changePct}</span>
+        </Stat>
       )}
 
-      <div className={SECTION}>
-        <span className={LABEL}>24h Volume</span>
-        <span className={VALUE}>{volume24h ?? '—'}</span>
-      </div>
+      <Stat label="24h Volume">
+        <span className={s.value()}>{volume24h ?? '—'}</span>
+      </Stat>
 
-      <div className={SECTION}>
-        <span className={LABEL}>24h High</span>
-        <span className={VALUE}>{high24h ?? '—'}</span>
-      </div>
+      <Stat label="24h High">
+        <span className={s.value()}>{high24h ?? '—'}</span>
+      </Stat>
 
-      <div className={SECTION}>
-        <span className={LABEL}>24h Low</span>
-        <span className={VALUE}>{low24h ?? '—'}</span>
-      </div>
+      <Stat label="24h Low">
+        <span className={s.value()}>{low24h ?? '—'}</span>
+      </Stat>
 
-      <div className={SECTION}>
-        <span className={LABEL}>Bid</span>
-        <span className={VALUE}>
-          {bid ?? '—'}
-          {bidQty && <span className={QTY}> ({bidQty})</span>}
-        </span>
-      </div>
+      <Stat label="Bid">
+        <PriceWithQty price={bid} qty={bidQty} />
+      </Stat>
 
-      <div className={SECTION}>
-        <span className={LABEL}>Ask</span>
-        <span className={VALUE}>
-          {ask ?? '—'}
-          {askQty && <span className={QTY}> ({askQty})</span>}
-        </span>
-      </div>
+      <Stat label="Ask">
+        <PriceWithQty price={ask} qty={askQty} />
+      </Stat>
     </div>
   );
 };

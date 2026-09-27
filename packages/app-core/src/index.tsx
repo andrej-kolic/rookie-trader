@@ -8,6 +8,7 @@ import { useAuth } from './hooks/use-auth';
 import * as authService from './services/auth-service';
 
 import './styles.css';
+import { appLayout } from './app.styles';
 import { Header } from './components/Header';
 import { LoginContainer } from './containers/LoginContainer';
 
@@ -21,13 +22,14 @@ export function AppCore(_props: {
 
   const { isAuthenticated, isLoading } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const s = appLayout();
 
   const handleLogout = () => {
     void authService.logout();
   };
 
   return (
-    <div className="grid h-screen grid-rows-[auto_auto_1fr_auto] gap-4 overflow-hidden p-4 max-md:flex max-md:h-auto max-md:min-h-screen max-md:flex-col max-md:overflow-visible">
+    <div className={s.root()}>
       <Header
         title="Rookie"
         isAuthenticated={isAuthenticated}
@@ -45,15 +47,15 @@ export function AppCore(_props: {
         }}
       />
 
-      <header className="min-w-0 overflow-visible">
+      <header className={s.tradingHeader()}>
         <TradingHeader />
       </header>
 
-      <main className="grid min-h-0 grid-cols-[minmax(0,35%)_minmax(0,65%)] gap-4 overflow-hidden max-md:flex max-md:flex-1 max-md:flex-col max-md:overflow-visible">
-        <div className="col-[1] flex min-h-0 min-w-0 flex-col overflow-hidden max-md:min-h-[400px] max-md:overflow-visible">
+      <main className={s.main()}>
+        <div className={s.panel({ className: 'col-[1]' })}>
           <OrderBookDisplayContainer />
         </div>
-        <div className="col-[2] flex min-h-0 min-w-0 flex-col overflow-hidden max-md:min-h-[400px] max-md:overflow-visible">
+        <div className={s.panel({ className: 'col-[2]' })}>
           <PriceChartContainer />
         </div>
       </main>

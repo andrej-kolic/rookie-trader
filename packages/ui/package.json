@@ -40,6 +40,8 @@
   },
   "dependencies": {
     "lightweight-charts": "4.1.3",
-    "react-virtuoso": "4.17.0"
+    "react-virtuoso": "4.17.0",
+    "tailwind-merge": "3.7.0",
+    "tailwind-variants": "3.3.1"
   }
 }

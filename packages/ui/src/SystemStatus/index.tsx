@@ -1,4 +1,25 @@
 import React from 'react';
+import { tv } from 'tailwind-variants';
+
+const systemStatus = tv({
+  slots: {
+    root: 'inline-flex items-center gap-2 rounded-lg bg-black/35 px-2.5 py-[5px] text-sm font-medium',
+    indicator: 'size-2 rounded-full bg-current shadow-[0_0_4px_currentColor]',
+    label: 'capitalize',
+  },
+  variants: {
+    status: {
+      online: { root: 'text-success' },
+      maintenance: { root: 'text-danger' },
+      cancel_only: { root: 'text-caution' },
+      limit_only: { root: 'text-gold' },
+      post_only: { root: 'text-accent' },
+      offline: { root: 'text-dim' },
+    },
+  },
+});
+
+const KNOWN_STATUSES = Object.keys(systemStatus.variants.status);
 
 export type SystemStatusType =
   | 'online'
@@ -8,15 +29,6 @@ export type SystemStatusType =
   | 'post_only'
   | 'offline';
 
-const STATUS_COLORS: Record<string, string> = {
-  online: 'text-success',
-  maintenance: 'text-danger',
-  cancel_only: 'text-caution',
-  limit_only: 'text-gold',
-  post_only: 'text-accent',
-  offline: 'text-dim',
-};
-
 export type SystemStatusProps = {
   status: SystemStatusType | (string & {}) | null | undefined;
   className?: string;
@@ -24,20 +36,23 @@ export type SystemStatusProps = {
 
 export function SystemStatus({
   status,
-  className = '',
+  className,
 }: SystemStatusProps): React.ReactNode {
   if (!status) {
     return null;
   }
   const formattedStatus = status.replace('_', ' ');
-  const statusColor = STATUS_COLORS[status] ?? STATUS_COLORS.online;
+  // Unknown statuses fall back to the online colour
+  const s = systemStatus({
+    status: KNOWN_STATUSES.includes(status)
+      ? (status as SystemStatusType)
+      : 'online',
+  });
 
   return (
-    <div
-      className={`inline-flex items-center gap-2 rounded-lg bg-black/35 px-2.5 py-[5px] text-sm font-medium ${statusColor} ${className}`}
-    >
-      <div className="size-2 rounded-full bg-current shadow-[0_0_4px_currentColor]" />
-      <span className="capitalize">{formattedStatus}</span>
+    <div className={s.root({ className })}>
+      <div className={s.indicator()} />
+      <span className={s.label()}>{formattedStatus}</span>
     </div>
   );
 }

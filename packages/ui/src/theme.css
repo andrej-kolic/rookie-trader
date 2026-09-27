@@ -101,3 +101,23 @@ body {
   background-size: 200% 100%;
   animation: var(--animate-skeleton);
 }
+
+/* Thin horizontal scrollbar in theme colours */
+@utility scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-line) transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--theme-line);
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-muted);
+  }
+}

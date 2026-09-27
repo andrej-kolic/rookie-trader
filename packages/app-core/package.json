@@ -24,6 +24,8 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "rxjs": "7.8.2",
+    "tailwind-merge": "3.7.0",
+    "tailwind-variants": "3.3.1",
     "tailwindcss": "4.3.3",
     "ts-kraken": "4.0.14",
     "zustand": "5.0.9"

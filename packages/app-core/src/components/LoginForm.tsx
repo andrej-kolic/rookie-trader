@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Button } from '@repo/ui';
+import { loginForm } from './login-form.styles';
 
 type LoginFormProps = {
   onSubmit: (apiKey: string, apiSecret: string) => Promise<void>;
@@ -15,6 +17,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
+  const s = loginForm();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +26,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-200 flex items-center justify-center bg-(--theme-overlay) backdrop-blur-[3px]"
+      className={s.backdrop()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-dialog-title"
@@ -31,16 +34,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-[380px] rounded-xl border border-border bg-surface p-8 text-ink shadow-[0_8px_32px_var(--theme-shadow),0_0_0_1px_rgb(255_255_255/4%)]">
-        <div className="mb-6 flex items-center justify-between">
-          <h2
-            id="login-dialog-title"
-            className="text-xl font-semibold text-ink"
-          >
+      <div className={s.card()}>
+        <div className={s.header()}>
+          <h2 id="login-dialog-title" className={s.title()}>
             Connect to Kraken
           </h2>
           <button
-            className="cursor-pointer rounded px-1.5 py-0.5 text-base leading-none text-muted transition-[color,background] duration-150 hover:bg-white/8 hover:text-ink"
+            className={s.close()}
             onClick={onClose}
             aria-label="Close"
             type="button"
@@ -48,12 +48,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             ✕
           </button>
         </div>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="apiKey"
-              className="text-[0.8125rem] font-medium tracking-[0.02em] text-muted uppercase"
-            >
+        <form className={s.form()} onSubmit={handleSubmit}>
+          <div className={s.field()}>
+            <label htmlFor="apiKey" className={s.label()}>
               API Key
             </label>
             <input
@@ -64,15 +61,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiKey(e.target.value);
               }}
               required
-              className="w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink outline-none transition-[border-color] duration-150 focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]"
+              className={s.input()}
               autoComplete="off"
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="apiSecret"
-              className="text-[0.8125rem] font-medium tracking-[0.02em] text-muted uppercase"
-            >
+          <div className={s.field()}>
+            <label htmlFor="apiSecret" className={s.label()}>
               API Secret
             </label>
             <input
@@ -83,25 +77,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 setApiSecret(e.target.value);
               }}
               required
-              className="w-full rounded-md border border-border bg-void px-3 py-2 text-[0.9375rem] text-ink outline-none transition-[border-color] duration-150 focus:border-accent/70 focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]"
+              className={s.input()}
               autoComplete="current-password"
             />
           </div>
           {error && (
-            <div
-              className="rounded-md border border-danger/40 bg-danger/15 px-3 py-2 text-sm text-danger"
-              role="alert"
-            >
+            <div className={s.error()} role="alert">
               {error}
             </div>
           )}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="mt-1 cursor-pointer rounded-md bg-accent px-4 py-2.5 text-[0.9375rem] font-medium text-on-accent transition-[background] duration-150 enabled:hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <Button type="submit" size="lg" className="mt-1" disabled={isLoading}>
             {isLoading ? 'Connecting…' : 'Connect'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

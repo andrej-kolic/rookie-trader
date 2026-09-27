@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { tabClassName } from '../tabClassName';
+import { Tab } from '../Tab';
+import { marketSelector, marketRow } from './styles';
 
 export type MarketItem = {
   id: string;
@@ -21,7 +22,13 @@ export type MarketSelectorProps = {
   initialOpen?: boolean;
 };
 
-type Tab = 'favorites' | 'all' | 'spot' | 'margin';
+type TabId = 'favorites' | 'all' | 'spot' | 'margin';
+
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'favorites', label: 'Favorites' },
+  { id: 'all', label: 'All' },
+  { id: 'margin', label: 'Margin' },
+];
 
 export function MarketSelector({
   items,
@@ -34,7 +41,7 @@ export function MarketSelector({
 }: MarketSelectorProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('all');
+  const [activeTab, setActiveTab] = useState<TabId>('all');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -57,6 +64,7 @@ export function MarketSelector({
     };
   }, []);
 
+  const s = marketSelector({ open: isOpen });
   const selectedItem = items.find((item) => item.id === selectedId);
 
   const filteredItems = useMemo(() => {
@@ -104,28 +112,24 @@ export function MarketSelector({
   };
 
   return (
-    <div className="relative flex grow">
+    <div className={s.root()}>
       <button
         ref={triggerRef}
-        className="flex w-full max-w-[400px] cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink transition-[border-color] duration-200 hover:border-line"
+        className={s.trigger()}
         onClick={() => {
           setIsOpen(!isOpen);
         }}
       >
-        <div className="flex items-center gap-2">
+        <div className={s.triggerContent()}>
           {selectedItem ? (
             <>
-              <span className="text-sm font-medium text-ink">
-                {selectedItem.symbol}
-              </span>
+              <span className={s.symbol()}>{selectedItem.symbol}</span>
               {selectedItem.leverage && (
-                <span className="rounded-xs bg-border px-1 py-px text-[10px] text-muted">
-                  {selectedItem.leverage}
-                </span>
+                <span className={s.badge()}>{selectedItem.leverage}</span>
               )}
             </>
           ) : (
-            <span className="text-muted">{placeholder}</span>
+            <span className={s.placeholder()}>{placeholder}</span>
           )}
         </div>
         <svg
@@ -137,21 +141,18 @@ export function MarketSelector({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={s.chevron()}
         >
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
 
       {isOpen && (
-        <div
-          className="absolute top-full left-0 z-1000 mt-1 flex max-h-[500px] w-[300px] flex-col rounded-lg border border-border bg-surface shadow-[0_4px_12px_var(--theme-shadow)]"
-          ref={dropdownRef}
-        >
-          <div className="border-b border-border p-3">
+        <div className={s.dropdown()} ref={dropdownRef}>
+          <div className={s.search()}>
             <input
               type="text"
-              className="w-full rounded border border-border bg-void px-3 py-2 text-sm text-ink outline-none focus:border-accent"
+              className={s.searchInput()}
               placeholder="Search"
               value={searchQuery}
               onChange={(e) => {
@@ -161,64 +162,49 @@ export function MarketSelector({
             />
           </div>
 
-          <div className="flex gap-4 border-b border-border px-3">
-            <button
-              className={tabClassName(activeTab === 'favorites')}
-              onClick={() => {
-                setActiveTab('favorites');
-              }}
-            >
-              Favorites
-            </button>
-            <button
-              className={tabClassName(activeTab === 'all')}
-              onClick={() => {
-                setActiveTab('all');
-              }}
-            >
-              All
-            </button>
-            <button
-              className={tabClassName(activeTab === 'margin')}
-              onClick={() => {
-                setActiveTab('margin');
-              }}
-            >
-              Margin
-            </button>
+          <div className={s.tabs()}>
+            {TABS.map(({ id, label }) => (
+              <Tab
+                key={id}
+                active={activeTab === id}
+                onClick={() => {
+                  setActiveTab(id);
+                }}
+              >
+                {label}
+              </Tab>
+            ))}
           </div>
 
-          <div className="flex border-b border-border px-3 py-2 text-xs text-muted">
-            <div className="w-6 shrink-0"></div>
-            <div className="flex flex-1">Market</div>
-            <div className="w-20 text-right">Price</div>
+          <div className={s.listHeader()}>
+            <div className={s.colFav()}></div>
+            <div className={s.colMarket()}>Market</div>
+            <div className={s.colPrice()}>Price</div>
           </div>
 
-          <div className="max-h-[350px] overflow-y-auto">
+          <div className={s.list()}>
             {filteredItems.length === 0 ? (
-              <div className="p-6 text-center text-sm text-muted">
-                No markets found
-              </div>
+              <div className={s.empty()}>No markets found</div>
             ) : (
               <Virtuoso
                 style={{ height: '350px' }}
                 data={filteredItems}
                 itemContent={(_index, item) => {
                   const isFav = favorites.includes(item.id);
+                  const row = marketRow({
+                    selected: item.id === selectedId,
+                    favorite: isFav,
+                  });
                   return (
                     <div
-                      className={`flex cursor-pointer items-center px-3 py-2 transition-colors duration-100 hover:bg-border ${
-                        item.id === selectedId ? 'bg-border' : ''
-                      }`}
+                      className={row.row()}
                       onClick={() => {
                         handleSelect(item.id);
                       }}
                     >
-                      <div className="w-6 shrink-0">
+                      <div className={s.colFav()}>
                         <button
-                          className={`flex cursor-pointer items-center justify-center hover:text-gold ${
-                            isFav ? 'text-gold' : 'text-line'
-                          }`}
+                          className={row.favButton()}
                           onClick={(e) => {
                             toggleFavorite(e, item.id);
                           }}
@@ -250,21 +236,17 @@ export function MarketSelector({
                           )}
                         </button>
                       </div>
-                      <div className="flex flex-1">
-                        <span className="text-sm font-medium text-ink">
-                          {item.symbol}
-                        </span>
-                        <div className="ml-2 flex gap-1">
+                      <div className={s.colMarket()}>
+                        <span className={s.symbol()}>{item.symbol}</span>
+                        <div className={s.badges()}>
                           {item.leverage && (
-                            <span className="rounded-xs bg-border px-1 py-px text-[10px] text-muted">
-                              {item.leverage}
-                            </span>
+                            <span className={s.badge()}>{item.leverage}</span>
                           )}
                         </div>
                       </div>
-                      <div className="w-20 text-right">
+                      <div className={s.colPrice()}>
                         {/* Placeholder for price since we don't have it yet */}
-                        <span className="text-muted">--</span>
+                        <span className={s.placeholder()}>--</span>
                       </div>
                     </div>
                   );

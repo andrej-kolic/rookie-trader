@@ -1,6 +1,7 @@
 import React from 'react';
 import { TradingPairSelectorContainer } from '../../containers/TradingPairSelectorContainer';
 import { TickerDisplayContainer } from '../../containers/TickerDisplayContainer';
+import { tradingHeader } from './styles';
 
 /**
  * Trading Header Component
@@ -8,12 +9,13 @@ import { TickerDisplayContainer } from '../../containers/TickerDisplayContainer'
  * Maintains side-by-side layout on all screen sizes
  */
 export function TradingHeader(): React.JSX.Element {
+  const s = tradingHeader();
   return (
-    <div className="flex h-[60px] w-full max-w-full min-w-0 items-stretch gap-4 rounded-lg">
-      <div className="flex max-w-40 min-w-40 shrink-0">
+    <div className={s.root()}>
+      <div className={s.selector()}>
         <TradingPairSelectorContainer />
       </div>
-      <div className="flex min-w-0 flex-1 overflow-hidden">
+      <div className={s.ticker()}>
         <TickerDisplayContainer />
       </div>
     </div>
