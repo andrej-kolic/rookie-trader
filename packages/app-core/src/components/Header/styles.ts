@@ -11,6 +11,6 @@ export const header = tv({
     auth: 'relative',
     menu: 'absolute top-[calc(100%+8px)] right-0 z-100 min-w-[200px] rounded-lg border border-border bg-surface p-3 shadow-[0_4px_20px_var(--theme-shadow)]',
     menuLabel: 'mb-2.5 text-[13px] font-medium text-success',
-    github: 'relative block w-8 opacity-90',
+    github: 'relative block h-auto w-8 text-ink opacity-90',
   },
 });

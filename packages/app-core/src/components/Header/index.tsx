@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
-import GithubIcon from './assets/github-mark.svg'; // TODO: report for bad path
 import { Button, IconButton } from '@repo/ui';
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import { header } from './styles';
+import { GithubIcon } from './GithubIcon';
 
 type HeaderProps = {
   title: string;
@@ -108,8 +108,9 @@ export function Header({
           target="_blank"
           rel="noopener noreferrer"
           title="https://github.com/andrej-kolic/rookie-trader"
+          aria-label="GitHub"
         >
-          <img className={s.github()} alt="Github" src={GithubIcon} />
+          <GithubIcon className={s.github()} />
         </a>
       </div>
     </div>
