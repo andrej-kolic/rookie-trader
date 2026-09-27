@@ -19,6 +19,7 @@
   "devDependencies": {
     "@repo/dev-tools": "workspace:*",
     "@repo/eslint-config": "workspace:*",
+    "@tailwindcss/vite": "4.3.3",
     "@types/node": "24.6.2",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",

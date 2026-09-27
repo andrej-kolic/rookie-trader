@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import util from 'util';
 import path from 'path';
 
@@ -43,7 +44,7 @@ export default defineConfig((configEnv) => {
       // 'process.env': {},
     },
 
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
 
     publicDir: appCorePublic,
 

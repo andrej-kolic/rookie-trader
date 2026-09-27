@@ -111,7 +111,13 @@ const webpackConfig = (
             MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
-              options: { url: true },
+              options: { url: true, importLoaders: 1 },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: { plugins: ['@tailwindcss/postcss'] },
+              },
             },
           ],
         },

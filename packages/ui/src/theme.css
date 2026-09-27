@@ -1,3 +1,13 @@
+/* Tailwind: theme variables and utilities only. Preflight (Tailwind's CSS
+   reset) is left out so existing component styles render unchanged. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* Class sources, relative to this file */
+@source '.';
+@source '../../app-core/src';
+
 /* Navy palette, copied from reys-lab's palette experiment (navy, shade a).
    Components read colours only through these tokens. */
 :root {
@@ -39,4 +49,28 @@ body {
     'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans',
     Arial, sans-serif;
   color: var(--theme-ink);
+}
+
+/* Tailwind colour names for the tokens above, e.g. `bg-surface`,
+   `text-muted`, `border-border`, `text-rise`. `inline` keeps them resolving
+   through the --theme-* variables. */
+@theme inline {
+  --color-void: var(--theme-void);
+  --color-bg: var(--theme-bg);
+  --color-surface: var(--theme-surface);
+  --color-raised: var(--theme-raised);
+  --color-border: var(--theme-border);
+  --color-line: var(--theme-line);
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-dim: var(--theme-dim);
+  --color-accent: var(--theme-accent);
+  --color-accent-hover: var(--theme-accent-hover);
+  --color-on-accent: var(--theme-on-accent);
+  --color-gold: var(--theme-gold);
+  --color-rise: var(--theme-rise);
+  --color-fall: var(--theme-fall);
+  --color-success: var(--theme-success);
+  --color-danger: var(--theme-danger);
+  --color-caution: var(--theme-caution);
 }
