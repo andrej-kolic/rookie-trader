@@ -87,7 +87,7 @@ export function Header({
               <div className={s.menu()}>
                 <p className={s.menuLabel()}>✓ Connected to Kraken</p>
                 <Button
-                  intent="danger"
+                  intent="danger-subtle"
                   size="sm"
                   className="w-full"
                   onClick={() => {

@@ -8,6 +8,8 @@ export const button = tv({
       accent: 'bg-accent text-on-accent enabled:hover:bg-accent-hover',
       danger:
         'bg-danger text-void enabled:hover:bg-[color-mix(in_oklab,var(--theme-danger)_80%,black)]',
+      'danger-subtle':
+        'border border-danger/40 text-danger enabled:hover:border-danger enabled:hover:bg-danger/15',
     },
     size: {
       sm: 'rounded px-3 py-[7px] text-[13px]',
@@ -21,7 +23,7 @@ export const button = tv({
 export type ButtonProps = React.ComponentProps<'button'> &
   VariantProps<typeof button>;
 
-/** Solid text button in the theme's accent or danger colour */
+/** Text button: solid accent or danger, or an outlined danger for quiet destructive actions */
 export function Button({
   intent,
   size,
