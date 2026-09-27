@@ -151,7 +151,7 @@ export function MarketSelector({
           <div className="border-b border-border p-3">
             <input
               type="text"
-              className="box-border w-full rounded border border-border bg-void px-3 py-2 text-sm text-ink outline-none focus:border-accent"
+              className="w-full rounded border border-border bg-void px-3 py-2 text-sm text-ink outline-none focus:border-accent"
               placeholder="Search"
               value={searchQuery}
               onChange={(e) => {
@@ -216,7 +216,7 @@ export function MarketSelector({
                     >
                       <div className="w-6 shrink-0">
                         <button
-                          className={`flex cursor-pointer items-center justify-center border-none bg-transparent p-0 hover:text-gold ${
+                          className={`flex cursor-pointer items-center justify-center hover:text-gold ${
                             isFav ? 'text-gold' : 'text-line'
                           }`}
                           onClick={(e) => {

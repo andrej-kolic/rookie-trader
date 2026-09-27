@@ -39,6 +39,8 @@ body {
     'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans',
     Arial, sans-serif;
   color: var(--theme-ink);
+  /* Tailwind's reset uses 1.5; the layout was designed on the browser default */
+  line-height: normal;
 }
 
 /* Tailwind colour names for the tokens above, e.g. `bg-surface`,

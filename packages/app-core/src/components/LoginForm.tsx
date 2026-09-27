@@ -35,12 +35,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="mb-6 flex items-center justify-between">
           <h2
             id="login-dialog-title"
-            className="m-0 text-xl font-semibold text-ink"
+            className="text-xl font-semibold text-ink"
           >
             Connect to Kraken
           </h2>
           <button
-            className="cursor-pointer rounded border-none bg-transparent px-1.5 py-0.5 text-base leading-none text-muted transition-[color,background] duration-150 hover:bg-white/8 hover:text-ink"
+            className="cursor-pointer rounded px-1.5 py-0.5 text-base leading-none text-muted transition-[color,background] duration-150 hover:bg-white/8 hover:text-ink"
             onClick={onClose}
             aria-label="Close"
             type="button"
@@ -98,7 +98,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-1 cursor-pointer rounded-md border-none bg-accent px-4 py-2.5 text-[0.9375rem] font-medium text-on-accent transition-[background] duration-150 enabled:hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-1 cursor-pointer rounded-md bg-accent px-4 py-2.5 text-[0.9375rem] font-medium text-on-accent transition-[background] duration-150 enabled:hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? 'Connecting…' : 'Connect'}
           </button>

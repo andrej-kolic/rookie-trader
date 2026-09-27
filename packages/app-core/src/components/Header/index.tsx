@@ -45,7 +45,7 @@ export function Header({
       <div className="flex items-center gap-3">
         {!isAuthenticated && (
           <button
-            className="flex size-8 cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-0 transition-[opacity,background] duration-150 hover:opacity-100 text-muted opacity-70 hover:bg-muted/12"
+            className="flex size-8 cursor-pointer items-center justify-center rounded-md transition-[opacity,background] duration-150 hover:opacity-100 text-muted opacity-70 hover:bg-muted/12"
             title="Connect to Kraken"
             onClick={onLoginClick}
           >
@@ -68,7 +68,7 @@ export function Header({
         {isAuthenticated && (
           <div className="relative">
             <button
-              className="flex size-8 cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-0 transition-[opacity,background] duration-150 hover:opacity-100 text-success opacity-90 hover:bg-success/12"
+              className="flex size-8 cursor-pointer items-center justify-center rounded-md transition-[opacity,background] duration-150 hover:opacity-100 text-success opacity-90 hover:bg-success/12"
               title="Connected to Kraken — click to disconnect"
               onClick={() => {
                 setMenuOpen((o) => !o);
@@ -93,11 +93,11 @@ export function Header({
             </button>
             {menuOpen && (
               <div className="absolute top-[calc(100%+8px)] right-0 z-100 min-w-[200px] rounded-lg border border-success bg-surface p-3 shadow-[0_4px_20px_var(--theme-shadow)]">
-                <p className="mt-0 mb-2.5 text-[13px] font-medium text-success">
+                <p className="mb-2.5 text-[13px] font-medium text-success">
                   ✓ Connected to Kraken
                 </p>
                 <button
-                  className="w-full cursor-pointer rounded border-none bg-danger px-3 py-[7px] text-[13px] text-void transition-[background] duration-150 enabled:hover:bg-[color-mix(in_oklab,var(--theme-danger)_80%,black)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full cursor-pointer rounded bg-danger px-3 py-[7px] text-[13px] text-void transition-[background] duration-150 enabled:hover:bg-[color-mix(in_oklab,var(--theme-danger)_80%,black)] disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={() => {
                     setMenuOpen(false);
                     onLogout?.();

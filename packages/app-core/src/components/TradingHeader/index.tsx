@@ -9,7 +9,7 @@ import { TickerDisplayContainer } from '../../containers/TickerDisplayContainer'
  */
 export function TradingHeader(): React.JSX.Element {
   return (
-    <div className="box-border flex h-[60px] w-full max-w-full min-w-0 items-stretch gap-4 rounded-lg">
+    <div className="flex h-[60px] w-full max-w-full min-w-0 items-stretch gap-4 rounded-lg">
       <div className="flex max-w-40 min-w-40 shrink-0">
         <TradingPairSelectorContainer />
       </div>

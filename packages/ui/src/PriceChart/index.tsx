@@ -35,10 +35,10 @@ const INTERVALS = [
 ] as const;
 
 const INTERVAL_BUTTON =
-  'cursor-pointer rounded border-none px-3 py-1.5 text-[13px] font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 max-md:flex-1 max-md:px-1.5 max-md:py-2 max-md:text-xs';
+  'cursor-pointer rounded px-3 py-1.5 text-[13px] font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 max-md:flex-1 max-md:px-1.5 max-md:py-2 max-md:text-xs';
 const INTERVAL_ACTIVE = 'bg-accent text-on-accent';
 const INTERVAL_IDLE =
-  'bg-transparent text-muted enabled:hover:bg-border enabled:hover:text-ink';
+  'text-muted enabled:hover:bg-border enabled:hover:text-ink';
 
 type ChartCanvasProps = {
   symbol: string;
@@ -75,7 +75,7 @@ const _priceChart = function PriceChart({
   if (!symbol) {
     return (
       <div className="flex h-full grow items-center justify-center rounded-lg bg-surface">
-        <p className="m-0 text-sm text-muted">
+        <p className="text-sm text-muted">
           Select a trading pair to view price chart
         </p>
       </div>
@@ -86,16 +86,16 @@ const _priceChart = function PriceChart({
   if (error) {
     return (
       <div className="flex h-full grow flex-col items-center justify-center gap-3 rounded-lg bg-surface p-6">
-        <p className="m-0 text-sm font-semibold text-danger">
+        <p className="text-sm font-semibold text-danger">
           Failed to load chart data
         </p>
-        <p className="m-0 max-w-[400px] text-center text-[13px] text-muted">
+        <p className="max-w-[400px] text-center text-[13px] text-muted">
           {error}
         </p>
         {onRefresh && (
           <button
             onClick={onRefresh}
-            className="mt-2 cursor-pointer rounded-md border-none bg-accent px-4 py-2 text-[13px] font-medium text-on-accent transition-colors duration-200 hover:bg-accent-hover"
+            className="mt-2 cursor-pointer rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-on-accent transition-colors duration-200 hover:bg-accent-hover"
           >
             Retry
           </button>
@@ -108,7 +108,7 @@ const _priceChart = function PriceChart({
     <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-surface">
       <div className="flex shrink-0 items-center justify-between border-b border-border bg-raised px-4 py-3 max-md:flex-col max-md:items-start max-md:gap-3">
         <div className="flex items-center gap-3">
-          <h3 className="m-0 text-base font-semibold text-ink">{symbol}</h3>
+          <h3 className="text-base font-semibold text-ink">{symbol}</h3>
           {loading && (
             <span className="animate-pulse text-xs text-muted">Loading...</span>
           )}

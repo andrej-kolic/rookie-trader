@@ -1,24 +1,10 @@
-/* Tailwind entry for the app: theme variables and utilities only. Preflight
-   (Tailwind's CSS reset) is left out so component styles render unchanged. */
-@layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/utilities.css' layer(utilities);
+/* Tailwind entry for the app */
+@import 'tailwindcss';
 @import '@repo/ui/theme.css';
 
 /* Class sources, relative to this file */
 @source '.';
 @source '../../ui/src';
-
-/* Universal box-sizing */
-html {
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
 
 body {
   /* Navy base with two faint glows from the palette's accents */
@@ -35,9 +21,6 @@ body {
     ),
     var(--theme-bg);
   color-scheme: dark;
-
-  margin: 0;
-  padding: 0;
   overflow: hidden; /* Prevent body scroll on desktop */
 }
 

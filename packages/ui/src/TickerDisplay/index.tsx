@@ -17,7 +17,7 @@ export type TickerDisplayProps = {
 };
 
 const ROOT =
-  'box-border flex w-full max-w-full min-w-0 items-center overflow-x-auto overflow-y-hidden rounded-lg border px-6 py-4 font-system whitespace-nowrap scroll-smooth [scrollbar-color:var(--theme-line)_transparent] [scrollbar-width:thin] max-md:gap-4 max-md:px-4 max-md:py-3 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-line [&::-webkit-scrollbar-thumb:hover]:bg-muted [&::-webkit-scrollbar-track]:bg-transparent';
+  'flex w-full max-w-full min-w-0 items-center overflow-x-auto overflow-y-hidden rounded-lg border px-6 py-4 font-system whitespace-nowrap scroll-smooth [scrollbar-color:var(--theme-line)_transparent] [scrollbar-width:thin] max-md:gap-4 max-md:px-4 max-md:py-3 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-line [&::-webkit-scrollbar-thumb:hover]:bg-muted [&::-webkit-scrollbar-track]:bg-transparent';
 const NORMAL = 'gap-6 border-border bg-surface';
 const SECTION = 'flex shrink-0 flex-col gap-1 max-md:min-w-[100px]';
 const LABEL = 'text-xs font-medium tracking-[0.05em] text-muted uppercase';

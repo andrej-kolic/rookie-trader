@@ -1,5 +1,4 @@
-const TAB =
-  'relative cursor-pointer border-none bg-transparent px-0 py-3 text-[13px] font-medium';
+const TAB = 'relative cursor-pointer py-3 text-[13px] font-medium';
 const ACTIVE =
   'text-ink after:absolute after:-bottom-px after:left-0 after:h-0.5 after:w-full after:bg-accent';
 const IDLE = 'text-muted hover:text-ink';

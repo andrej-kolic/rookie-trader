@@ -47,7 +47,7 @@ const _orderBookDisplay = function OrderBookDisplay(
         className={`${ROOT} border-danger bg-[color-mix(in_oklab,var(--theme-danger)_12%,var(--theme-surface))]`}
       >
         <div className={HEADER}>
-          {/* <h3 className="m-0 mb-3 text-sm font-semibold text-ink">Order Book</h3> */}
+          {/* <h3 className="mb-3 text-sm font-semibold text-ink">Order Book</h3> */}
         </div>
         <div className="px-4 py-8 text-center text-sm font-medium text-danger">
           ⚠️ {error}
@@ -60,7 +60,7 @@ const _orderBookDisplay = function OrderBookDisplay(
     return (
       <div className={`${ROOT} ${NORMAL}`}>
         <div className={HEADER}>
-          {/* <h3 className="m-0 mb-3 text-sm font-semibold text-ink">Order Book</h3> */}
+          {/* <h3 className="mb-3 text-sm font-semibold text-ink">Order Book</h3> */}
           <div className={COLUMN_HEADERS}>
             <span className={COLUMN_HEADER}>Price</span>
             <span className={COLUMN_HEADER}>Quantity</span>
@@ -97,7 +97,7 @@ const _orderBookDisplay = function OrderBookDisplay(
   return (
     <div className={`${ROOT} ${NORMAL}`}>
       <div className={HEADER}>
-        {/* <h3 className="m-0 mb-3 text-sm font-semibold text-ink">Order Book - {symbol}</h3> */}
+        {/* <h3 className="mb-3 text-sm font-semibold text-ink">Order Book - {symbol}</h3> */}
         <div className={COLUMN_HEADERS}>
           <span className={COLUMN_HEADER}>Price</span>
           <span className={COLUMN_HEADER}>Quantity</span>
