@@ -6,7 +6,7 @@ export const header = tv({
     brand: 'flex cursor-pointer items-center justify-center gap-[7px]',
     logo: 'relative -left-[5px] w-[42px]',
     title:
-      'text-[28px] opacity-75 [text-shadow:0_0_6px_rgb(255_255_255/95%),0_0_42px_rgb(255_255_255/60%)]',
+      'text-[28px] opacity-75 [text-shadow:0_0_6px_rgb(255_255_255/35%),0_0_42px_rgb(255_255_255/60%)]',
     actions: 'flex items-center gap-3',
     auth: 'relative',
     menu: 'absolute top-[calc(100%+8px)] right-0 z-100 min-w-[200px] rounded-lg border border-success bg-surface p-3 shadow-[0_4px_20px_var(--theme-shadow)]',
