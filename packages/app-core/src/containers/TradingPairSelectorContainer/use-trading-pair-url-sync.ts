@@ -25,7 +25,7 @@ export function useTradingPairUrlSync({
     (state) => state.selectedPair?.id ?? '',
   );
   const setSelectedPair = useTradingStore((state) => state.setSelectedPair);
-  const isInitialMount = useRef(true);
+  const prevSelectedPairId = useRef(selectedPairId);
 
   // Sync URL with selected pair on mount and when pairs are loaded
   useEffect(() => {
@@ -42,14 +42,16 @@ export function useTradingPairUrlSync({
       }
     }
 
-    isInitialMount.current = false;
     // Only run once when pairs are loaded
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, pairsCount]);
 
-  // Update URL when selection changes (skip initial mount)
+  // Update URL when selection changes
   useEffect(() => {
-    if (isInitialMount.current) return;
+    // Act only on a real change: on the first load this effect also runs
+    // before the initial selection lands, and would strip the URL's pair
+    if (prevSelectedPairId.current === selectedPairId) return;
+    prevSelectedPairId.current = selectedPairId;
 
     const urlParams = new URLSearchParams(window.location.search);
     const currentUrlPair = urlParams.get(PAIR_PARAM);
