@@ -24,8 +24,9 @@ body {
   overflow: hidden; /* Prevent body scroll on desktop */
 }
 
-/* Allow page scroll on mobile, where the layout stacks vertically */
-@media (max-width: 768px) {
+/* Allow page scroll on mobile, where the layout stacks vertically. Same
+   breakpoint as the layout's max-md utilities (below 48rem). */
+@variant max-md {
   body {
     overflow: auto;
   }
