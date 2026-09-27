@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const priceChart = tv({
   slots: {
-    root: 'flex h-full w-full flex-col overflow-hidden rounded-lg bg-surface',
+    root: 'flex h-full w-full flex-col overflow-hidden rounded-lg border border-border bg-surface',
     header:
       'flex shrink-0 items-center justify-between border-b border-border bg-raised px-4 py-3 max-md:flex-col max-md:items-start max-md:gap-3',
     title: 'flex items-center gap-3',
@@ -17,7 +17,7 @@ export const priceChart = tv({
     canvas:
       'relative min-h-[300px] w-full max-w-full flex-1 overflow-hidden bg-surface *:max-w-full! [&_canvas]:max-w-full!',
     placeholder:
-      'flex h-full grow flex-col items-center justify-center gap-3 rounded-lg bg-surface p-6',
+      'flex h-full grow flex-col items-center justify-center gap-3 rounded-lg border border-border bg-surface p-6',
     placeholderText: 'text-sm text-muted',
     errorTitle: 'text-sm font-semibold text-danger',
     errorDetail: 'max-w-[400px] text-center text-[13px] text-muted',
