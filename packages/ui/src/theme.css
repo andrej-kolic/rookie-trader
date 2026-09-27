@@ -14,10 +14,12 @@
   --theme-muted: #aaafcf;
   --theme-dim: #9ca1bd;
 
-  /* Interactive accent. The palette's mint is kept for rising prices so an
-     active tab or button never reads as "price up". */
-  --theme-accent: #8b8cf7;
-  --theme-accent-hover: #a5a6fa;
+  /* Interactive accent. Cyan, not the palette's mint, which is kept for
+     rising prices so an active tab or button never reads as "price up". */
+  --theme-accent: #4cc9f0;
+  --theme-accent-hover: #70d4f3;
+  /* The palette's indigo, for decoration only (background glow) */
+  --theme-decor: #8b8cf7;
   --theme-on-accent: #0d0f23;
   --theme-gold: #ffcf4d;
 

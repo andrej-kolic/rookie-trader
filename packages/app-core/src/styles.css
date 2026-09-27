@@ -11,12 +11,12 @@ body {
   background:
     radial-gradient(
       42rem 20rem at 32px 37px,
-      color-mix(in oklab, var(--theme-accent) 18%, transparent),
+      color-mix(in oklab, var(--theme-decor) 18%, transparent),
       transparent 70%
     ),
     radial-gradient(
       34rem 18rem at calc(100% - 32px) 37px,
-      color-mix(in oklab, var(--theme-rise) 10%, transparent),
+      color-mix(in oklab, var(--theme-accent) 12%, transparent),
       transparent 72%
     ),
     var(--theme-bg);
