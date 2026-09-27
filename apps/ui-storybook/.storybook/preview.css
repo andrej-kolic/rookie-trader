@@ -1,0 +1,8 @@
+/* Tailwind entry for Storybook: same setup as app-core's styles.css, but
+   scans only the ui package. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '@repo/ui/theme.css';
+
+@source '../../../packages/ui/src';

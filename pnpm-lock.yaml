@@ -54,9 +54,6 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@tailwindcss/postcss':
-        specifier: 4.3.3
-        version: 4.3.3
       '@types/node':
         specifier: 24.6.2
         version: 24.6.2
@@ -72,9 +69,6 @@ importers:
       esbuild-plugin-copy:
         specifier: 2.1.1
         version: 2.1.1(esbuild@0.25.10)
-      postcss:
-        specifier: 8.5.28
-        version: 8.5.28
       serve:
         specifier: 14.2.5
         version: 14.2.5
@@ -243,6 +237,9 @@ importers:
       storybook:
         specifier: 9.1.10
         version: 9.1.10(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.9(@types/node@24.6.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
       vite:
         specifier: 7.1.9
         version: 7.1.9(@types/node@24.6.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
@@ -272,6 +269,9 @@ importers:
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
       ts-kraken:
         specifier: 4.0.14
         version: 4.0.14
@@ -359,6 +359,13 @@ importers:
         version: 8.5.0(jiti@2.7.0)(postcss@8.5.28)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.1)
 
   packages/dev-tools:
+    dependencies:
+      '@tailwindcss/postcss':
+        specifier: 4.3.3
+        version: 4.3.3
+      postcss:
+        specifier: 8.5.28
+        version: 8.5.28
     devDependencies:
       '@types/node':
         specifier: 24.6.2
@@ -366,6 +373,9 @@ importers:
       dotenv-flow:
         specifier: 4.1.0
         version: 4.1.0
+      esbuild:
+        specifier: 0.25.10
+        version: 0.25.10
 
   packages/eslint-config:
     devDependencies:
@@ -416,9 +426,6 @@ importers:
       react-virtuoso:
         specifier: 4.17.0
         version: 4.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      tailwindcss:
-        specifier: 4.3.3
-        version: 4.3.3
     devDependencies:
       '@repo/commons':
         specifier: workspace:*

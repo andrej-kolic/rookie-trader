@@ -1,13 +1,3 @@
-/* Tailwind: theme variables and utilities only. Preflight (Tailwind's CSS
-   reset) is left out so existing component styles render unchanged. */
-@layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/utilities.css' layer(utilities);
-
-/* Class sources, relative to this file */
-@source '.';
-@source '../../app-core/src';
-
 /* Navy palette, copied from reys-lab's palette experiment (navy, shade a).
    Components read colours only through these tokens. */
 :root {
@@ -53,7 +43,8 @@ body {
 
 /* Tailwind colour names for the tokens above, e.g. `bg-surface`,
    `text-muted`, `border-border`, `text-rise`. `inline` keeps them resolving
-   through the --theme-* variables. */
+   through the --theme-* variables. Takes effect only when imported from a
+   Tailwind entry stylesheet (app-core's styles.css, Storybook's preview.css). */
 @theme inline {
   --color-void: var(--theme-void);
   --color-bg: var(--theme-bg);

@@ -7,7 +7,6 @@ import { FooterContainer } from './containers/FooterContainer';
 import { useAuth } from './hooks/use-auth';
 import * as authService from './services/auth-service';
 
-import '@repo/ui/theme.css';
 import './styles.css';
 import { Header } from './components/Header';
 import { LoginContainer } from './containers/LoginContainer';

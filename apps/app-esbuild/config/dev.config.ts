@@ -1,6 +1,6 @@
 import * as esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
-import { tailwindPlugin } from './tailwind.plugin';
+import { tailwindPlugin } from '@repo/dev-tools/config/esbuild-tailwind';
 import { loadEnvironmentVariables } from '@repo/dev-tools/config/environment';
 import { appCoreEnvDir } from '@repo/dev-tools/config/paths';
 import util from 'util';

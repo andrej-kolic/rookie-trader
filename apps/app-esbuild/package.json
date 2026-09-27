@@ -27,13 +27,11 @@
   "devDependencies": {
     "@repo/dev-tools": "workspace:*",
     "@repo/eslint-config": "workspace:*",
-    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.6.2",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",
     "esbuild": "0.25.10",
     "esbuild-plugin-copy": "2.1.1",
-    "postcss": "8.5.28",
     "serve": "14.2.5",
     "ts-node": "10.9.2"
   }
