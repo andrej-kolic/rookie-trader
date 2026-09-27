@@ -47,6 +47,16 @@ describe('useTradingPairUrlSync', () => {
     useTradingStore.setState({ selectedPair: null });
   });
 
+  it('selectsBtcUsd_whenUrlHasNoPair', () => {
+    const historyLength = window.history.length;
+
+    renderSync('/');
+
+    expect(selectedId()).toBe('BTC/USD');
+    expect(urlPair()).toBe('BTC/USD');
+    expect(window.history.length).toBe(historyLength);
+  });
+
   it('selectsUrlPair_whenUrlPairExists', () => {
     const historyLength = window.history.length;
 
@@ -55,5 +65,12 @@ describe('useTradingPairUrlSync', () => {
     expect(selectedId()).toBe('ETH/USD');
     expect(urlPair()).toBe('ETH/USD');
     expect(window.history.length).toBe(historyLength);
+  });
+
+  it('selectsBtcUsd_whenUrlPairIsUnknown', () => {
+    renderSync('/?pair=NOPE%2FUSD');
+
+    expect(selectedId()).toBe('BTC/USD');
+    expect(urlPair()).toBe('BTC/USD');
   });
 });
