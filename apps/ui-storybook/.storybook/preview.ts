@@ -12,20 +12,12 @@ const preview: Preview = {
       },
     },
     backgrounds: {
+      // Theme surfaces from @repo/ui/theme.css
       options: {
-        // 👇 Default options
-        dark: { name: 'Dark', value: '#333' },
-        light: { name: 'Light', value: '#F7F9F2' },
-        // 👇 Add your own
-        maroon: { name: 'Maroon', value: '#400' },
-        cfblue: { name: 'CF Blue', value: 'cornflowerblue' },
+        bg: { name: 'Page', value: 'var(--theme-bg)' },
+        surface: { name: 'Panel', value: 'var(--theme-surface)' },
       },
     },
-  },
-
-  initialGlobals: {
-    // 👇 Set the initial background color
-    backgrounds: { value: 'cfblue' },
   },
 
   // INFO: uncomment to enable auto-generated documentation for all stories

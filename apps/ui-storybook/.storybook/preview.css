@@ -4,3 +4,12 @@
 @import '@repo/ui/theme.css';
 
 @source '../../../packages/ui/src';
+
+/* Stories sit on the app's page colour. Painted here because the
+   backgrounds addon doesn't apply a starting value on load; picking Page or
+   Panel in the toolbar still overrides it. */
+body,
+.docs-story {
+  background: var(--theme-bg);
+  color-scheme: dark;
+}
