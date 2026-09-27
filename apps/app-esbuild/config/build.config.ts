@@ -86,6 +86,8 @@ async function bundle() {
     debuglog('Build successful:', buildResult);
   } catch (err) {
     debuglog('Error during build:', err);
+    // esbuild already printed the error; fail so a broken bundle isn't "built"
+    process.exitCode = 1;
   }
 }
 
