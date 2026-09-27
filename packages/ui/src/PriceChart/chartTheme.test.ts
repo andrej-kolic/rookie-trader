@@ -12,6 +12,7 @@ describe('readChartTheme', () => {
     root.style.setProperty('--theme-border', '#333333');
     root.style.setProperty('--theme-rise', '#444444');
     root.style.setProperty('--theme-fall', '#555555');
+    root.style.setProperty('--font-mono', 'Test Mono, monospace');
 
     expect(readChartTheme()).toEqual({
       background: '#111111',
@@ -19,6 +20,7 @@ describe('readChartTheme', () => {
       grid: '#333333',
       rise: '#444444',
       fall: '#555555',
+      font: 'Test Mono, monospace',
     });
   });
 
@@ -29,6 +31,7 @@ describe('readChartTheme', () => {
       grid: '#353a75',
       rise: '#5ee9b5',
       fall: '#ff6b81',
+      font: "'IBM Plex Mono', ui-monospace, monospace",
     });
   });
 });

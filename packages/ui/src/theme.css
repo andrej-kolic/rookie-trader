@@ -37,9 +37,7 @@
 }
 
 body {
-  font-family:
-    'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans',
-    Arial, sans-serif;
+  font-family: 'Outfit Variable', system-ui, sans-serif;
   color: var(--theme-ink);
   /* Tailwind's reset uses 1.5; the layout was designed on the browser default */
   line-height: normal;
@@ -71,7 +69,8 @@ body {
 }
 
 @theme {
-  --font-system: system-ui, -apple-system, sans-serif;
+  /* Prices and quantities; fixed-width digits keep columns from jittering */
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
 
   /* Font-size utilities (text-sm, …) keep the browser's normal line height
      instead of Tailwind's taller defaults; set leading-* where needed. */

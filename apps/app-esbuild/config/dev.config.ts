@@ -48,6 +48,8 @@ async function dev() {
     loader: {
       '.webp': 'file',
       '.svg': 'file',
+      '.woff': 'file',
+      '.woff2': 'file',
     },
     format: 'esm',
     logLevel: 'info',

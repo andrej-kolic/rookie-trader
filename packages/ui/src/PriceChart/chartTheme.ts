@@ -1,8 +1,8 @@
 /**
- * Colours for the canvas-drawn chart, read from the CSS theme tokens in
- * theme.css. The canvas cannot resolve `var(--…)` itself, so the values are
- * read once from the root element; each falls back to the navy value when the
- * token is missing (e.g. theme.css not loaded).
+ * Colours and axis font for the canvas-drawn chart, read from the CSS theme
+ * tokens in theme.css. The canvas cannot resolve `var(--…)` itself, so the
+ * values are read once from the root element; each falls back to the navy
+ * value when the token is missing (e.g. theme.css not loaded).
  */
 export type ChartTheme = {
   background: string;
@@ -10,6 +10,7 @@ export type ChartTheme = {
   grid: string;
   rise: string;
   fall: string;
+  font: string;
 };
 
 const FALLBACK: ChartTheme = {
@@ -18,6 +19,7 @@ const FALLBACK: ChartTheme = {
   grid: '#353a75',
   rise: '#5ee9b5',
   fall: '#ff6b81',
+  font: "'IBM Plex Mono', ui-monospace, monospace",
 };
 
 export function readChartTheme(root: Element = document.documentElement) {
@@ -31,6 +33,7 @@ export function readChartTheme(root: Element = document.documentElement) {
     grid: read('--theme-border', FALLBACK.grid),
     rise: read('--theme-rise', FALLBACK.rise),
     fall: read('--theme-fall', FALLBACK.fall),
+    font: read('--font-mono', FALLBACK.font),
   } satisfies ChartTheme;
 }
 

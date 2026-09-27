@@ -50,6 +50,8 @@ async function bundle() {
       loader: {
         '.webp': 'file',
         '.svg': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
       },
       format: 'esm',
 

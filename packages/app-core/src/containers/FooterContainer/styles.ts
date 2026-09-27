@@ -7,5 +7,6 @@ export const footer = tv({
     content: 'flex-1 overflow-y-auto p-4 text-ink',
     error: 'text-danger',
     table: 'w-full text-left',
+    amount: 'font-mono',
   },
 });

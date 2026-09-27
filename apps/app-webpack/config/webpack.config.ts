@@ -128,6 +128,13 @@ const webpackConfig = (
             filename: 'static/assets/images/[name][hash][ext]',
           },
         },
+        {
+          test: /\.woff2?$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'static/assets/fonts/[name][hash][ext]',
+          },
+        },
       ],
     },
 

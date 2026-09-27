@@ -45,7 +45,7 @@ export function FooterContainer() {
                     {balances.map((balance) => (
                       <tr key={balance.asset}>
                         <td>{balance.asset}</td>
-                        <td>{balance.balance}</td>
+                        <td className={s.amount()}>{balance.balance}</td>
                       </tr>
                     ))}
                   </tbody>

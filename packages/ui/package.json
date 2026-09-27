@@ -7,6 +7,7 @@
   "exports": {
     ".": "./src/index.tsx",
     "./utils": "./src/utils.ts",
+    "./fonts": "./src/fonts.ts",
     "./*": "./src/*"
   },
   "private": true,
@@ -39,6 +40,8 @@
     "ts-jest": "29.4.4"
   },
   "dependencies": {
+    "@fontsource-variable/outfit": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
     "lightweight-charts": "4.1.3",
     "react-virtuoso": "4.17.0",
     "tailwind-merge": "3.7.0",

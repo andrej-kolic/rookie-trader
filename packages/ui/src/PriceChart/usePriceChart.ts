@@ -51,6 +51,7 @@ export function usePriceChart({
       layout: {
         background: { type: ColorType.Solid, color: theme.background },
         textColor: theme.text,
+        fontFamily: theme.font,
       },
       grid: {
         vertLines: { color: theme.grid },
@@ -105,7 +106,15 @@ export function usePriceChart({
     volumeSeriesRef.current = volumeSeries;
     initializedRef.current = true;
 
+    // The canvas draws axis labels with whatever font is ready; redraw once
+    // the web fonts arrive so the labels don't stay in the fallback
+    let removed = false;
+    void document.fonts.ready.then(() => {
+      if (!removed) chart.applyOptions({ layout: { fontFamily: theme.font } });
+    });
+
     return () => {
+      removed = true;
       chart.remove();
       initializedRef.current = false;
     };
