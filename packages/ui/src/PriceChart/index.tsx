@@ -94,7 +94,7 @@ const _priceChart = function PriceChart({
     <div className={s.root()}>
       <div className={s.header()}>
         <div className={s.title()}>
-          <h3 className={s.symbol()}>{symbol}</h3>
+          <h3 className={s.label()}>Chart</h3>
           {loading && <span className={s.loading()}>Loading...</span>}
         </div>
         <div className={s.controls()}>
