@@ -48,4 +48,13 @@ describe('Header disconnect menu', () => {
 
     expect(screen.queryByRole('button', { name: 'Disconnect' })).toBeNull();
   });
+
+  it('closesMenu_whenEscapePressed', async () => {
+    const user = userEvent.setup();
+    await user.click(renderAuthenticatedHeader());
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('button', { name: 'Disconnect' })).toBeNull();
+  });
 });

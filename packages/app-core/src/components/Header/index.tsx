@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
-import { Button, IconButton } from '@repo/ui';
+import { Button, IconButton, useDismiss } from '@repo/ui';
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import { header } from './styles';
 import { GithubIcon } from './GithubIcon';
@@ -24,21 +24,9 @@ export function Header({
   const authRef = useRef<HTMLDivElement>(null);
   const s = header();
 
-  // Close the disconnect menu when clicking outside it or its toggle
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!authRef.current?.contains(event.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [menuOpen]);
+  useDismiss(menuOpen, [authRef], () => {
+    setMenuOpen(false);
+  });
 
   const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (_event) => {
     window.location.href = '/';

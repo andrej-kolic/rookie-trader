@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useDismiss } from '../hooks/useDismiss';
 import { tv } from 'tailwind-variants';
 
 const systemStatus = tv({
@@ -83,26 +84,9 @@ export function SystemStatus({
   const [legendOpen, setLegendOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Close the legend on a click outside it or on Escape
-  useEffect(() => {
-    if (!legendOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setLegendOpen(false);
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setLegendOpen(false);
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [legendOpen]);
+  useDismiss(legendOpen, [rootRef], () => {
+    setLegendOpen(false);
+  });
 
   if (!status) {
     return null;

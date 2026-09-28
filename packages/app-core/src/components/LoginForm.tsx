@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button } from '@repo/ui';
+import React, { useRef, useState } from 'react';
+import { Button, useDismiss } from '@repo/ui';
 import { loginForm } from './login-form.styles';
 
 type LoginFormProps = {
@@ -17,7 +17,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
+  const cardRef = useRef<HTMLDivElement>(null);
   const s = loginForm();
+
+  // Rendered only while open, so always listening
+  useDismiss(true, [cardRef], onClose);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +34,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-dialog-title"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
     >
-      <div className={s.card()}>
+      <div className={s.card()} ref={cardRef}>
         <div className={s.header()}>
           <h2 id="login-dialog-title" className={s.title()}>
             Connect to Kraken
