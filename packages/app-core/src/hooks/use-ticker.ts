@@ -14,7 +14,7 @@ export type TickerState = {
 /**
  * Business hook: Subscribe to real-time ticker updates for given symbol
  * Automatically manages WebSocket subscription lifecycle
- * Keeps last ticker while loading new pair
+ * Returns no ticker until the new pair's first update after a symbol change
  *
  * @param symbol Trading pair symbol (e.g., "BTC/USD") or null
  * @returns Ticker state with loading and error handling
@@ -79,5 +79,6 @@ export function useTicker(symbol: string | null): TickerState {
     };
   }, [symbol]);
 
-  return { ticker, loading, error };
+  // Drop the previous pair's ticker instead of showing it under the new pair
+  return { ticker: ticker?.symbol === symbol ? ticker : null, loading, error };
 }

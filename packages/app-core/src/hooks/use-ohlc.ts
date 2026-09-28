@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback, useEffectEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useEffectEvent,
+  useRef,
+} from 'react';
 import type { PublicRestTypes } from 'ts-kraken';
 import { fetchOHLC, type OHLCInterval } from '../api/kraken-rest-api';
 import { mapOHLCResponse, mergeCandles } from '../mappers/candle-mapper';
@@ -35,6 +41,17 @@ export function useOHLC({
   const [error, setError] = useState<Error | null>(null);
   const [lastTimestamp, setLastTimestamp] = useState<number>(0);
 
+  // Candles belong to the pair they were fetched for: drop them on a pair switch
+  const [candlesPair, setCandlesPair] = useState(pair);
+  if (candlesPair !== pair) {
+    setCandlesPair(pair);
+    setCandles([]);
+    setLoading(true);
+  }
+
+  // The latest requested pair and interval; responses for older ones are dropped
+  const latestRequest = useRef({ pair, interval });
+
   /**
    * Event handler that always has access to the latest state values
    * without causing effect re-runs when those values change
@@ -42,6 +59,10 @@ export function useOHLC({
   const onFetchData = useEffectEvent(
     async (incremental: boolean): Promise<void> => {
       if (!pair) return;
+
+      const isStale = () =>
+        latestRequest.current.pair !== pair ||
+        latestRequest.current.interval !== interval;
 
       try {
         if (!incremental) {
@@ -54,6 +75,7 @@ export function useOHLC({
           interval,
           incremental ? lastTimestamp : undefined,
         );
+        if (isStale()) return;
 
         // ts-kraken returns data directly, not wrapped in result/error
         const { candles: newCandles, last } = mapOHLCResponse(
@@ -74,18 +96,20 @@ export function useOHLC({
 
         setLastTimestamp(last);
       } catch (err) {
+        if (isStale()) return;
         setError(
           err instanceof Error ? err : new Error('Failed to fetch OHLC data'),
         );
       } finally {
-        setLoading(false);
+        if (!isStale()) setLoading(false);
       }
     },
   );
 
   // Initial fetch and full refetch on pair/interval change
   useEffect(() => {
-    // Don't clear candles immediately - keep previous data visible during load
+    // An interval change keeps the pair's candles visible during load
+    latestRequest.current = { pair, interval };
     setLastTimestamp(0);
     setLoading(true);
     void onFetchData(false);
