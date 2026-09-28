@@ -10,9 +10,5 @@ export function SystemStatusContainer() {
     return null;
   }
 
-  if (loading) {
-    return null;
-  }
-
-  return <SystemStatus status={status?.system ?? null} />;
+  return <SystemStatus status={status?.system ?? null} loading={loading} />;
 }

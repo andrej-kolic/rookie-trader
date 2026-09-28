@@ -62,13 +62,13 @@ export function OrderBookDisplayContainer() {
   }
 
   const displayProps: OrderBookDisplayProps = useMemo(() => {
-    // No pair selected
+    // No pair yet: markets are still loading (a pair is always set once they have)
     if (!selectedPair) {
       return {
-        symbol: 'No pair selected',
+        symbol: '',
         bids: [],
         asks: [],
-        loading: false,
+        loading: true,
       };
     }
 

@@ -19,6 +19,8 @@ const systemStatus = tv({
     legendText: 'flex flex-col gap-0.5',
     legendLabel: 'text-sm font-medium text-ink capitalize',
     legendDescription: 'text-xs text-muted',
+    // Same footprint as the pill, so the header doesn't shift when it loads
+    skeleton: 'h-[30px] w-[88px] skeleton rounded-lg',
   },
   variants: {
     status: {
@@ -73,12 +75,14 @@ function formatStatus(status: string): string {
 
 export type SystemStatusProps = {
   status: SystemStatusType | (string & {}) | null | undefined;
+  loading?: boolean;
   className?: string;
 };
 
 /** Exchange status pill; clicking it shows a legend of every status */
 export function SystemStatus({
   status,
+  loading = false,
   className,
 }: SystemStatusProps): React.ReactNode {
   const [legendOpen, setLegendOpen] = useState(false);
@@ -88,6 +92,15 @@ export function SystemStatus({
     setLegendOpen(false);
   });
 
+  if (loading) {
+    return (
+      <div
+        className={systemStatus().skeleton({ className })}
+        role="status"
+        aria-label="Loading exchange status"
+      />
+    );
+  }
   if (!status) {
     return null;
   }

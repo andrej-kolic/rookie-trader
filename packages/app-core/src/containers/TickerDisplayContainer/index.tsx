@@ -13,11 +13,11 @@ export function TickerDisplayContainer() {
   const { ticker, loading, error } = useTicker(selectedPair?.symbol ?? null);
 
   const displayProps: TickerDisplayProps = useMemo(() => {
-    // No pair selected
+    // No pair yet: markets are still loading (a pair is always set once they have)
     if (!selectedPair) {
       return {
-        symbol: 'No pair selected',
-        loading: false,
+        symbol: '',
+        loading: true,
       };
     }
 

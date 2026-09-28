@@ -64,8 +64,8 @@ const _priceChart = function PriceChart({
 }: PriceChartProps) {
   const s = priceChart();
 
-  // Empty state
-  if (!symbol) {
+  // Empty state; while markets load there is no symbol yet either
+  if (!symbol && !loading) {
     return (
       <div className={s.placeholder()}>
         <p className={s.placeholderText()}>

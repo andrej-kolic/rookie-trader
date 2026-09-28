@@ -83,7 +83,7 @@ const _orderBookDisplay = function OrderBookDisplay(
 
   if (loading) {
     return (
-      <div className={s.root()}>
+      <div className={s.root()} role="status" aria-label="Loading order book">
         <div className={s.header()}>
           <ColumnHeaders />
         </div>
@@ -105,9 +105,11 @@ const _orderBookDisplay = function OrderBookDisplay(
       </div>
 
       <div className={s.book()}>
+        {!hasData && <div className={s.message()}>No orders in the book</div>}
+
         {/* Asks (sell orders) - lowest price at bottom */}
         <div className={s.side()}>
-          {asks.length > 0 ? (
+          {!hasData ? null : asks.length > 0 ? (
             asks.map((ask, index) => (
               <Level key={index} level={ask} side="ask" />
             ))
@@ -127,7 +129,7 @@ const _orderBookDisplay = function OrderBookDisplay(
 
         {/* Bids (buy orders) - highest price at top */}
         <div className={s.side()}>
-          {bids.length > 0 ? (
+          {!hasData ? null : bids.length > 0 ? (
             bids.map((bid, index) => (
               <Level key={index} level={bid} side="bid" />
             ))
@@ -135,12 +137,6 @@ const _orderBookDisplay = function OrderBookDisplay(
             <div className={s.message()}>No bids</div>
           )}
         </div>
-
-        {!hasData && (
-          <div className={s.message()}>
-            Select a trading pair to view order book
-          </div>
-        )}
       </div>
     </div>
   );
