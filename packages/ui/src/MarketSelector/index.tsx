@@ -163,7 +163,6 @@ export function MarketSelector({
             <span className={s.placeholder()}>{placeholder}</span>
           )}
         </div>
-        <kbd className={s.hotkey()}>/</kbd>
         <svg
           width="12"
           height="12"

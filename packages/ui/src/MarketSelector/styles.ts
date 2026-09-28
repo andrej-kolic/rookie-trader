@@ -6,8 +6,6 @@ export const marketSelector = tv({
     trigger:
       'flex w-full max-w-[400px] cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink transition-[border-color] duration-200 outline-none hover:border-line focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_color-mix(in_oklab,var(--theme-accent)_12%,transparent)]',
     triggerContent: 'flex min-w-0 items-center gap-2',
-    hotkey:
-      'mr-2 ml-auto rounded border border-border px-1.5 font-sans text-[10px] leading-4 text-muted',
     chevron: 'transition-transform duration-200',
     placeholder: 'truncate text-muted',
     dropdown:
