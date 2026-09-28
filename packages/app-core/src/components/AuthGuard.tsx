@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/use-auth';
 type AuthGuardProps = {
   children: React.ReactNode;
   fallback?: React.ReactNode;
+  loading?: React.ReactNode;
 };
 
 /**
@@ -14,12 +15,13 @@ type AuthGuardProps = {
  *
  * @param children - Content to render when authenticated
  * @param fallback - Content to render when not authenticated (defaults to login message)
+ * @param loading - Content to render while sign-in is in progress (defaults to "Loading...")
  */
-export function AuthGuard({ children, fallback }: AuthGuardProps) {
+export function AuthGuard({ children, fallback, loading }: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <>{loading ?? <div>Loading...</div>}</>;
   }
 
   if (!isAuthenticated) {

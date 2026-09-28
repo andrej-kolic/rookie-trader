@@ -4,6 +4,7 @@ import { useBalances } from '../../hooks/use-balances';
 import { useExecutions } from '../../hooks/use-executions';
 import { AuthGuard } from '../../components/AuthGuard';
 import { FooterTable } from './FooterTable';
+import { LoadingRows } from './LoadingRows';
 import { BALANCE_COLUMNS, ORDER_COLUMNS, TRADE_COLUMNS } from './columns';
 import { footer } from './styles';
 
@@ -38,6 +39,7 @@ export function FooterContainer() {
       </div>
       <div className={s.content()}>
         <AuthGuard
+          loading={<LoadingRows label="Loading account" />}
           fallback={
             <div className={s.message()}>Please login to view your account</div>
           }

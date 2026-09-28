@@ -26,7 +26,11 @@ function signIn() {
 
 beforeEach(() => {
   localStorage.clear();
-  useAuthStore.setState({ session: null, isAuthenticated: false });
+  useAuthStore.setState({
+    session: null,
+    isAuthenticated: false,
+    isLoading: false,
+  });
 });
 
 describe('FooterContainer balances', () => {
@@ -34,6 +38,18 @@ describe('FooterContainer balances', () => {
     render(<FooterContainer />);
 
     expect(screen.getByText('Please login to view your account')).toBeTruthy();
+  });
+
+  it('showsLoadingPlaceholder_whenSignInInProgress', () => {
+    render(<FooterContainer />);
+
+    act(() => {
+      useAuthStore.setState({ isLoading: true });
+    });
+
+    expect(
+      screen.getByRole('status', { name: 'Loading account' }),
+    ).toBeTruthy();
   });
 
   it('showsLoadingPlaceholder_whenNoBalancesReceivedYet', () => {

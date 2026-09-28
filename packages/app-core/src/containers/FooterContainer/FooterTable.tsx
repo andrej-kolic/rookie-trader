@@ -1,4 +1,5 @@
 import React from 'react';
+import { LoadingRows } from './LoadingRows';
 import { footer, footerTable } from './styles';
 
 export type Column<Row> = {
@@ -30,18 +31,7 @@ export function FooterTable<Row>({
   const f = footer();
   const s = footerTable();
 
-  if (loading) {
-    return (
-      <div className={s.skeletonGrid()} role="status" aria-label={loadingLabel}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className={s.skeletonRow()}>
-            <div className={s.skeletonShort()}></div>
-            <div className={s.skeletonLong()}></div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  if (loading) return <LoadingRows label={loadingLabel} />;
   if (error) return <div className={f.error()}>Error: {error.message}</div>;
   if (rows.length === 0) {
     return <div className={f.message()}>{emptyMessage}</div>;
