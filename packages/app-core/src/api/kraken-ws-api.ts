@@ -228,20 +228,11 @@ export type BalanceUpdate =
   Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
 
 /**
- * Subscribe to private balance updates
- * Automatically fetches fresh token on connection/reconnection
- *
- * Note: Uses module-level shared token observable for efficiency
- * All subscriptions share the same WS token to avoid redundant API calls
- *
- * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
- * @returns Observable stream of balance updates
+ * WebSocket token for private subscriptions, fetched once and shared by all
+ * of them until the fetch fails or `resetWsToken` is called
  */
-export function subscribeToBalances(
-  getAuthToken: () => string | null,
-): Observable<BalanceUpdate> {
-  // Initialize shared token observable on first call
-  // Subsequent calls reuse the same token observable for efficiency
+function sharedWsToken(getAuthToken: () => string | null): Observable<string> {
+  // The first private subscription establishes the token provider
   wsTokenShared$ ??= defer(() => {
     const authToken = getAuthToken();
 
@@ -257,11 +248,51 @@ export function subscribeToBalances(
       resetOnComplete: true, // Refetch if completed (rare)
     }),
   );
+  return wsTokenShared$;
+}
 
+/**
+ * Subscribe to private balance updates
+ * Automatically fetches fresh token on connection/reconnection
+ *
+ * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
+ * @returns Observable stream of balance updates
+ */
+export function subscribeToBalances(
+  getAuthToken: () => string | null,
+): Observable<BalanceUpdate> {
   return withRetryAndShare(
-    wsTokenShared$.pipe(
+    sharedWsToken(getAuthToken).pipe(
       switchMap((token) =>
         Kraken.privateWsSubscription({ channel: 'balances' }, token),
+      ),
+      switchMap((obs) => obs),
+    ),
+  );
+}
+
+export type ExecutionsUpdate =
+  Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'executions'>;
+
+/**
+ * Subscribe to the account's order and fill reports. Starts with a snapshot
+ * of open orders and the most recent fills, then streams changes.
+ *
+ * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
+ */
+export function subscribeToExecutions(
+  getAuthToken: () => string | null,
+): Observable<ExecutionsUpdate> {
+  return withRetryAndShare(
+    sharedWsToken(getAuthToken).pipe(
+      switchMap((token) =>
+        Kraken.privateWsSubscription(
+          {
+            channel: 'executions',
+            params: { snap_orders: true, snap_trades: true },
+          },
+          token,
+        ),
       ),
       switchMap((obs) => obs),
     ),
