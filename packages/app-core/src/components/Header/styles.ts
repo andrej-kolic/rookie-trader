@@ -20,7 +20,3 @@ export const header = tv({
     github: 'relative block h-auto w-8 text-ink opacity-75',
   },
 });
-
-// removed text shadow from "Rookie":
-// title:
-// 'text-[28px] opacity-75 [text-shadow:0_0_6px_rgb(255_255_255/35%),0_0_42px_rgb(255_255_255/60%)]',
