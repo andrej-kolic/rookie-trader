@@ -13,51 +13,63 @@ import { getMaxCumulativeTotal } from '../../utils/order-book-utils';
  * Connects business layer (useOrderBook hook) to presentation layer (OrderBookDisplay)
  * Maps domain model to UI props
  */
+/** Levels fetched per side; the panel shows as many of them as fit */
+const DEPTH = 25;
+
 export function OrderBookDisplayContainer() {
   const selectedPair = useTradingStore((state) => state.selectedPair);
   const { orderBook, loading, error } = useOrderBook(
     selectedPair?.symbol ?? null,
-    10,
+    DEPTH,
   );
+
+  // Levels per side that fit the panel, reported by OrderBookDisplay
+  const [fitRows, setFitRows] = useState(10);
+  const rows = Math.min(fitRows, DEPTH);
 
   // Track maximum depth to prevent bars from shrinking over time
   const [maxDepth, setMaxDepth] = useState<{
     bid: number;
     ask: number;
     symbol: string;
+    rows: number;
   }>({
     bid: 1,
     ask: 1,
     symbol: '',
+    rows,
   });
 
-  // Get current max from all levels (outside useMemo to update state)
+  // Max over the visible levels only, so the deepest visible row fills its bar
   const currentMaxBidTotal = useMemo(
-    () => (orderBook ? getMaxCumulativeTotal(orderBook.bids) : 0),
-    [orderBook],
+    () => (orderBook ? getMaxCumulativeTotal(orderBook.getBidDepth(rows)) : 0),
+    [orderBook, rows],
   );
   const currentMaxAskTotal = useMemo(
-    () => (orderBook ? getMaxCumulativeTotal(orderBook.asks) : 0),
-    [orderBook],
+    () => (orderBook ? getMaxCumulativeTotal(orderBook.getAskDepth(rows)) : 0),
+    [orderBook, rows],
   );
 
-  // Update rolling max when symbol changes or depth increases
+  // Update rolling max when symbol or visible row count changes, or depth increases
+  const sameView =
+    orderBook !== null &&
+    maxDepth.symbol === orderBook.symbol &&
+    maxDepth.rows === rows;
   if (
     orderBook &&
-    (maxDepth.symbol !== orderBook.symbol ||
+    (!sameView ||
       currentMaxBidTotal > maxDepth.bid ||
       currentMaxAskTotal > maxDepth.ask)
   ) {
     setMaxDepth({
-      bid:
-        maxDepth.symbol === orderBook.symbol
-          ? Math.max(maxDepth.bid, currentMaxBidTotal)
-          : currentMaxBidTotal,
-      ask:
-        maxDepth.symbol === orderBook.symbol
-          ? Math.max(maxDepth.ask, currentMaxAskTotal)
-          : currentMaxAskTotal,
+      bid: sameView
+        ? Math.max(maxDepth.bid, currentMaxBidTotal)
+        : currentMaxBidTotal,
+      ask: sameView
+        ? Math.max(maxDepth.ask, currentMaxAskTotal)
+        : currentMaxAskTotal,
       symbol: orderBook.symbol,
+      rows,
     });
   }
 
@@ -102,7 +114,7 @@ export function OrderBookDisplayContainer() {
       };
     }
 
-    const bids = orderBook.getBidDepth(10).map(
+    const bids = orderBook.getBidDepth(rows).map(
       (bid): OrderBookLevelProps => ({
         price: bid.formatPrice(selectedPair.pricePrecision),
         quantity: bid.formatQuantity(selectedPair.qtyPrecision),
@@ -113,7 +125,7 @@ export function OrderBookDisplayContainer() {
     );
 
     const asks = orderBook
-      .getAskDepth(10)
+      .getAskDepth(rows)
       .map(
         (ask): OrderBookLevelProps => ({
           price: ask.formatPrice(selectedPair.pricePrecision),
@@ -133,7 +145,7 @@ export function OrderBookDisplayContainer() {
       spreadPct: orderBook.formatSpreadPercentage(),
       loading: false,
     };
-  }, [orderBook, selectedPair, loading, error, maxDepth]);
+  }, [orderBook, selectedPair, loading, error, maxDepth, rows]);
 
-  return <OrderBookDisplay {...displayProps} />;
+  return <OrderBookDisplay {...displayProps} onRowsFit={setFitRows} />;
 }

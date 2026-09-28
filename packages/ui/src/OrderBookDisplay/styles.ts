@@ -4,11 +4,13 @@ import { caption } from '../Caption';
 
 export const orderBook = tv({
   slots: {
-    root: 'h-full w-full grow overflow-hidden rounded-lg border border-border bg-surface max-[480px]:max-w-full',
+    root: 'flex h-full w-full grow flex-col overflow-hidden rounded-lg border border-border bg-surface max-[480px]:max-w-full',
     header: cardHeader,
     columnHeaders: `${caption} grid w-full grid-cols-3 gap-2 max-[480px]:text-[0.6875rem]`,
     columnHeader: 'text-right first:text-left',
-    book: 'max-h-[600px] overflow-y-auto',
+    // Sized by the panel, not its rows, so the row count can be fitted to it;
+    // the leftover space (under two rows) splits above and below
+    book: 'flex min-h-0 flex-1 flex-col justify-center overflow-hidden',
     side: 'relative',
     level:
       'relative z-1 grid grid-cols-3 gap-2 px-4 py-1.5 font-mono text-[0.8125rem] transition-colors duration-150 hover:bg-white/5 max-[480px]:px-3 max-[480px]:text-xs',

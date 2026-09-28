@@ -1,4 +1,6 @@
-import { memo } from 'react';
+import { memo, useLayoutEffect, useRef } from 'react';
+import { useElementHeight } from '../hooks/useElementHeight';
+import { rowsPerSide } from './rows-per-side';
 import { orderBook } from './styles';
 
 export type OrderBookLevelProps = {
@@ -16,6 +18,8 @@ export type OrderBookDisplayProps = {
   spreadPct?: string;
   loading?: boolean;
   error?: string;
+  /** Called with how many levels per side fit the panel, whenever that changes */
+  onRowsFit?: (rowsPerSide: number) => void;
 };
 
 type Side = 'ask' | 'bid';
@@ -36,6 +40,7 @@ function Level({ level, side }: { level: OrderBookLevelProps; side: Side }) {
   return (
     <div
       className={s.level()}
+      data-level
       style={
         {
           '--depth-percentage': `${level.depthPercentage}%`,
@@ -69,8 +74,25 @@ function SkeletonRows() {
 const _orderBookDisplay = function OrderBookDisplay(
   props: OrderBookDisplayProps,
 ) {
-  const { bids, asks, spread, spreadPct, loading, error } = props;
+  const { bids, asks, spread, spreadPct, loading, error, onRowsFit } = props;
   const s = orderBook({ error: Boolean(error) });
+  const hasData = asks.length > 0 || bids.length > 0;
+  const showBook = !error && !loading;
+
+  const bookRef = useRef<HTMLDivElement>(null);
+  const bookHeight = useElementHeight(bookRef, showBook);
+
+  // Measure a rendered row and the spread, so font or padding changes need no update here
+  useLayoutEffect(() => {
+    const book = bookRef.current;
+    if (!book || bookHeight === null || !onRowsFit) return;
+    const row = book.querySelector<HTMLElement>('[data-level]');
+    if (!row) return;
+    const spreadRow = book.querySelector<HTMLElement>('[data-spread]');
+    onRowsFit(
+      rowsPerSide(bookHeight, spreadRow?.offsetHeight ?? 0, row.offsetHeight),
+    );
+  }, [bookHeight, hasData, onRowsFit]);
 
   if (error) {
     return (
@@ -96,15 +118,13 @@ const _orderBookDisplay = function OrderBookDisplay(
     );
   }
 
-  const hasData = asks.length > 0 || bids.length > 0;
-
   return (
     <div className={s.root()}>
       <div className={s.header()}>
         <ColumnHeaders />
       </div>
 
-      <div className={s.book()}>
+      <div className={s.book()} ref={bookRef}>
         {!hasData && <div className={s.message()}>No orders in the book</div>}
 
         {/* Asks (sell orders) - lowest price at bottom */}
@@ -119,7 +139,7 @@ const _orderBookDisplay = function OrderBookDisplay(
         </div>
 
         {spread && spreadPct && (
-          <div className={s.spread()}>
+          <div className={s.spread()} data-spread>
             <span className={s.spreadLabel()}>Spread:</span>
             <span className={s.spreadValue()}>
               {spread} ({spreadPct})
@@ -157,7 +177,8 @@ export const OrderBookDisplay = memo(
       prevProps.spread === nextProps.spread &&
       prevProps.spreadPct === nextProps.spreadPct &&
       prevProps.bids === nextProps.bids && // Reference equality
-      prevProps.asks === nextProps.asks // Reference equality
+      prevProps.asks === nextProps.asks && // Reference equality
+      prevProps.onRowsFit === nextProps.onRowsFit
     );
   },
 );
