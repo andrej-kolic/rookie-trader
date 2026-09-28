@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react-vite';
+import { themes } from 'storybook/theming';
 
 import '@repo/ui/fonts';
 import './preview.css';
@@ -11,6 +12,8 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    // Dark docs chrome (text, tables, code blocks); preview.css paints the page colour
+    docs: { theme: themes.dark },
     backgrounds: {
       // Theme surfaces from @repo/ui/theme.css
       options: {

@@ -71,7 +71,7 @@ const _tickerDisplay = function TickerDisplay(props: TickerDisplayProps) {
   if (loading && !lastPrice) {
     const s = ticker({ state: 'loading' });
     return (
-      <div className={s.root()}>
+      <div className={s.root()} role="status" aria-label="Loading ticker">
         <div className={s.skeletonWide()}></div>
         <div className={s.skeleton()}></div>
         <div className={s.skeleton()}></div>

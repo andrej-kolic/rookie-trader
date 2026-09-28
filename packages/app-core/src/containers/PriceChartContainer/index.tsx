@@ -34,7 +34,8 @@ export function PriceChartContainer() {
     <PriceChart
       candles={chartCandles}
       volumeData={volumeData}
-      loading={loading && candles.length === 0}
+      // No pair yet: markets are still loading (a pair is always set once they have)
+      loading={!selectedPair || (loading && candles.length === 0)}
       error={error?.message ?? null}
       symbol={selectedPair?.getDisplayName() ?? ''}
       interval={interval}

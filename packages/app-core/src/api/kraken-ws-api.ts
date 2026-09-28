@@ -2,7 +2,7 @@ import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
 import { timer, defer } from 'rxjs';
-import { retry, share, switchMap } from 'rxjs/operators';
+import { repeat, retry, share, switchMap } from 'rxjs/operators';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -24,9 +24,17 @@ this is a workaround for the issue, not a solution
 */
 const SUBSCRIPTION_DEBOUNCE_MS = 100;
 
+/**
+ * Resubscribes after the socket drops, whether it failed (error) or was
+ * closed cleanly by either side (the stream completes), then shares the
+ * result between subscribers
+ */
 function withRetryAndShare<T>(source$: Observable<T>): Observable<T> {
   return timer(SUBSCRIPTION_DEBOUNCE_MS).pipe(
     switchMap(() => source$),
+    repeat({
+      delay: RECONNECT_DELAY_MS,
+    }),
     retry({
       delay: RECONNECT_DELAY_MS,
     }),
@@ -206,9 +214,8 @@ function getWsToken(authToken: string): Promise<string> {
 }
 
 /**
- * Shared WebSocket token observable (module-level singleton)
+ * WebSocket token fetch shared by private subscriptions (module-level singleton)
  * Initialized lazily on first private subscription
- * Shared across all authenticated subscriptions to avoid redundant token fetches
  *
  * Assumption: Single user session per app instance (consistent with app architecture)
  * The first call to any private subscription establishes the token provider
@@ -216,9 +223,8 @@ function getWsToken(authToken: string): Promise<string> {
 let wsTokenShared$: Observable<string> | null = null;
 
 /**
- * Reset the cached WebSocket token
- * Called on logout to ensure fresh token fetch on next authentication
- * This clears the module-level token cache forcing re-authentication
+ * Forget the token provider
+ * Called on logout so the next login's subscriptions set it up again
  */
 export function resetWsToken(): void {
   wsTokenShared$ = null;
@@ -228,20 +234,12 @@ export type BalanceUpdate =
   Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
 
 /**
- * Subscribe to private balance updates
- * Automatically fetches fresh token on connection/reconnection
- *
- * Note: Uses module-level shared token observable for efficiency
- * All subscriptions share the same WS token to avoid redundant API calls
- *
- * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
- * @returns Observable stream of balance updates
+ * WebSocket token for private subscriptions. Subscriptions connecting at the
+ * same time share one fetch; every later (re)connect fetches a fresh token,
+ * because Kraken only accepts a token within 15 minutes of issuing it.
  */
-export function subscribeToBalances(
-  getAuthToken: () => string | null,
-): Observable<BalanceUpdate> {
-  // Initialize shared token observable on first call
-  // Subsequent calls reuse the same token observable for efficiency
+function sharedWsToken(getAuthToken: () => string | null): Observable<string> {
+  // The first private subscription establishes the token provider
   wsTokenShared$ ??= defer(() => {
     const authToken = getAuthToken();
 
@@ -252,16 +250,56 @@ export function subscribeToBalances(
     return getWsToken(authToken);
   }).pipe(
     share({
-      resetOnRefCountZero: false, // Keep token cached across subscriptions
-      resetOnError: true, // Refetch on error (e.g., token expired)
-      resetOnComplete: true, // Refetch if completed (rare)
+      resetOnRefCountZero: false, // Keep an in-flight fetch for late joiners
+      resetOnError: true, // Refetch after a failed fetch
+      resetOnComplete: true, // Refetch on the next connect once a token is delivered
     }),
   );
+  return wsTokenShared$;
+}
 
+/**
+ * Subscribe to private balance updates
+ * Automatically fetches fresh token on connection/reconnection
+ *
+ * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
+ * @returns Observable stream of balance updates
+ */
+export function subscribeToBalances(
+  getAuthToken: () => string | null,
+): Observable<BalanceUpdate> {
   return withRetryAndShare(
-    wsTokenShared$.pipe(
+    sharedWsToken(getAuthToken).pipe(
       switchMap((token) =>
         Kraken.privateWsSubscription({ channel: 'balances' }, token),
+      ),
+      switchMap((obs) => obs),
+    ),
+  );
+}
+
+export type ExecutionsUpdate =
+  Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'executions'>;
+
+/**
+ * Subscribe to the account's order and fill reports. Starts with a snapshot
+ * of open orders and the most recent fills, then streams changes.
+ *
+ * @param getAuthToken - Function that returns the current auth token (or null if not authenticated)
+ */
+export function subscribeToExecutions(
+  getAuthToken: () => string | null,
+): Observable<ExecutionsUpdate> {
+  return withRetryAndShare(
+    sharedWsToken(getAuthToken).pipe(
+      switchMap((token) =>
+        Kraken.privateWsSubscription(
+          {
+            channel: 'executions',
+            params: { snap_orders: true, snap_trades: true },
+          },
+          token,
+        ),
       ),
       switchMap((obs) => obs),
     ),

@@ -63,3 +63,13 @@ describe('SystemStatus legend', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 });
+
+describe('SystemStatus loading', () => {
+  it('showsPlaceholder_whenLoading', () => {
+    render(<SystemStatus status={null} loading />);
+
+    expect(
+      screen.getByRole('status', { name: 'Loading exchange status' }),
+    ).toBeTruthy();
+  });
+});

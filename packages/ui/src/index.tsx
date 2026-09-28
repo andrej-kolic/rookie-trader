@@ -9,7 +9,7 @@ export { IconButton } from './IconButton';
 export { Tab } from './Tab';
 export { useDismiss } from './hooks/useDismiss';
 export { cardHeader } from './CardHeader';
-export { popupTitle } from './PopupTitle';
+export { caption } from './Caption';
 
 // type exports
 export type { MarketSelectorProps } from './MarketSelector';

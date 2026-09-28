@@ -1,5 +1,5 @@
 import { tv } from 'tailwind-variants';
-import { popupTitle } from '@repo/ui';
+import { caption } from '@repo/ui';
 
 export const header = tv({
   slots: {
@@ -11,7 +11,7 @@ export const header = tv({
     auth: 'relative',
     help: 'relative',
     menu: 'absolute top-[calc(100%+8px)] right-0 z-100 min-w-[200px] rounded-lg border border-border bg-surface p-3 shadow-[0_4px_20px_var(--theme-shadow)]',
-    menuTitle: `${popupTitle} mb-3`,
+    menuTitle: `${caption} mb-3`,
     shortcuts: 'flex min-w-[240px] flex-col gap-2 text-[13px] text-muted',
     shortcut: 'flex items-center justify-between gap-4',
     keys: 'flex gap-1',
@@ -20,7 +20,3 @@ export const header = tv({
     github: 'relative block h-auto w-8 text-ink opacity-75',
   },
 });
-
-// removed text shadow from "Rookie":
-// title:
-// 'text-[28px] opacity-75 [text-shadow:0_0_6px_rgb(255_255_255/35%),0_0_42px_rgb(255_255_255/60%)]',

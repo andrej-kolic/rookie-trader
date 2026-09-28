@@ -1,10 +1,11 @@
 import { tv } from 'tailwind-variants';
+import { caption } from '../Caption';
 
 export const ticker = tv({
   slots: {
     root: 'flex scrollbar-subtle w-full max-w-full min-w-0 items-center gap-6 overflow-x-auto overflow-y-hidden scroll-smooth rounded-lg border border-border bg-surface px-6 py-4 whitespace-nowrap max-md:gap-4 max-md:px-4 max-md:py-3',
     stat: 'flex shrink-0 flex-col gap-1 max-md:min-w-[100px]',
-    label: 'text-xs font-medium tracking-[0.05em] text-muted uppercase',
+    label: caption,
     value: 'font-mono text-sm font-medium text-ink',
     qty: 'text-xs font-normal text-dim',
     change: 'inline-block rounded font-mono text-sm font-semibold',

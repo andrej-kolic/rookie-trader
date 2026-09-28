@@ -1,12 +1,13 @@
 import { tv } from 'tailwind-variants';
 import { cardHeader } from '../CardHeader';
+import { caption } from '../Caption';
 
 export const priceChart = tv({
   slots: {
     root: 'flex h-full w-full flex-col overflow-hidden rounded-lg border border-border bg-surface',
     header: `${cardHeader} justify-between max-md:flex-col max-md:items-start max-md:gap-3 max-md:py-3`,
     title: 'flex items-center gap-3',
-    label: 'text-xs font-medium tracking-[0.05em] text-muted uppercase',
+    label: caption,
     loading: 'animate-pulse text-xs text-muted',
     controls:
       'flex items-center gap-3 max-md:w-full max-md:flex-col max-md:gap-2',
