@@ -2,7 +2,7 @@ import * as Kraken from 'ts-kraken';
 import type { Status, Heartbeat } from 'ts-kraken/dist/types/ws';
 import type { Observable } from 'rxjs';
 import { timer, defer } from 'rxjs';
-import { retry, share, switchMap } from 'rxjs/operators';
+import { repeat, retry, share, switchMap } from 'rxjs/operators';
 
 export type TickerUpdate =
   Kraken.PublicWsTypes.PublicSubscriptionUpdate<'ticker'>;
@@ -24,9 +24,17 @@ this is a workaround for the issue, not a solution
 */
 const SUBSCRIPTION_DEBOUNCE_MS = 100;
 
+/**
+ * Resubscribes after the socket drops, whether it failed (error) or was
+ * closed cleanly by either side (the stream completes), then shares the
+ * result between subscribers
+ */
 function withRetryAndShare<T>(source$: Observable<T>): Observable<T> {
   return timer(SUBSCRIPTION_DEBOUNCE_MS).pipe(
     switchMap(() => source$),
+    repeat({
+      delay: RECONNECT_DELAY_MS,
+    }),
     retry({
       delay: RECONNECT_DELAY_MS,
     }),
