@@ -4,9 +4,8 @@ import { useSystemStatus } from '../../hooks/use-system-status';
 export function SystemStatusContainer() {
   const { status, loading, error } = useSystemStatus();
 
+  // useSystemStatus already logs the error
   if (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to load system status:', error);
     return null;
   }
 

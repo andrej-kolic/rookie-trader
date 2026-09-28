@@ -82,7 +82,7 @@ const tickerShared$ = new Map<string, Observable<TickerUpdate>>();
  * @returns Observable stream of ticker updates
  */
 export function subscribeToTicker(symbols: string[]): Observable<TickerUpdate> {
-  const key = symbols.sort().join(',');
+  const key = [...symbols].sort().join(',');
   if (!tickerShared$.has(key)) {
     tickerShared$.set(
       key,
@@ -115,7 +115,7 @@ export function subscribeToOrderBook(
   symbols: string[],
   depth: 10 | 25 | 100 | 500 | 1000 = 10,
 ): Observable<BookUpdate> {
-  const key = `${symbols.sort().join(',')}-${depth}`;
+  const key = `${[...symbols].sort().join(',')}-${depth}`;
   if (!orderBookShared$.has(key)) {
     orderBookShared$.set(
       key,
