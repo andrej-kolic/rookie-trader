@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 import { Tab } from '../Tab';
 import { useDismiss } from '../hooks/useDismiss';
 import { marketSelector, marketRow } from './styles';
@@ -43,8 +43,15 @@ export function MarketSelector({
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabId>('all');
+  const [activeIndex, setActiveIndex] = useState(() =>
+    Math.max(
+      items.findIndex((item) => item.id === selectedId),
+      0,
+    ),
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<VirtuosoHandle>(null);
 
   useDismiss(isOpen, [dropdownRef, triggerRef], () => {
     setIsOpen(false);
@@ -92,6 +99,26 @@ export function MarketSelector({
     setIsOpen(false);
   };
 
+  const moveActive = (index: number) => {
+    setActiveIndex(index);
+    listRef.current?.scrollIntoView({ index });
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (filteredItems.length === 0) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveActive(Math.min(activeIndex + 1, filteredItems.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveActive(Math.max(activeIndex - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const item = filteredItems[activeIndex];
+      if (item) handleSelect(item.id);
+    }
+  };
+
   const toggleFavorite = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     onToggleFavorite(id);
@@ -103,6 +130,14 @@ export function MarketSelector({
         ref={triggerRef}
         className={s.trigger()}
         onClick={() => {
+          if (!isOpen) {
+            setActiveIndex(
+              Math.max(
+                filteredItems.findIndex((item) => item.id === selectedId),
+                0,
+              ),
+            );
+          }
           setIsOpen(!isOpen);
         }}
       >
@@ -143,7 +178,9 @@ export function MarketSelector({
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
+                setActiveIndex(0);
               }}
+              onKeyDown={handleSearchKeyDown}
               autoFocus
             />
           </div>
@@ -155,6 +192,7 @@ export function MarketSelector({
                 active={activeTab === id}
                 onClick={() => {
                   setActiveTab(id);
+                  setActiveIndex(0);
                 }}
               >
                 {label}
@@ -173,19 +211,24 @@ export function MarketSelector({
               <div className={s.empty()}>No markets found</div>
             ) : (
               <Virtuoso
+                ref={listRef}
                 style={{ height: '350px' }}
                 data={filteredItems}
-                itemContent={(_index, item) => {
+                itemContent={(index, item) => {
                   const isFav = favorites.includes(item.id);
                   const row = marketRow({
                     selected: item.id === selectedId,
                     favorite: isFav,
+                    active: index === activeIndex,
                   });
                   return (
                     <div
                       className={row.row()}
                       onClick={() => {
                         handleSelect(item.id);
+                      }}
+                      onMouseMove={() => {
+                        setActiveIndex(index);
                       }}
                     >
                       <div className={s.colFav()}>

@@ -43,6 +43,7 @@ export const marketRow = tv({
   },
   variants: {
     selected: { true: { row: 'bg-border' } },
+    active: { true: { row: 'bg-raised' } },
     favorite: { true: { favButton: 'text-gold' } },
   },
 });
