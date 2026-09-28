@@ -214,9 +214,8 @@ function getWsToken(authToken: string): Promise<string> {
 }
 
 /**
- * Shared WebSocket token observable (module-level singleton)
+ * WebSocket token fetch shared by private subscriptions (module-level singleton)
  * Initialized lazily on first private subscription
- * Shared across all authenticated subscriptions to avoid redundant token fetches
  *
  * Assumption: Single user session per app instance (consistent with app architecture)
  * The first call to any private subscription establishes the token provider
@@ -224,9 +223,8 @@ function getWsToken(authToken: string): Promise<string> {
 let wsTokenShared$: Observable<string> | null = null;
 
 /**
- * Reset the cached WebSocket token
- * Called on logout to ensure fresh token fetch on next authentication
- * This clears the module-level token cache forcing re-authentication
+ * Forget the token provider
+ * Called on logout so the next login's subscriptions set it up again
  */
 export function resetWsToken(): void {
   wsTokenShared$ = null;
@@ -236,8 +234,9 @@ export type BalanceUpdate =
   Kraken.PrivateWsTypes.PrivateSubscriptionUpdate<'balances'>;
 
 /**
- * WebSocket token for private subscriptions, fetched once and shared by all
- * of them until the fetch fails or `resetWsToken` is called
+ * WebSocket token for private subscriptions. Subscriptions connecting at the
+ * same time share one fetch; every later (re)connect fetches a fresh token,
+ * because Kraken only accepts a token within 15 minutes of issuing it.
  */
 function sharedWsToken(getAuthToken: () => string | null): Observable<string> {
   // The first private subscription establishes the token provider
@@ -251,9 +250,9 @@ function sharedWsToken(getAuthToken: () => string | null): Observable<string> {
     return getWsToken(authToken);
   }).pipe(
     share({
-      resetOnRefCountZero: false, // Keep token cached across subscriptions
-      resetOnError: true, // Refetch on error (e.g., token expired)
-      resetOnComplete: true, // Refetch if completed (rare)
+      resetOnRefCountZero: false, // Keep an in-flight fetch for late joiners
+      resetOnError: true, // Refetch after a failed fetch
+      resetOnComplete: true, // Refetch on the next connect once a token is delivered
     }),
   );
   return wsTokenShared$;
