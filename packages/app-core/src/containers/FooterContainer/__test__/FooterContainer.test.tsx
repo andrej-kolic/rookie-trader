@@ -1,5 +1,6 @@
 import React from 'react';
 import { Subject } from 'rxjs';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FooterContainer } from '..';
@@ -50,6 +51,17 @@ describe('FooterContainer balances', () => {
     expect(
       screen.getByRole('status', { name: 'Loading account' }),
     ).toBeTruthy();
+  });
+
+  it('showsLoadingPlaceholder_onFirstPaintBeforeSessionRestores', () => {
+    signIn();
+    useAuthStore.setState(useAuthStore.getInitialState(), true);
+
+    // Server rendering runs no effects, so this is the markup before initialize()
+    const html = renderToStaticMarkup(<FooterContainer />);
+
+    expect(html).toContain('aria-label="Loading account"');
+    expect(html).not.toContain('Please login');
   });
 
   it('showsLoadingPlaceholder_whenNoBalancesReceivedYet', () => {

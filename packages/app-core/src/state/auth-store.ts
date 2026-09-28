@@ -27,7 +27,9 @@ type AuthState = {
 export const useAuthStore = create<AuthState>()((set) => ({
   // Initial state
   session: null,
-  isLoading: false,
+  // Loading until initialize() restores a stored session, so the first
+  // paint doesn't show a signed-in user as logged out
+  isLoading: true,
   error: null,
   isAuthenticated: false,
 
