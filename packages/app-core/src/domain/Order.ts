@@ -36,17 +36,21 @@ export class Order {
     return OPEN_STATUSES.has(this.status);
   }
 
-  /** Copy with the fields a later execution report changed */
-  withProgress(filled: number, status: OrderStatus): Order {
+  /** Copy with the fields a later execution report changed, e.g. a fill or an amend */
+  withChanges(
+    changes: Partial<
+      Pick<Order, 'limitPrice' | 'quantity' | 'filled' | 'status'>
+    >,
+  ): Order {
     return new Order(
       this.id,
       this.symbol,
       this.side,
       this.type,
-      this.limitPrice,
-      this.quantity,
-      filled,
-      status,
+      changes.limitPrice ?? this.limitPrice,
+      changes.quantity ?? this.quantity,
+      changes.filled ?? this.filled,
+      changes.status ?? this.status,
       this.createdAt,
     );
   }

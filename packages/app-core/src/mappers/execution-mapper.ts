@@ -72,16 +72,18 @@ function mapTrade(dto: ExecutionDTO): Trade | null {
 }
 
 /**
- * Applies one executions-channel message (snapshot or update) to the open
- * orders and recent fills. Orders leave the list once filled, cancelled or
- * expired; reports for orders not in the list are ignored unless they
- * describe a new open order in full.
+ * Applies one executions-channel message to the open orders and recent
+ * fills. A snapshot replaces the open orders, so orders closed while the
+ * connection was down drop out; fills are merged either way. Orders leave the
+ * list once filled, cancelled or expired; reports for orders not in the list
+ * are ignored unless they describe a new open order in full.
  */
 export function applyExecutions(
   state: ExecutionsState,
-  reports: ExecutionDTO[],
+  message: { type: 'snapshot' | 'update'; data: ExecutionDTO[] },
 ): ExecutionsState {
-  const orders = new Map(state.orders);
+  const reports = message.data;
+  const orders = new Map(message.type === 'snapshot' ? [] : state.orders);
   const newTrades: Trade[] = [];
 
   for (const dto of reports) {
@@ -93,10 +95,13 @@ export function applyExecutions(
     if (!dto.order_id) continue;
     const existing = orders.get(dto.order_id);
     const order = existing
-      ? existing.withProgress(
-          dto.cum_qty ?? existing.filled,
-          dto.order_status ?? existing.status,
-        )
+      ? existing.withChanges({
+          // Amend reports carry a new price or quantity
+          limitPrice: dto.limit_price,
+          quantity: dto.order_qty,
+          filled: dto.cum_qty,
+          status: dto.order_status,
+        })
       : dto.exec_type === 'trade'
         ? null
         : mapOrder(dto);

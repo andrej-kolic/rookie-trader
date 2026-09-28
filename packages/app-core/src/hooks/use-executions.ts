@@ -47,7 +47,7 @@ export function useExecutions(): ExecutionsHookState {
       () => useAuthStore.getState().session?.token ?? null,
     ).subscribe({
       next: (update) => {
-        setState((prev) => applyExecutions(prev, update.data));
+        setState((prev) => applyExecutions(prev, update));
         setLoading(false);
       },
       error: (err) => {
