@@ -58,3 +58,48 @@ describe('Header disconnect menu', () => {
     expect(screen.queryByRole('button', { name: 'Disconnect' })).toBeNull();
   });
 });
+
+describe('Header keyboard shortcuts popup', () => {
+  function renderHeader() {
+    render(
+      <div>
+        <Header title="Rookie" />
+        <p>Outside</p>
+      </div>,
+    );
+    return screen.getByTitle('Keyboard shortcuts');
+  }
+
+  it('listsShortcuts_whenHelpButtonClicked', async () => {
+    const user = userEvent.setup();
+
+    await user.click(renderHeader());
+
+    expect(
+      screen.getByRole('heading', { name: 'Keyboard shortcuts' }),
+    ).toBeTruthy();
+    expect(screen.getByText('Open market selector')).toBeTruthy();
+  });
+
+  it('closesPopup_whenClickedOutside', async () => {
+    const user = userEvent.setup();
+    await user.click(renderHeader());
+
+    await user.click(screen.getByText('Outside'));
+
+    expect(
+      screen.queryByRole('heading', { name: 'Keyboard shortcuts' }),
+    ).toBeNull();
+  });
+
+  it('closesPopup_whenEscapePressed', async () => {
+    const user = userEvent.setup();
+    await user.click(renderHeader());
+
+    await user.keyboard('{Escape}');
+
+    expect(
+      screen.queryByRole('heading', { name: 'Keyboard shortcuts' }),
+    ).toBeNull();
+  });
+});
