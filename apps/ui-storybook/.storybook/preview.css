@@ -5,10 +5,12 @@
 
 @source '../../../packages/ui/src';
 
-/* Stories sit on the app's page colour. Painted here because the
-   backgrounds addon doesn't apply a starting value on load; picking Page or
-   Panel in the toolbar still overrides it. */
+/* Stories and docs pages sit on the app's page colour. Painted here because
+   the backgrounds addon doesn't apply a starting value on load; picking Page
+   or Panel in the toolbar still overrides it. The docs wrapper needs the
+   doubled class to beat the docs theme's own background. */
 body,
+.sbdocs.sbdocs-wrapper,
 .docs-story {
   background: var(--theme-bg);
   color-scheme: dark;
