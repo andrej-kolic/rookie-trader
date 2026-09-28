@@ -127,21 +127,4 @@ const _priceChart = function PriceChart({
   );
 };
 
-export const PriceChart = memo(_priceChart, (prevProps, nextProps) => {
-  // Custom comparison - return true to SKIP re-render, false to re-render
-  // Always re-render if candles reference changed (data update)
-  if (prevProps.candles !== nextProps.candles) {
-    return false;
-  }
-  // Re-render if other key props changed
-  if (
-    prevProps.symbol !== nextProps.symbol ||
-    prevProps.interval !== nextProps.interval ||
-    prevProps.loading !== nextProps.loading ||
-    prevProps.error !== nextProps.error ||
-    prevProps.volumeData !== nextProps.volumeData
-  ) {
-    return false;
-  }
-  return true; // Props same, skip re-render
-});
+export const PriceChart = memo(_priceChart);
