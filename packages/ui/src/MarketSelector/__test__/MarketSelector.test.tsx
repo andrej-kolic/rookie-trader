@@ -94,3 +94,48 @@ describe('MarketSelector keyboard navigation', () => {
     expect(onSelect).toHaveBeenCalledWith('ETH/USD');
   });
 });
+
+describe('MarketSelector "/" shortcut', () => {
+  function renderClosed() {
+    render(
+      <>
+        <input aria-label="Other field" />
+        <MarketSelector
+          items={ITEMS}
+          selectedId=""
+          onSelect={jest.fn()}
+          favorites={[]}
+          onToggleFavorite={jest.fn()}
+        />
+      </>,
+    );
+    return userEvent.setup();
+  }
+
+  it('opensWithEmptyFocusedSearch_whenSlashPressed', async () => {
+    const user = renderClosed();
+
+    await user.keyboard('/');
+
+    const search = screen.getByPlaceholderText<HTMLInputElement>('Search');
+    expect(document.activeElement).toBe(search);
+    expect(search.value).toBe('');
+  });
+
+  it('staysClosed_whenSlashTypedInAnotherField', async () => {
+    const user = renderClosed();
+
+    await user.click(screen.getByLabelText('Other field'));
+    await user.keyboard('/');
+
+    expect(screen.queryByPlaceholderText('Search')).toBeNull();
+  });
+
+  it('staysClosed_whenSlashPressedWithModifier', async () => {
+    const user = renderClosed();
+
+    await user.keyboard('{Control>}/{/Control}');
+
+    expect(screen.queryByPlaceholderText('Search')).toBeNull();
+  });
+});

@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 import { Tab } from '../Tab';
 import { useDismiss } from '../hooks/useDismiss';
+import { useHotkey } from '../hooks/useHotkey';
 import { marketSelector, marketRow } from './styles';
 
 export type MarketItem = {
@@ -99,6 +100,18 @@ export function MarketSelector({
     setIsOpen(false);
   };
 
+  const open = () => {
+    setActiveIndex(
+      Math.max(
+        filteredItems.findIndex((item) => item.id === selectedId),
+        0,
+      ),
+    );
+    setIsOpen(true);
+  };
+
+  useHotkey('/', open, !isOpen);
+
   const moveActive = (index: number) => {
     setActiveIndex(index);
     listRef.current?.scrollIntoView({ index });
@@ -129,16 +142,13 @@ export function MarketSelector({
       <button
         ref={triggerRef}
         className={s.trigger()}
+        aria-keyshortcuts="/"
         onClick={() => {
-          if (!isOpen) {
-            setActiveIndex(
-              Math.max(
-                filteredItems.findIndex((item) => item.id === selectedId),
-                0,
-              ),
-            );
+          if (isOpen) {
+            setIsOpen(false);
+          } else {
+            open();
           }
-          setIsOpen(!isOpen);
         }}
       >
         <div className={s.triggerContent()}>
@@ -153,6 +163,7 @@ export function MarketSelector({
             <span className={s.placeholder()}>{placeholder}</span>
           )}
         </div>
+        <kbd className={s.hotkey()}>/</kbd>
         <svg
           width="12"
           height="12"
