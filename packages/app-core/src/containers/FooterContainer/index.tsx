@@ -24,28 +24,45 @@ export function FooterContainer() {
         </Tab>
       </div>
       <div className={s.content()}>
-        <AuthGuard fallback={<div>Please login to view balances</div>}>
+        <AuthGuard
+          fallback={
+            <div className={s.message()}>Please login to view balances</div>
+          }
+        >
           {activeTab === 'balances' && (
             // TODO: extract balances component
             <div>
-              {loading && <div>Loading balances...</div>}
+              {loading && (
+                <div
+                  className={s.skeletonGrid()}
+                  role="status"
+                  aria-label="Loading balances"
+                >
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className={s.skeletonRow()}>
+                      <div className={s.skeletonShort()}></div>
+                      <div className={s.skeletonLong()}></div>
+                    </div>
+                  ))}
+                </div>
+              )}
               {error && <div className={s.error()}>Error: {error.message}</div>}
               {!loading && !error && balances.length === 0 && (
-                <div>No balances</div>
+                <div className={s.message()}>No balances</div>
               )}
               {!loading && !error && balances.length > 0 && (
                 <table className={s.table()}>
                   <thead>
                     <tr>
-                      <th>Asset</th>
-                      <th>Balance</th>
+                      <th className={s.headCell()}>Asset</th>
+                      <th className={s.headCell()}>Balance</th>
                     </tr>
                   </thead>
                   <tbody>
                     {balances.map((balance) => (
-                      <tr key={balance.asset}>
-                        <td>{balance.asset}</td>
-                        <td className={s.amount()}>{balance.balance}</td>
+                      <tr key={balance.asset} className={s.row()}>
+                        <td className={s.cell()}>{balance.asset}</td>
+                        <td className={s.cell()}>{balance.balance}</td>
                       </tr>
                     ))}
                   </tbody>
