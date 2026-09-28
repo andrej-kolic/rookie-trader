@@ -3,7 +3,9 @@ import { caption, cardHeader } from '@repo/ui';
 
 export const footer = tv({
   slots: {
-    root: 'flex min-h-[150px] flex-col overflow-hidden rounded-lg border border-border bg-surface',
+    // Fixed height (a quarter of the window, within bounds) so switching tabs
+    // or data arriving never resizes the chart above; tables scroll inside
+    root: 'flex h-[clamp(160px,25vh,200px)] shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-surface',
     // Stretch the tabs to full height so the active underline sits on the divider
     tabs: `${cardHeader} items-stretch gap-4`,
     content: 'flex-1 overflow-auto text-ink',
@@ -15,7 +17,8 @@ export const footer = tv({
 export const footerTable = tv({
   slots: {
     table: 'w-full',
-    headCell: `${caption} px-4 pt-3 pb-1.5 text-left whitespace-nowrap`,
+    // Stays visible while the rows scroll
+    headCell: `${caption} sticky top-0 bg-surface px-4 pt-3 pb-1.5 text-left whitespace-nowrap`,
     row: 'transition-colors duration-150 hover:bg-white/5',
     cell: 'px-4 py-1.5 font-mono text-[0.8125rem] whitespace-nowrap',
     skeletonGrid: 'p-4',
