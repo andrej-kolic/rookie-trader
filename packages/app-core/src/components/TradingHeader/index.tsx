@@ -6,7 +6,7 @@ import { tradingHeader } from './styles';
 /**
  * Trading Header Component
  * Combines trading pair selector (left) and ticker display (right)
- * Maintains side-by-side layout on all screen sizes
+ * Side by side, stacked on phones
  */
 export function TradingHeader(): React.JSX.Element {
   const s = tradingHeader();

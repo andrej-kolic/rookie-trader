@@ -1,11 +1,12 @@
 import { tv } from 'tailwind-variants';
+import { cardHeader } from '../CardHeader';
 
 export const orderBook = tv({
   slots: {
     root: 'h-full w-full grow overflow-hidden rounded-lg border border-border bg-surface max-[480px]:max-w-full',
-    header: 'border-b border-border bg-raised p-4',
+    header: cardHeader,
     columnHeaders:
-      'grid grid-cols-3 gap-2 text-xs font-medium tracking-[0.05em] text-muted uppercase max-[480px]:text-[0.6875rem]',
+      'grid w-full grid-cols-3 gap-2 text-xs font-medium tracking-[0.05em] text-muted uppercase max-[480px]:text-[0.6875rem]',
     columnHeader: 'text-right first:text-left',
     book: 'max-h-[600px] overflow-y-auto',
     side: 'relative',
@@ -17,7 +18,7 @@ export const orderBook = tv({
     depthBar:
       'pointer-events-none absolute top-0 right-0 -z-1 h-full w-(--depth-percentage) bg-linear-to-l opacity-[0.53]',
     spread:
-      'flex items-center justify-center gap-2 border-y border-border bg-raised px-4 py-2.5 text-[0.8125rem] font-medium',
+      'flex items-center justify-center gap-2 border-y border-border bg-surface px-4 py-2.5 text-[0.8125rem] font-medium',
     spreadLabel: 'text-muted',
     spreadValue: 'font-mono text-ink',
     message: 'px-4 py-8 text-center text-sm text-dim',

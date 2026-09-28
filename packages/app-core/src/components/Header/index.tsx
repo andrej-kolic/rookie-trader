@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import LogoIcon from './assets/idea.svg'; // TODO: report for bad path
-import { Button, IconButton } from '@repo/ui';
+import { Button, IconButton, useDismiss } from '@repo/ui';
 import { SystemStatusContainer } from '../../containers/SystemStatusContainer';
 import { header } from './styles';
 import { GithubIcon } from './GithubIcon';
@@ -21,7 +21,12 @@ export function Header({
   onLoginClick,
 }: HeaderProps): React.ReactNode {
   const [menuOpen, setMenuOpen] = useState(false);
+  const authRef = useRef<HTMLDivElement>(null);
   const s = header();
+
+  useDismiss(menuOpen, [authRef], () => {
+    setMenuOpen(false);
+  });
 
   const handleClick: React.MouseEventHandler<HTMLHeadingElement> = (_event) => {
     window.location.href = '/';
@@ -38,11 +43,7 @@ export function Header({
 
       <div className={s.actions()}>
         {!isAuthenticated && (
-          <IconButton
-            tone="muted"
-            title="Connect to Kraken"
-            onClick={onLoginClick}
-          >
+          <IconButton title="Connect to Kraken" onClick={onLoginClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -59,9 +60,9 @@ export function Header({
           </IconButton>
         )}
         {isAuthenticated && (
-          <div className={s.auth()}>
+          <div className={s.auth()} ref={authRef}>
             <IconButton
-              tone="success"
+              dot="success"
               title="Connected to Kraken — click to disconnect"
               onClick={() => {
                 setMenuOpen((o) => !o);

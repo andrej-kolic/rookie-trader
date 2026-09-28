@@ -1,6 +1,7 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Tab } from '../Tab';
+import { useDismiss } from '../hooks/useDismiss';
 import { marketSelector, marketRow } from './styles';
 
 export type MarketItem = {
@@ -45,24 +46,9 @@ export function MarketSelector({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  useDismiss(isOpen, [dropdownRef, triggerRef], () => {
+    setIsOpen(false);
+  });
 
   const s = marketSelector({ open: isOpen });
   const selectedItem = items.find((item) => item.id === selectedId);

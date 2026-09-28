@@ -7,6 +7,8 @@ export { SystemStatus } from './SystemStatus';
 export { Button } from './Button';
 export { IconButton } from './IconButton';
 export { Tab } from './Tab';
+export { useDismiss } from './hooks/useDismiss';
+export { cardHeader } from './CardHeader';
 
 // type exports
 export type { MarketSelectorProps } from './MarketSelector';
