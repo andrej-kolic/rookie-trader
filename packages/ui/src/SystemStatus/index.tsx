@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useDismiss } from '../hooks/useDismiss';
 import { tv } from 'tailwind-variants';
-import { popupTitle } from '../PopupTitle';
+import { caption } from '../Caption';
 
 const systemStatus = tv({
   slots: {
@@ -13,7 +13,7 @@ const systemStatus = tv({
     label: 'capitalize',
     legend:
       'absolute top-[calc(100%+8px)] left-1/2 z-100 w-72 -translate-x-1/2 rounded-lg border border-border bg-surface p-2 shadow-[0_4px_20px_var(--theme-shadow)]',
-    legendTitle: `${popupTitle} px-2 pt-1 pb-3`,
+    legendTitle: `${caption} px-2 pt-1 pb-3`,
     legendItem: 'flex gap-2.5 rounded-md px-2 py-1.5',
     legendDot: 'mt-1.5',
     legendText: 'flex flex-col gap-0.5',

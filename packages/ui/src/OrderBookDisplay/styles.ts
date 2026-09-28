@@ -1,12 +1,12 @@
 import { tv } from 'tailwind-variants';
 import { cardHeader } from '../CardHeader';
+import { caption } from '../Caption';
 
 export const orderBook = tv({
   slots: {
     root: 'h-full w-full grow overflow-hidden rounded-lg border border-border bg-surface max-[480px]:max-w-full',
     header: cardHeader,
-    columnHeaders:
-      'grid w-full grid-cols-3 gap-2 text-xs font-medium tracking-[0.05em] text-muted uppercase max-[480px]:text-[0.6875rem]',
+    columnHeaders: `${caption} grid w-full grid-cols-3 gap-2 max-[480px]:text-[0.6875rem]`,
     columnHeader: 'text-right first:text-left',
     book: 'max-h-[600px] overflow-y-auto',
     side: 'relative',
