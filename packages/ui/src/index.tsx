@@ -9,6 +9,7 @@ export { IconButton } from './IconButton';
 export { Tab } from './Tab';
 export { useDismiss } from './hooks/useDismiss';
 export { cardHeader } from './CardHeader';
+export { popupTitle } from './PopupTitle';
 
 // type exports
 export type { MarketSelectorProps } from './MarketSelector';
