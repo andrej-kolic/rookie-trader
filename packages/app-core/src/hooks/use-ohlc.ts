@@ -5,7 +5,6 @@ import {
   useEffectEvent,
   useRef,
 } from 'react';
-import type { PublicRestTypes } from 'ts-kraken';
 import { fetchOHLC, type OHLCInterval } from '../api/kraken-rest-api';
 import { mapOHLCResponse, mergeCandles } from '../mappers/candle-mapper';
 import type { Candle } from '../domain/Candle';
@@ -77,10 +76,7 @@ export function useOHLC({
         );
         if (isStale()) return;
 
-        // ts-kraken returns data directly, not wrapped in result/error
-        const { candles: newCandles, last } = mapOHLCResponse(
-          response as unknown as PublicRestTypes.PublicRestEndpoints.OHLC.Result,
-        );
+        const { candles: newCandles, last } = mapOHLCResponse(response);
 
         if (newCandles.length === 0) {
           throw new Error(`No candle data found for pair: ${pair}`);

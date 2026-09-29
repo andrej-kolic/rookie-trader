@@ -40,7 +40,7 @@ beforeAll(() => {
       resize = (height) => {
         this.callback(
           [{ contentRect: { height } } as ResizeObserverEntry],
-          this as unknown as ResizeObserver,
+          this,
         );
       };
     }

@@ -47,7 +47,7 @@ describe('subscribeToExecutions', () => {
   it('usesFreshToken_whenReconnecting', async () => {
     subscribe
       .mockResolvedValueOnce(of('first') as never)
-      .mockResolvedValueOnce(NEVER as never);
+      .mockResolvedValueOnce(NEVER);
 
     const subscription = subscribeToExecutions(() => 'auth-token').subscribe();
     await jest.advanceTimersByTimeAsync(5000);
@@ -64,7 +64,7 @@ describe('subscribeToExecutions', () => {
       .mockRejectedValueOnce(
         'Method subscribe returned error: EAccount:Invalid token',
       )
-      .mockResolvedValueOnce(NEVER as never);
+      .mockResolvedValueOnce(NEVER);
 
     const subscription = subscribeToExecutions(() => 'auth-token').subscribe();
     await jest.advanceTimersByTimeAsync(5000);

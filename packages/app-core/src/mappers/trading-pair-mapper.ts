@@ -1,5 +1,5 @@
 import type { PublicRestTypes } from 'ts-kraken';
-import { TradingPair, type TradingPairStatus } from '../domain/TradingPair';
+import { TradingPair } from '../domain/TradingPair';
 
 type AssetPairDTO =
   PublicRestTypes.PublicRestEndpoints.AssetPairs.Result[string];
@@ -23,7 +23,7 @@ export function mapTradingPair(id: string, dto: AssetPairDTO): TradingPair {
     dto.wsname || dto.altname || id, // symbol
     dto.base, // base
     dto.quote, // quote
-    dto.status as TradingPairStatus, // status (cast to union type)
+    dto.status, // status
     parseFloat(dto.ordermin || '0'), // qtyMin
     parseFloat(dto.costmin || '0'), // costMin
     qtyIncrement, // qtyIncrement
