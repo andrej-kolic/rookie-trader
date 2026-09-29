@@ -3,11 +3,15 @@ packages:
   - 'packages/*'
   - 'infra/*'
 
-ignoredBuiltDependencies:
-  - tldjs
+allowBuilds:
+  core-js-pure: false
+  esbuild: true
+  netlify-cli: false
+  node-jq: true
+  sharp: true
+  tldjs: false
+  unix-dgram: false
+  unrs-resolver: false
 
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - esbuild
-  - node-jq
-  - sharp
+minimumReleaseAgeExclude:
+  - rulesync@24.0.0
