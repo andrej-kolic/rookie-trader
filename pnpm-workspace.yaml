@@ -2,3 +2,12 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'infra/*'
+
+ignoredBuiltDependencies:
+  - tldjs
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - node-jq
+  - sharp

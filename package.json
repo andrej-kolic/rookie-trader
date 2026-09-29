@@ -26,7 +26,10 @@
     "quality-checks": "dotenv -- pnpm check:dependencies && pnpm turbo check:type lint test",
     "deploy:aws": "dotenv -- sh -c 'pnpm build:app && ./infra/aws/scripts/deploy.sh content \"$BUILD_ENVIRONMENT\"'",
     "deploy:netlify": "dotenv -- sh -c 'pnpm build:app && pnpm run --filter @repo/infra-netlify deploy'",
-    "prepare": "husky"
+    "prepare": "husky",
+    "rules:fetch": "rulesync fetch andrej-kolic/playbook -f rules -t rulesync -p .rulesync",
+    "rules:generate": "rulesync generate -f rules -t claudecode,cursor",
+    "rules:install": "pnpm run rules:fetch && pnpm run rules:generate"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -36,6 +39,7 @@
     "lint-staged": "16.2.6",
     "prettier": "3.6.2",
     "prettier-plugin-tailwindcss": "0.7.4",
+    "rulesync": "24.0.0",
     "syncpack": "13.0.4",
     "turbo": "2.6.0",
     "typescript": "6.0.3"
