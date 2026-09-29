@@ -2,3 +2,16 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'infra/*'
+
+allowBuilds:
+  core-js-pure: false
+  esbuild: true
+  netlify-cli: false
+  node-jq: true
+  sharp: true
+  tldjs: false
+  unix-dgram: false
+  unrs-resolver: false
+
+minimumReleaseAgeExclude:
+  - rulesync@24.0.0
