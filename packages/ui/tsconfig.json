@@ -5,10 +5,7 @@
     "rootDir": "./src",
 
     /** needed for Jest 'ts-jest/presets/js-with-ts' preset to transform ESM files */
-    "allowJs": true,
-
-    /** TypeScript 6 does not auto-load `@types`; the editor needs these globals listed. */
-    "types": ["jest", "node"]
+    "allowJs": true
   },
   "include": ["src/**/*", "../../@types"], // TODO: @types as package?
   "exclude": ["dist", "build", "node_modules", "src/**/*/assets"]
