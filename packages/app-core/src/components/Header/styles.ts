@@ -4,8 +4,8 @@ import { caption } from '@repo/ui';
 export const header = tv({
   slots: {
     root: 'flex items-center justify-between gap-2.5',
-    brand: 'flex cursor-pointer items-center justify-center gap-[7px]',
-    logo: 'relative -left-[5px] w-[42px]',
+    brand: 'flex cursor-pointer items-center justify-center gap-[4px]',
+    logo: 'relative top-[2px] -left-[5px] w-[36px]',
     title: 'text-[28px] opacity-75',
     actions: 'flex items-center gap-3',
     auth: 'relative',
