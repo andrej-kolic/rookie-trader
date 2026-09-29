@@ -43,8 +43,6 @@ dist/
 # other
 _local/
 
-docs-internal/
-
 # rulesync output (regenerate with pnpm rules:generate)
 .claude/rules/
 .cursor/rules/
