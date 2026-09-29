@@ -105,7 +105,7 @@ Reusable UI components from `@repo/ui` package:
 ## 🛠 Prerequisites
 
 - **Node.js**: (Check `.nvmrc` for version)
-- **pnpm**: `v10.18.0` or higher
+- **pnpm**: `v11.7.0` or higher
 
 ## 🏁 Getting Started
 
@@ -115,14 +115,20 @@ Reusable UI components from `@repo/ui` package:
    pnpm install
    ```
 
-2. **Environment Setup:**
+2. **Generate agent rules** (Claude Code, Cursor) from the committed `.rulesync/`:
+
+   ```bash
+   pnpm rules:generate
+   ```
+
+3. **Environment Setup:**
    Copy the example environment file:
 
    ```bash
    cp .env.example .env
    ```
 
-3. **Start Development Server:**
+4. **Start Development Server:**
    To start all apps:
 
    ```bash
@@ -205,6 +211,12 @@ Reusable UI components from `@repo/ui` package:
 
 - `pnpm deploy:aws`: Build and deploy to AWS (requires `BUILD_ENVIRONMENT` env var).
 - `pnpm deploy:netlify`: Build and deploy to Netlify.
+
+### Agent Rules
+
+- `pnpm rules:fetch`: Refresh `.rulesync/` from the `andrej-kolic/playbook` repo.
+- `pnpm rules:generate`: Write `.claude/rules/` and `.cursor/rules/` (git-ignored) from `.rulesync/`.
+- `pnpm rules:install`: Fetch, then generate.
 
 ### Maintenance
 
