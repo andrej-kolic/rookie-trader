@@ -105,7 +105,7 @@ Reusable UI components from `@repo/ui` package:
 ## 🛠 Prerequisites
 
 - **Node.js**: (Check `.nvmrc` for version)
-- **pnpm**: `v10.18.0` or higher
+- **pnpm**: `v11.7.0` or higher
 
 ## 🏁 Getting Started
 
