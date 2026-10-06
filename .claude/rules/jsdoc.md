@@ -1,8 +1,6 @@
 ---
-root: false
-targets: ["claudecode", "cursor"]
-description: "JSDoc conventions: when to write API doc comments and what they should contain."
-globs: ["**/*.{js,jsx,ts,tsx,mjs,cjs}"]
+paths:
+  - '**/*.{js,jsx,ts,tsx,mjs,cjs}'
 ---
 
 <!-- playbook:jsdoc v2 (2026-09-23) — staleness moved to git -->

@@ -1,12 +1,3 @@
----
-root: false
-targets: ["claudecode", "cursor"]
-description: "Testing conventions: what's worth a test, and how to write one that stays useful."
-globs: []
-cursor:
-  alwaysApply: true
----
-
 <!-- playbook:testing v2 (2026-09-23) — same-commit rule moved to git -->
 <!-- source: andrej-kolic/playbook .rulesync/rules/testing.md; edits elsewhere are overwritten -->
 

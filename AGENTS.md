@@ -23,4 +23,4 @@ If grounder is not set up, keep plans in chat and ask where to save them.
 
 ## Agent rules
 
-`.claude/rules/` and `.cursor/rules/` are generated from `.rulesync/` (`pnpm rules:generate`). Edit the source in the playbook repo, not the generated files.
+`.claude/rules/` and `.cursor/rules/` are generated from the playbook repo at the commit pinned in `rulesync.lock`. Move to the latest with `pnpm rules:update` and commit the result. Edit the source in the playbook repo, not the generated files.
