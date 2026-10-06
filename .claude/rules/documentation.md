@@ -1,8 +1,7 @@
 ---
-root: false
-targets: ["claudecode", "cursor"]
-description: "Documentation and README conventions: which mode a doc is, and how to structure it."
-globs: ["README.md", "docs/**"]
+paths:
+  - README.md
+  - docs/**
 ---
 
 <!-- playbook:documentation v3 (2026-09-23) — docs-as-code moved to git -->

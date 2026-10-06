@@ -35,20 +35,14 @@ Placing and cancelling orders is not built yet.
    pnpm install
    ```
 
-2. **Generate agent rules** (Claude Code, Cursor) from the committed `.rulesync/`:
-
-   ```bash
-   pnpm rules:generate
-   ```
-
-3. **Environment Setup:**
+2. **Environment Setup:**
    Copy the example environment file:
 
    ```bash
    cp .env.example .env
    ```
 
-4. **Start Development Server:**
+3. **Start Development Server:**
    To start all apps:
 
    ```bash
@@ -134,9 +128,11 @@ Placing and cancelling orders is not built yet.
 
 ### Agent Rules
 
-- `pnpm rules:fetch`: Refresh `.rulesync/` from the `andrej-kolic/playbook` repo.
-- `pnpm rules:generate`: Write `.claude/rules/` and `.cursor/rules/` (git-ignored) from `.rulesync/`.
-- `pnpm rules:install`: Fetch, then generate.
+`.claude/rules/` and `.cursor/rules/` are generated from the `andrej-kolic/playbook` repo and committed.
+
+- `pnpm rules:install`: Regenerate the committed rules from the playbook commit pinned in `rulesync.lock`.
+- `pnpm rules:outdated`: Report whether a newer playbook commit exists.
+- `pnpm rules:update`: Move to the latest playbook rules; commit the result.
 
 ### Maintenance
 

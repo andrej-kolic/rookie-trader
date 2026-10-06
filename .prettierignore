@@ -25,5 +25,7 @@ pnpm-lock.yaml
 # netlify
 infra/netlify/deploy_output.json
 
-# rulesync: verbatim copy of the playbook
+# rulesync: verbatim copy of the playbook, and the rules it generates
 .rulesync/
+.claude/rules/
+.cursor/rules/

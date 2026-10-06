@@ -1,12 +1,3 @@
----
-root: false
-targets: ["claudecode", "cursor"]
-description: "Conversation style: how a response is structured — opening, hierarchy, closing."
-globs: []
-cursor:
-  alwaysApply: true
----
-
 <!-- playbook:conversation-style v7 (2026-09-23) — structure only; wording moved to concision -->
 <!-- source: andrej-kolic/playbook .rulesync/rules/conversation-style.md; edits elsewhere are overwritten -->
 
